@@ -1,12 +1,14 @@
-# 🏛️ Lieux de Culte Chrétiens - Nouvelle Génération ✨
+# 🏛️ Ora - Nouvelle Génération ✨
 
-> **Une plateforme moderne et interactive pour découvrir les lieux de culte chrétiens en France**
+> **Toutes les Églises. Une seule application.**
+> 
+> *"Où que tu sois, Il t'attend."*
 
 ---
 
 ## 🌟 **Nouvelle Expérience Utilisateur**
 
-Cette application révolutionne la façon de découvrir et référencer les lieux de culte avec :
+Ora révolutionne la façon de découvrir et référencer les lieux de culte avec :
 
 - 🎨 **Design Premium** - Interface moderne avec glassmorphism et animations fluides
 - 🔍 **Recherche Intelligente** - Trouvez instantanément votre lieu de culte idéal

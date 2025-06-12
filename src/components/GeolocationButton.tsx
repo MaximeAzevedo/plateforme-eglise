@@ -341,29 +341,29 @@ const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocationFound, 
       <button
         onClick={handleLocationRequest}
         disabled={isLoading}
-        className={`group flex items-center gap-3 px-6 py-4 rounded-2xl shadow-elevated transition-all duration-300 hover:shadow-float font-medium ${
+        className={`group flex items-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 font-body font-medium ${
           isLoading 
-            ? 'bg-gradient-to-r from-neon-100 to-electric-100 border-2 border-neon-300 text-neon-700 cursor-not-allowed'
-            : 'bg-white/80 backdrop-blur-sm border-2 border-gray-200 text-dark-700 hover:border-mint-300 hover:bg-white'
+            ? 'bg-sand-light border-2 border-accent text-accent cursor-not-allowed'
+            : 'bg-sand-light border-2 border-border text-text hover:border-accent hover:bg-sand'
         }`}
         title="Trouver les lieux de culte près de moi"
       >
-        <div className={`p-1.5 rounded-lg transition-all duration-300 ${
+        <div className={`p-1 rounded-lg transition-all duration-300 ${
           isLoading 
-            ? 'bg-neon-200' 
-            : 'bg-mint-100 group-hover:bg-mint-200'
+            ? 'bg-accent/20' 
+            : 'bg-accent/10 group-hover:bg-accent/20'
         }`}>
           {isLoading ? (
-            <Zap className="h-4 w-4 text-neon-600 animate-pulse" />
+            <Zap className="h-3 w-3 text-accent animate-pulse" />
           ) : (
-            <MapPin className="h-4 w-4 text-mint-600 group-hover:scale-110 transition-transform duration-300" />
+            <MapPin className="h-3 w-3 text-accent group-hover:scale-110 transition-transform duration-300" />
           )}
         </div>
-        <span className="text-sm font-semibold">
+        <span className="text-xs font-body font-medium">
           {isLoading ? '🔍 Localisation...' : '📍 Près de moi'}
         </span>
         {!isLoading && (
-          <div className="w-2 h-2 bg-mint-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         )}
       </button>
 

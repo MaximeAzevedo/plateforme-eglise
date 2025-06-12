@@ -81,44 +81,45 @@ const CenterMapOnClick = ({ center }: { center?: [number, number] | null }) => {
 };
 
 const denominationLabels: Record<Denomination, string> = {
-  'Catholic': '⛪ Catholique',
-  'Protestant': '✝️ Protestant',
-  'Orthodox': '☦️ Orthodoxe',
-  'Evangelical': '🕊️ Évangélique',
-  'Neo-Apostolic': '🔔 Néo apostolique',
-  'Pentecostal': '🔥 Pentecôtiste',
-  'Baptist': '💧 Baptiste',
-  'Other': '🏛️ Autre'
+  'Catholic': 'Confession : Catholique',
+  'Protestant': 'Confession : Protestante',
+  'Orthodox': 'Confession : Orthodoxe',
+  'Evangelical': 'Confession : Évangélique',
+  'Pentecostal': 'Confession : Pentecôtiste',
+  'Baptist': 'Confession : Baptiste',
+  'Neo-Apostolic': 'Confession : Néo-apostolique',
+  'Other': 'Confession : Autre'
 };
 
-const denominationEmojis: Record<Denomination, string> = {
-  'Catholic': '⛪',
-  'Protestant': '✝️',
-  'Orthodox': '☦️',
-  'Evangelical': '🕊️',
-  'Neo-Apostolic': '🔔',
-  'Pentecostal': '🔥',
-  'Baptist': '💧',
-  'Other': '🏛️'
+// Configuration Dune pour les confessions
+const denominationConfig: Record<Denomination, { emoji: string; color: string }> = {
+  'Catholic': { emoji: '⛪', color: 'bg-accent' },      // Or doux = Catholique
+  'Protestant': { emoji: '✝️', color: 'bg-sand-medium' },   // Sable moyen = Protestante  
+  'Orthodox': { emoji: '☦️', color: 'bg-title' },     // Bleu ardoise = Orthodoxe
+  'Evangelical': { emoji: '🕊️', color: 'bg-warning' },  // Orange = Évangélique
+  'Pentecostal': { emoji: '🔥', color: 'bg-error' },     // Rouge = Pentecôtiste
+  'Baptist': { emoji: '💧', color: 'bg-info' },        // Bleu info = Baptiste
+  'Neo-Apostolic': { emoji: '🕊️', color: 'bg-text' }, // Gris anthracite = Néo-apostolique
+  'Other': { emoji: '🏛️', color: 'bg-success' }         // Vert = Autre / Indépendante
 };
 
 const getMarkerColor = (denomination: Denomination): string => {
   const colors: Record<Denomination, string> = {
-    'Catholic': '#6366F1',
-    'Protestant': '#10B981',
-    'Evangelical': '#EAB308',
-    'Orthodox': '#EF4444',
-    'Neo-Apostolic': '#F97316',
-    'Pentecostal': '#8B5CF6',
-    'Baptist': '#06B6D4',
-    'Other': '#6B7280'
+    'Catholic': '#D3A625',      // Or doux
+    'Protestant': '#E3DDD4',    // Sable moyen
+    'Evangelical': '#F39C12',   // Orange
+    'Orthodox': '#2C3E50',      // Bleu ardoise
+    'Neo-Apostolic': '#F39C12', // Orange
+    'Pentecostal': '#E74C3C',   // Rouge
+    'Baptist': '#3498DB',       // Bleu info
+    'Other': '#27AE60'          // Vert
   };
   return colors[denomination];
 };
 
 const createCustomIcon = (denomination: Denomination) => {
   const color = getMarkerColor(denomination);
-  const emoji = denominationEmojis[denomination];
+  const emoji = denominationConfig[denomination]?.emoji || '🏛️';
   const html = `
     <div style="
       width: 40px;
@@ -185,65 +186,53 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
               icon={createCustomIcon(place.denomination)}
             >
               <Popup className="map-popup" closeButton={false} maxWidth={200}>
-                <div className="p-2 min-w-[180px] bg-white rounded-lg shadow-sm">
-                  {/* Header compact */}
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-cyber-500 to-electric-500 rounded-md flex items-center justify-center">
-                      <span className="text-white text-xs">{denominationEmojis[place.denomination]}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-bold text-gray-900 leading-tight truncate">
-                        {place.name}
-                      </h3>
-                      <span className="inline-flex items-center text-xs px-1.5 py-0.5 rounded-md font-medium bg-gray-100 text-gray-700">
-                        {denominationLabels[place.denomination]}
-                      </span>
-                    </div>
-                  </div>
+                <div className="bg-white/95 backdrop-blur-lg border border-border rounded-xl p-3 min-w-[240px] max-w-[280px] shadow-medium">
+                  <h3 className="font-heading font-semibold text-title text-base leading-tight">
+                    {place.name}
+                  </h3>
 
-                  {/* Informations ultra-compactes */}
-                  <div className="space-y-1 mb-2">
-                    <div className="flex items-start gap-1.5">
-                      <MapPin className="w-3 h-3 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-700 leading-tight">
-                          {place.address}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {place.postalCode} {place.city}
-                        </p>
+                  {/* Informations avec icônes */}
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-start space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <span>📍</span>
+                        <span className="text-text">{place.address}, {place.city}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-1.5">
-                      <Clock className="w-3 h-3 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-700 truncate">
-                          {place.serviceTimes}
-                        </p>
+                    {place.serviceTimes && (
+                      <div className="flex items-start space-x-2">
+                        <div className="flex items-center space-x-1">
+                          <span>🕒</span>
+                          <span className="text-text">{place.serviceTimes}</span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Actions mini */}
-                  <div className="flex gap-1">
-                    {place.website && (
-                      <a 
-                        href={place.website} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-1 p-1.5 bg-cyber-50 hover:bg-cyber-100 rounded-md transition-colors duration-200"
-                      >
-                        <Globe className="w-3 h-3 text-cyber-600" />
-                        <span className="text-xs text-cyber-700 font-medium">Site</span>
-                      </a>
                     )}
-                    
-                    <button className={`flex items-center justify-center gap-1 p-1.5 bg-electric-50 hover:bg-electric-100 rounded-md transition-colors duration-200 ${place.website ? 'flex-1' : 'w-full'}`}>
-                      <Navigation className="w-3 h-3 text-electric-600" />
-                      <span className="text-xs text-electric-700 font-medium">Itinéraire</span>
-                    </button>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg">{denominationConfig[place.denomination]?.emoji || '🏛️'}</span>
+                      <div className="badge-dune text-xs">
+                        <div className={`w-2 h-2 rounded-full ${denominationConfig[place.denomination]?.color || 'bg-gray'}`}></div>
+                        <span>{denominationLabels[place.denomination]}</span>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Actions compactes */}
+                  {place.website && (
+                    <div className="mt-3 pt-2 border-t border-border">
+                      <a
+                        href={place.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 text-accent hover:text-title transition-colors text-xs font-medium"
+                      >
+                        <Globe size={12} />
+                        <span>Voir le site web</span>
+                        <ExternalLink size={10} />
+                      </a>
+                    </div>
+                  )}
                 </div>
               </Popup>
             </Marker>

@@ -1,167 +1,130 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
+      // Palette de couleurs "Dune" - Vers Lui
       colors: {
-        // Palette principale moderne et vibrante
-        'electric': {
-          50: '#F0F9FF',
-          100: '#E0F2FE',
-          200: '#BAE6FD',
-          300: '#7DD3FC',
-          400: '#38BDF8',
-          500: '#0EA5E9',
-          600: '#0284C7',
-          700: '#0369A1',
-          800: '#075985',
-          900: '#0C4A6E',
+        // Couleurs principales Dune
+        primary: '#F8F8F4',      // Blanc Craie - Fond principal
+        title: '#2C3E50',        // Bleu Ardoise - Titres
+        text: '#34495E',         // Gris Anthracite - Paragraphes
+        accent: '#D3A625',       // Or Doux - Boutons, liens, icônes
+        
+        // Tons sable
+        sand: {
+          light: '#F5F3EF',      // Sable très clair
+          DEFAULT: '#ECE8E1',    // Sable clair
+          medium: '#E3DDD4',     // Sable moyen
         },
-        'cyber': {
-          50: '#F0F4FF',
-          100: '#E5EDFF',
-          200: '#C7D7FE',
-          300: '#A5B9FC',
-          400: '#818CF8',
-          500: '#6366F1',
-          600: '#4F46E5',
-          700: '#4338CA',
-          800: '#3730A3',
-          900: '#312E81',
+        
+        // Couleurs utilitaires
+        border: '#E8E6E0',
+        gray: {
+          light: '#F7F7F7',
+          DEFAULT: '#BDC3C7',
+          dark: '#7F8C8D',
         },
-        'neon': {
-          50: '#FEFCE8',
-          100: '#FEF9C3',
-          200: '#FEF08A',
-          300: '#FDE047',
-          400: '#FACC15',
-          500: '#EAB308',
-          600: '#CA8A04',
-          700: '#A16207',
-          800: '#854D0E',
-          900: '#713F12',
-        },
-        'hot': {
-          50: '#FEF2F2',
-          100: '#FEE2E2',
-          200: '#FECACA',
-          300: '#FCA5A5',
-          400: '#F87171',
-          500: '#EF4444',
-          600: '#DC2626',
-          700: '#B91C1C',
-          800: '#991B1B',
-          900: '#7F1D1D',
-        },
-        'mint': {
-          50: '#ECFDF5',
-          100: '#D1FAE5',
-          200: '#A7F3D0',
-          300: '#6EE7B7',
-          400: '#34D399',
-          500: '#10B981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065F46',
-          900: '#064E3B',
-        },
-        // Couleurs de fond modernes
-        'dark': {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
-          600: '#475569',
-          700: '#334155',
-          800: '#1E293B',
-          900: '#0F172A',
-          950: '#020617',
-        },
-        // Couleurs d'accent
-        primary: '#6366F1', // Cyber violet
-        secondary: '#0EA5E9', // Electric cyan
-        accent: '#EAB308', // Neon yellow
-        success: '#10B981', // Mint green
-        danger: '#EF4444', // Hot red
-        // Backgrounds
-        'bg-primary': '#FAFAFA',
-        'bg-secondary': '#F4F4F5',
-        'bg-dark': '#0F172A',
+        
+        // États
+        success: '#27AE60',
+        warning: '#F39C12',
+        error: '#E74C3C',
+        info: '#3498DB',
       },
+      
+      // Typographie Vers Lui
       fontFamily: {
-        // Typographie moderne
-        'display': ['Inter', 'system-ui', 'sans-serif'],
-        'body': ['Inter', 'system-ui', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+        'heading': ['Playfair Display', 'serif'],
+        'body': ['Lato', 'sans-serif'],
+        'sans': ['Lato', 'sans-serif'],
+        'serif': ['Playfair Display', 'serif'],
       },
+      
+      // Tailles de police harmonieuses
       fontSize: {
-        // Hiérarchie typographique moderne
-        'hero': ['4rem', { lineHeight: '1.1', fontWeight: '800' }],
-        'title': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],
-        'subtitle': ['1.5rem', { lineHeight: '1.3', fontWeight: '600' }],
-        'body-lg': ['1.125rem', { lineHeight: '1.6', fontWeight: '400' }],
-        'body': ['1rem', { lineHeight: '1.6', fontWeight: '400' }],
-        'caption': ['0.875rem', { lineHeight: '1.5', fontWeight: '500' }],
-        'micro': ['0.75rem', { lineHeight: '1.4', fontWeight: '500' }],
+        'hero': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        'title': ['2.5rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+        'subtitle': ['2rem', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
+        'heading': ['1.5rem', { lineHeight: '1.4' }],
+        'body': ['1rem', { lineHeight: '1.7' }],
+        'caption': ['0.875rem', { lineHeight: '1.5' }],
+        'small': ['0.75rem', { lineHeight: '1.4' }],
       },
+      
+      // Ombres douces Dune
+      boxShadow: {
+        'soft': '0 2px 8px rgba(44, 62, 80, 0.08)',
+        'medium': '0 4px 16px rgba(44, 62, 80, 0.12)',
+        'strong': '0 8px 32px rgba(44, 62, 80, 0.16)',
+        'elevated': '0 6px 20px rgba(44, 62, 80, 0.10)',
+        'float': '0 10px 30px rgba(44, 62, 80, 0.15)',
+      },
+      
+      // Animations douces
       animation: {
         'fade-in': 'fadeIn 0.6s ease-out',
-        'slide-up': 'slideUp 0.6s ease-out',
-        'slide-down': 'slideDown 0.6s ease-out',
-        'scale-in': 'scaleIn 0.4s ease-out',
-        'bounce-soft': 'bounceSoft 0.8s ease-out',
-        'glow': 'glow 2s ease-in-out infinite alternate',
+        'fade-in-up': 'fadeInUp 0.6s ease-out',
+        'pulse-soft': 'pulseSoft 2s infinite',
         'float': 'float 3s ease-in-out infinite',
-        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
       },
+      
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(30px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+        fadeInUp: {
+          '0%': { 
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': { 
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
         },
-        slideDown: {
-          '0%': { transform: 'translateY(-30px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        scaleIn: {
-          '0%': { transform: 'scale(0.9)', opacity: '0' },
-          '100%': { transform: 'scale(1)', opacity: '1' },
-        },
-        bounceSoft: {
-          '0%': { transform: 'translateY(-5px)' },
-          '50%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(-5px)' },
-        },
-        glow: {
-          '0%': { boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)' },
-          '100%': { boxShadow: '0 0 30px rgba(99, 102, 241, 0.6)' },
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
         },
-        pulseSoft: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.8' },
-        },
       },
-      backdropBlur: {
-        'xs': '2px',
+      
+      // Transitions personnalisées
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'soft': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
       },
-      boxShadow: {
-        'glow': '0 0 20px rgba(99, 102, 241, 0.4)',
-        'glow-lg': '0 0 40px rgba(99, 102, 241, 0.5)',
-        'inner-glow': 'inset 0 0 20px rgba(99, 102, 241, 0.2)',
-        'elevated': '0 10px 40px rgba(0, 0, 0, 0.1)',
-        'float': '0 20px 60px rgba(0, 0, 0, 0.15)',
+      
+      // Espacements harmonieux
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
+      
+      // Border radius doux
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
+      },
+      
+      // Gradients Dune
+      backgroundImage: {
+        'sand-gradient': 'linear-gradient(135deg, #F5F3EF, #ECE8E1)',
+        'warm-gradient': 'linear-gradient(135deg, #F8F8F4, #F5F3EF)',
+        'accent-gradient': 'linear-gradient(135deg, #D3A625, #E6B82A)',
+        'accent-hover': 'linear-gradient(135deg, #B8941F, #D3A625)',
       },
     },
   },
   plugins: [],
-};
+}

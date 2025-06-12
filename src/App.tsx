@@ -9,6 +9,8 @@ import MapView from './components/MapView';
 import PlacesList from './components/PlacesList';
 import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
+import Hero from './components/Hero';
+import ContributeForm from './components/ContributeForm';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -17,12 +19,19 @@ const supabase = createClient(
 
 function mapDenomination(denomination: string): Denomination {
   const denominationMap: Record<string, Denomination> = {
+    'Confession : Catholique': 'Catholic',
     'Catholique': 'Catholic',
+    'Confession : Protestante': 'Protestant', 
     'Protestant': 'Protestant',
+    'Confession : Orthodoxe': 'Orthodox',
     'Orthodoxe': 'Orthodox',
+    'Confession : Évangélique': 'Evangelical',
     'Évangélique': 'Evangelical',
+    'Confession : Pentecôtiste': 'Pentecostal',
     'Pentecôtiste': 'Pentecostal',
+    'Confession : Baptiste': 'Baptist',
     'Baptiste': 'Baptist',
+    'Confession : Néo-apostolique': 'Neo-Apostolic',
     'Néo apostolique': 'Neo-Apostolic',
     'Néo-apostolique': 'Neo-Apostolic'
   };
@@ -35,6 +44,8 @@ function isValidCoordinate(coord: any): boolean {
 }
 
 function transformSupabaseData(data: any[]): WorshipPlace[] {
+  console.log('🔧 Transformation des données, éléments reçus:', data?.length);
+  
   return data
     .filter(place => {
       // Filter out places with invalid coordinates
@@ -60,14 +71,19 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
             serviceTimes = schedules.map(schedule => 
               `${schedule.type} - ${schedule.day} ${schedule.startTime}-${schedule.endTime}`
             ).join('; ');
+            console.log(`✅ Horaires parsés pour ${place.Nom}:`, schedules);
+          } else {
+            console.warn(`⚠️ Horaires vides pour ${place.Nom}`);
           }
+        } else {
+          console.warn(`⚠️ Pas d'horaires JSON pour ${place.Nom}`);
         }
       } catch (error) {
         console.warn('Erreur parsing horaires pour', place.Nom, error);
         serviceTimes = place['Horaires d\'ouverture (général)'] || 'Horaires non disponibles';
       }
 
-      return {
+      const transformedPlace = {
         id: place.id,
         name: place.Nom || place.Dénomination,
         denomination: mapDenomination(place.Dénomination),
@@ -77,8 +93,11 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
         serviceTimes: serviceTimes,
         contactInfo: 'Contact non disponible',
         website: place['Site Web'] || undefined,
-        position: [parseFloat(place.Latitude), parseFloat(place.Longitude)]
+        position: [parseFloat(place.Latitude), parseFloat(place.Longitude)] as [number, number]
       };
+      
+      console.log(`✅ Lieu transformé: ${transformedPlace.name} (${transformedPlace.city})`);
+      return transformedPlace;
     });
 }
 
@@ -94,6 +113,7 @@ function App() {
   const [mapBounds, setMapBounds] = useState<[[number, number], [number, number]] | undefined>();
   const [shouldCenterMap, setShouldCenterMap] = useState<[number, number] | null>(null);
   const [currentLocation, setCurrentLocation] = useState<[number, number] | undefined>();
+  const [showContributeForm, setShowContributeForm] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -222,29 +242,29 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-bg-primary via-white to-bg-secondary">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center space-y-6 animate-fade-in">
           {/* Loading spinner moderne */}
           <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-cyber-500 to-electric-500 mx-auto"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-blue-500 to-purple-500 mx-auto"></div>
             <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-white animate-spin mx-auto"></div>
-            <div className="absolute inset-2 bg-gradient-to-br from-cyber-500 to-electric-500 rounded-full flex items-center justify-center">
+            <div className="absolute inset-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">⛪</span>
             </div>
           </div>
           
           {/* Texte de chargement */}
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-cyber-600 to-electric-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold text-gray-900">
               Chargement en cours...
             </h2>
-            <p className="text-dark-600 font-medium">
+            <p className="text-gray-600 font-medium">
               🔍 Récupération des lieux de culte
             </p>
             <div className="flex justify-center space-x-1 mt-4">
-              <div className="w-2 h-2 bg-cyber-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-electric-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-              <div className="w-2 h-2 bg-cyber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
             </div>
           </div>
         </div>
@@ -254,44 +274,44 @@ function App() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-bg-primary via-white to-bg-secondary">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center space-y-6 animate-fade-in max-w-md mx-auto px-6">
           {/* Icône d'erreur */}
           <div className="relative">
-            <div className="w-20 h-20 bg-gradient-to-br from-hot-500 to-neon-500 rounded-full flex items-center justify-center mx-auto shadow-glow">
+            <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
               <span className="text-3xl">⚠️</span>
             </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-dark-700 rounded-full flex items-center justify-center">
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
               <span className="text-white text-xs">!</span>
             </div>
           </div>
           
           {/* Message d'erreur */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-dark-800">
+            <h2 className="text-2xl font-bold text-gray-800">
               Oups ! Un problème est survenu
             </h2>
-            <div className="bg-hot-50 border border-hot-200 rounded-2xl p-4">
-              <p className="text-hot-800 font-medium text-sm">
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+              <p className="text-red-800 font-medium text-sm">
                 {error}
               </p>
             </div>
             
             {/* Suggestions d'action */}
             <div className="space-y-3">
-              <p className="text-dark-600">
+              <p className="text-gray-600">
                 💡 Que faire maintenant ?
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button 
                   onClick={() => window.location.reload()} 
-                  className="px-6 py-3 bg-gradient-to-r from-cyber-500 to-electric-500 text-white rounded-2xl hover:from-cyber-600 hover:to-electric-600 transition-all duration-300 shadow-glow hover:shadow-glow-lg transform hover:scale-105 font-semibold"
+                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 font-semibold"
                 >
                   🔄 Réessayer
                 </button>
                 <button 
                   onClick={() => window.history.back()} 
-                  className="px-6 py-3 bg-white border-2 border-gray-200 text-dark-700 rounded-2xl hover:border-cyber-300 transition-all duration-300 shadow-elevated hover:shadow-float font-semibold"
+                  className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:border-blue-300 transition-all duration-200 font-semibold"
                 >
                   ← Retour
                 </button>
@@ -305,19 +325,28 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header 
+        placesCount={places.length}
+        onContributeClick={() => setShowContributeForm(true)}
+      />
+      
+      {/* Section Hero */}
+      <Hero />
       
       <main className="flex-grow container mx-auto px-6 py-8 space-y-8">
-        <Search 
-          places={places}
-          onSearch={handleSearch} 
-          onDenominationFilter={handleDenominationFilter}
-          onEventFilter={handleEventFilter}
-          selectedDenominations={selectedDenominations}
-          eventFilter={eventFilter}
-          onLocationFound={handleLocationFound}
-          currentLocation={currentLocation}
-        />
+        {/* Section de recherche avec ID pour le scroll */}
+        <div id="search-section">
+          <Search 
+            places={places}
+            onSearch={handleSearch} 
+            onDenominationFilter={handleDenominationFilter}
+            onEventFilter={handleEventFilter}
+            selectedDenominations={selectedDenominations}
+            eventFilter={eventFilter}
+            onLocationFound={handleLocationFound}
+            currentLocation={currentLocation}
+          />
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar - Prochaines célébrations */}
@@ -346,6 +375,13 @@ function App() {
       </main>
       
       <Footer />
+      
+      {/* Modal de contribution */}
+      <ContributeForm 
+        isOpen={showContributeForm}
+        onClose={() => setShowContributeForm(false)}
+        supabase={supabase}
+      />
     </div>
   );
 }

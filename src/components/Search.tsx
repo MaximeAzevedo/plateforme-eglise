@@ -84,27 +84,27 @@ const Search: React.FC<SearchProps> = ({
   const isAllSelected = !selectedDenominations || selectedDenominations.length === 0;
 
   return (
-    <div className="card-premium mb-8 animate-fade-in">
+    <div className="card-dune mb-8">
       {/* Header principal avec recherche modernisé */}
       <div className="space-y-6">
         {/* Titre de section avec emoji */}
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-br from-cyber-500 to-electric-500 rounded-xl">
-            <SearchIcon className="text-white" size={20} />
+          <div className="p-2 bg-accent-gradient rounded-lg shadow-soft">
+            <SearchIcon className="text-white" size={18} />
           </div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-cyber-600 to-electric-600 bg-clip-text text-transparent">
-            Recherche Intelligente
+          <h2 className="text-title font-heading text-xs font-semibold">
+            Trouvez un lieu pour passer un temps avec Dieu
           </h2>
-          <Sparkles size={18} className="text-neon-400 animate-pulse" />
+          <Sparkles size={16} className="text-accent animate-pulse-soft" />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Barre de recherche avec effet glassmorphism */}
           <div className="flex-1 relative group">
-            <div className={`absolute inset-0 bg-gradient-to-r from-cyber-400 to-electric-400 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${isSearchFocused ? 'opacity-30' : ''}`}></div>
+            <div className={`absolute inset-0 bg-accent-gradient rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${isSearchFocused ? 'opacity-20' : ''}`}></div>
             <div className="relative flex">
               <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-                <SearchIcon className={`h-5 w-5 transition-colors duration-300 ${isSearchFocused ? 'text-cyber-500' : 'text-gray-400'}`} />
+                <SearchIcon className={`h-4 w-4 transition-colors duration-300 ${isSearchFocused ? 'text-accent' : 'text-gray'}`} />
               </div>
               <input
                 type="text"
@@ -113,15 +113,15 @@ const Search: React.FC<SearchProps> = ({
                 onChange={handleSearchChange}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
-                className="flex-1 pl-12 pr-4 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-l-2xl focus:border-cyber-400 focus:ring-4 focus:ring-cyber-100 transition-all duration-300 text-body placeholder-gray-500 font-medium"
+                className="search-input-dune flex-1 pl-11 pr-4 py-3 rounded-l-2xl font-body text-xs placeholder-gray"
               />
               <button
                 onClick={() => onSearch(searchQuery)}
-                className="group/btn px-8 py-4 bg-gradient-to-r from-cyber-500 to-electric-500 hover:from-cyber-600 hover:to-electric-600 text-white font-semibold rounded-r-2xl transition-all duration-300 shadow-glow hover:shadow-glow-lg flex items-center gap-3 relative overflow-hidden"
+                className="search-btn-dune group/btn flex items-center gap-2 relative overflow-hidden px-4"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                <Zap className="h-5 w-5 transition-transform duration-300 group-hover/btn:scale-110" />
-                <span className="hidden sm:inline relative z-10">Rechercher</span>
+                <Zap className="h-4 w-4 transition-transform duration-300 group-hover/btn:scale-110" />
+                <span className="hidden sm:inline relative z-10 text-xs font-body font-medium">Rechercher</span>
               </button>
             </div>
           </div>
@@ -135,23 +135,23 @@ const Search: React.FC<SearchProps> = ({
             
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`group flex items-center gap-3 px-6 py-4 rounded-2xl shadow-elevated transition-all duration-300 hover:shadow-float font-medium ${
+              className={`group flex items-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 font-body font-medium ${
                 hasActiveEventFilters() || !isAllSelected
-                  ? 'bg-gradient-to-r from-neon-100 to-electric-100 border-2 border-neon-300 text-neon-700 hover:from-neon-200 hover:to-electric-200'
-                  : 'bg-white/80 backdrop-blur-sm border-2 border-gray-200 text-dark-700 hover:border-cyber-300 hover:bg-white'
+                  ? 'bg-warm-gradient border-2 border-accent text-title hover:bg-sand-gradient'
+                  : 'btn-dune-secondary hover:border-accent'
               }`}
             >
-              <Filter className="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
-              <span className="text-sm font-semibold">
+              <Filter className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
+              <span className="text-xs font-body font-medium">
                 Filtres
                 {getActiveFiltersCount() > 0 && (
-                  <span className="ml-2 inline-flex items-center justify-center w-6 h-6 bg-gradient-to-r from-hot-500 to-neon-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
+                  <span className="ml-2 inline-flex items-center justify-center w-4 h-4 bg-accent text-white text-xs font-bold rounded-full shadow-soft animate-pulse-soft">
                     {getActiveFiltersCount()}
                   </span>
                 )}
               </span>
               <div className="transition-transform duration-300">
-                {showAdvancedFilters ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                {showAdvancedFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </div>
             </button>
           </div>
@@ -159,10 +159,10 @@ const Search: React.FC<SearchProps> = ({
 
         {/* Message de géolocalisation avec style moderne */}
         {locationMessage && (
-          <div className={`p-4 rounded-2xl border backdrop-blur-sm animate-slide-down ${
+          <div className={`p-4 rounded-2xl border backdrop-blur-sm ${
             locationMessage.includes('trouvée') 
-              ? 'bg-mint-50/80 border-mint-200 text-mint-800'
-              : 'bg-neon-50/80 border-neon-200 text-neon-800'
+              ? 'message-success border-success/20'
+              : 'message-warning border-warning/20'
           }`}>
             <div className="flex items-center space-x-2">
               <MapPin size={16} />
@@ -174,34 +174,34 @@ const Search: React.FC<SearchProps> = ({
 
       {/* Section des filtres avec animation */}
       {showAdvancedFilters && (
-        <div className="mt-8 space-y-8 animate-slide-down">
+        <div className="mt-8 space-y-8">
           {/* Divider moderne */}
           <div className="flex items-center space-x-4">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-            <span className="text-sm font-medium text-gray-500 bg-white px-4 py-1 rounded-full border border-gray-200">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+            <span className="text-xs font-body font-medium text-text bg-sand-light px-3 py-1 rounded-full border border-border">
               Filtres Avancés
             </span>
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
           </div>
 
           {/* Filtres par confession avec design moderne */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <h3 className="text-lg font-bold text-dark-800">
+              <h3 className="text-title font-heading text-xs font-semibold">
                 ⛪ Confessions
               </h3>
-              <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              <span className="text-xs text-text bg-sand-light px-2 py-1 rounded-full font-body font-medium">
                 {isAllSelected ? 'Toutes' : `${selectedDenominations?.length} sélectionnée(s)`}
               </span>
             </div>
             
-            <div className="flex flex-wrap gap-3 stagger-animation">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={handleSelectAll}
-                className={`px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
+                className={`px-3 py-2 rounded-lg text-xs font-body font-medium transition-all duration-300 transform hover:scale-105 ${
                   isAllSelected
-                    ? 'bg-gradient-to-r from-cyber-500 to-electric-500 text-white shadow-glow'
-                    : 'bg-white/80 backdrop-blur-sm text-dark-700 border-2 border-gray-200 hover:border-cyber-300 shadow-elevated hover:shadow-float'
+                    ? 'btn-dune-primary'
+                    : 'btn-dune-secondary hover:border-accent'
                 }`}
               >
                 ✨ Toutes
@@ -210,11 +210,10 @@ const Search: React.FC<SearchProps> = ({
                 <button
                   key={denom}
                   onClick={() => handleDenominationToggle(denom)}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  className={`px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
+                  className={`px-3 py-2 rounded-lg text-xs font-body font-medium transition-all duration-300 transform hover:scale-105 ${
                     selectedDenominations?.includes(denom)
-                      ? 'bg-gradient-to-r from-cyber-500 to-electric-500 text-white shadow-glow'
-                      : 'bg-white/80 backdrop-blur-sm text-dark-700 border-2 border-gray-200 hover:border-cyber-300 shadow-elevated hover:shadow-float'
+                      ? 'btn-dune-primary'
+                      : 'btn-dune-secondary hover:border-accent'
                   }`}
                 >
                   {denominationLabels[denom]}
@@ -226,12 +225,12 @@ const Search: React.FC<SearchProps> = ({
           {/* Grille des filtres avancés avec cards modernes */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Filtres par type d'événement */}
-            <div className="card bg-white/90 backdrop-blur-sm border border-white/30">
+            <div className="card-dune">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="p-1 bg-gradient-to-br from-electric-500 to-cyber-500 rounded-lg">
-                  <Sparkles className="text-white" size={16} />
+                <div className="p-1 bg-success/20 rounded-lg">
+                  <Sparkles className="text-success" size={14} />
                 </div>
-                <h4 className="text-lg font-bold text-dark-800">
+                <h4 className="text-title font-heading text-xs font-semibold">
                   Types d'événements
                 </h4>
               </div>
@@ -244,12 +243,12 @@ const Search: React.FC<SearchProps> = ({
             </div>
 
             {/* Filtres par localisation et heure */}
-            <div className="card bg-white/90 backdrop-blur-sm border border-white/30">
+            <div className="card-dune">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="p-1 bg-gradient-to-br from-mint-500 to-electric-500 rounded-lg">
-                  <MapPin className="text-white" size={16} />
+                <div className="p-1 bg-accent/20 rounded-lg">
+                  <MapPin className="text-accent" size={14} />
                 </div>
-                <h4 className="text-lg font-bold text-dark-800">
+                <h4 className="text-title font-heading text-xs font-semibold">
                   Localisation & Horaires
                 </h4>
               </div>

@@ -11,18 +11,17 @@ export type Denomination =
 
 // Types d'événements étendus pour correspondre aux données réelles
 export type CelebrationType = 
-  | 'Messe'
-  | 'Culte'
+  | 'Célébration'
+  | 'Prière'
   | 'Confession'
   | 'Adoration'
+  | 'Catéchisme'
   | 'Groupe de prière'
-  | 'Réunion de jeunes'
-  | 'Étude biblique'
+  | 'Évangélisation'
+  | 'Service communautaire'
   | 'Autre'
   // Types existants pour compatibilité avec les données actuelles
-  | 'Messe/Culte principal'
   | 'Messe en semaine'
-  | 'Catéchisme'
   | 'Jeûne'
   | 'Vêpres'
   | 'Laudes'
@@ -103,3 +102,17 @@ export interface WorshipPlace {
   website?: string;
   position: [number, number];
 }
+
+export type EventType = 
+  | 'Célébration principale'
+  | 'Célébration en semaine'
+  | 'Prière du matin'
+  | 'Prière du soir'
+  | 'Confession'
+  | 'Adoration'
+  | 'Catéchisme'
+  | 'Groupe de prière'
+  | 'Bible study'
+  | 'Évangélisation'
+  | 'Service communautaire'
+  | 'Autre';

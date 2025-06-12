@@ -24,26 +24,27 @@ interface UpcomingCelebrationsProps {
   timeFilter?: DateTimeFilter;
 }
 
+// Configuration des couleurs Dune pour les confessions
 const denominationColors: Record<string, string> = {
-  Catholic: 'bg-blue-100 text-blue-800',
-  Protestant: 'bg-green-100 text-green-800',
-  Orthodox: 'bg-purple-100 text-purple-800',
-  Evangelical: 'bg-orange-100 text-orange-800',
-  'Neo-Apostolic': 'bg-amber-100 text-amber-800',
-  Pentecostal: 'bg-violet-100 text-violet-800',
-  Baptist: 'bg-teal-100 text-teal-800',
-  Other: 'bg-gray-100 text-gray-800'
+  Catholic: 'bg-accent/10 text-accent border-accent/20',
+  Protestant: 'bg-sand-medium/30 text-title border-sand-medium',
+  Orthodox: 'bg-title/10 text-title border-title/20',
+  Evangelical: 'bg-warning/10 text-warning border-warning/20',
+  'Neo-Apostolic': 'bg-text/10 text-text border-text/20',
+  Pentecostal: 'bg-error/10 text-error border-error/20',
+  Baptist: 'bg-info/10 text-info border-info/20',
+  Other: 'bg-success/10 text-success border-success/20'
 };
 
 const denominationLabels: Record<string, string> = {
-  Catholic: 'Catholique',
-  Protestant: 'Protestant',
-  Orthodox: 'Orthodoxe',
-  Evangelical: 'Évangélique',
-  'Neo-Apostolic': 'Néo apostolique',
-  Pentecostal: 'Pentecôtiste',
-  Baptist: 'Baptiste',
-  Other: 'Autre'
+  Catholic: 'Confession : Catholique',
+  Protestant: 'Confession : Protestante',
+  Orthodox: 'Confession : Orthodoxe',
+  Evangelical: 'Confession : Évangélique',
+  Pentecostal: 'Confession : Pentecôtiste',
+  Baptist: 'Confession : Baptiste',
+  'Neo-Apostolic': 'Confession : Néo-apostolique',
+  Other: 'Confession : Autre'
 };
 
 export default function UpcomingCelebrations({ 
@@ -123,8 +124,8 @@ export default function UpcomingCelebrations({
         });
       }
       
-      // Limit to 5 most relevant celebrations
-      setCelebrations(upcomingCelebrations.slice(0, 5));
+      // Limit to 3 most relevant celebrations
+      setCelebrations(upcomingCelebrations.slice(0, 3));
       setIsLoading(false);
     };
 
@@ -163,16 +164,15 @@ export default function UpcomingCelebrations({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-blue-600" />
-          Prochaines célébrations
+      <div className="celebrations-sidebar p-6">
+        <h3 className="text-title font-heading text-xs font-semibold mb-4">
+          ⛪ Prochaines Célébrations
         </h3>
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-3 bg-sand rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-sand-light rounded w-1/2"></div>
             </div>
           ))}
         </div>
@@ -182,18 +182,16 @@ export default function UpcomingCelebrations({
 
   if (celebrations.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-blue-600" />
-          Prochaines célébrations
+      <div className="celebrations-sidebar p-6">
+        <h3 className="text-title font-heading text-xs font-semibold mb-4">
+          ⛪ Prochaines Célébrations
         </h3>
         <div className="text-center py-8">
-          <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">
-            Aucune célébration programmée dans cette zone
-          </p>
-          <p className="text-gray-400 text-xs mt-1">
-            Zoomez ou déplacez la carte pour voir d'autres célébrations
+          <div className="w-16 h-16 mx-auto mb-4 bg-sand-gradient rounded-full flex items-center justify-center">
+            <Calendar className="w-8 h-8 text-accent" />
+          </div>
+          <p className="text-text text-xs font-body font-medium">
+            Aucune célébration programmée dans les prochains jours.
           </p>
         </div>
       </div>
@@ -201,70 +199,89 @@ export default function UpcomingCelebrations({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 font-display">
-          <Calendar className="h-6 w-6 text-blue-luminous-600" />
-          Prochaines célébrations
-        </h2>
-        <div className="text-xs text-slate-500 font-body">
-          près de vous
+    <div className="celebrations-sidebar p-6">
+      {/* Header avec horloge en temps réel */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-title font-heading text-xs font-semibold">
+          ⛪ Prochaines Célébrations
+        </h3>
+        <div className="text-xs text-text bg-sand-light px-2 py-1 rounded-full font-body font-medium">
+          {currentDateTime.toLocaleTimeString('fr-FR', { 
+            hour: '2-digit', 
+            minute: '2-digit'
+          })}
         </div>
       </div>
 
-      <div className="space-y-3">
-        {celebrations.map((celebration, index) => (
+      {/* Liste des célébrations */}
+      <div className="space-y-2">
+        {celebrations.slice(0, 3).map((celebration, index) => (
           <div 
-            key={`${celebration.placeName}-${celebration.type}-${celebration.startTime}-${index}`}
+            key={`${celebration.id}-${celebration.type}-${celebration.startTime}`}
+            className="group p-3 bg-sand-light hover:bg-sand border border-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-soft"
             onClick={() => handleCelebrationClick(celebration)}
-            className="border border-gray-200 rounded-lg p-3 hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer group"
           >
-            <div className="flex items-start justify-between">
+            {/* Header avec type et badge confession */}
+            <div className="flex items-start justify-between mb-2">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  {getTimeIcon(celebration.date)}
-                  <span className="font-medium text-gray-900 text-sm">
-                    {formatCelebrationTime(celebration.date)}
-                  </span>
-                  {celebration.distance && (
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                      {formatDistance(celebration.distance)}
-                    </span>
-                  )}
-                </div>
-                
-                <div className="mb-2">
-                  <span className="text-sm font-medium text-gray-800 line-clamp-1">
-                    {celebration.type}
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                  <span className="text-sm text-gray-600 truncate">
-                    {celebration.placeName}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 truncate">
-                    {celebration.placeCity}
-                  </span>
-                  <span className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ${denominationColors[celebration.denomination] || denominationColors.Other}`}>
-                    {denominationLabels[celebration.denomination] || 'Autre'}
-                  </span>
-                </div>
+                <h4 className="text-title font-heading font-semibold text-xs leading-tight mb-1 truncate">
+                  {celebration.placeName}
+                </h4>
+                <p className="text-accent font-body font-medium text-xs">
+                  {celebration.type}
+                </p>
               </div>
-              
-              <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 ml-2" />
+              <div className={`px-2 py-0.5 rounded-full text-xs font-body font-medium border ${denominationColors[celebration.denomination] || denominationColors.Other}`}>
+                {denominationLabels[celebration.denomination] || 'Autre'}
+              </div>
+            </div>
+
+            {/* Timing et détails */}
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center space-x-2 text-text">
+                <Clock className="w-3 h-3 text-accent" />
+                <span className="font-body font-medium">
+                  {formatCelebrationTime(celebration.date)}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2 text-text">
+                <MapPin className="w-3 h-3 text-accent" />
+                <span className="truncate font-body font-medium">{celebration.placeCity}</span>
+              </div>
+
+              {/* Distance si disponible */}
+              {celebration.distance && (
+                <div className="text-text/80 text-xs font-body font-medium">
+                  📍 {formatDistance(celebration.distance)}
+                </div>
+              )}
+            </div>
+
+            {/* Indicateur de temps restant */}
+            <div className="mt-2 pt-2 border-t border-border/50 flex items-center justify-between">
+              <span className="text-xs text-text/70 font-body font-medium">
+                {celebration.startTime} - {celebration.endTime}
+              </span>
+              <div className="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
           </div>
         ))}
       </div>
-      
-      <div className="mt-4 text-center">
-        <p className="text-xs text-gray-500">
-          Cliquez sur une célébration pour centrer la carte
+
+      {/* Footer avec lien vers plus */}
+      {celebrations.length > 3 && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <button className="w-full text-center text-xs text-accent hover:text-title font-body font-medium transition-colors">
+            Voir toutes les célébrations ({celebrations.length})
+          </button>
+        </div>
+      )}
+
+      {/* Tip du jour */}
+      <div className="mt-4 p-2 bg-sand-gradient border-l-4 border-accent rounded-lg">
+        <p className="text-xs text-text font-body font-medium">
+          💡 Tip : Cliquez sur une célébration pour localiser l'église sur la carte
         </p>
       </div>
     </div>

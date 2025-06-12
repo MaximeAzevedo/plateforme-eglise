@@ -29,18 +29,17 @@ export const denominationLabels: Record<Denomination, string> = {
 // Labels enrichis pour les types de célébrations
 export const celebrationTypeLabels: Record<CelebrationType, string> = {
   // Nouveaux types principaux
-  'Messe': 'Messe',
-  'Culte': 'Culte',
+  'Célébration': 'Célébration',
+  'Prière': 'Prière',
   'Confession': 'Confession',
   'Adoration': 'Adoration eucharistique',
+  'Catéchisme': 'Catéchisme',
   'Groupe de prière': 'Groupe de prière',
-  'Réunion de jeunes': 'Réunion de jeunes',
-  'Étude biblique': 'Étude biblique',
+  'Évangélisation': 'Évangélisation',
+  'Service communautaire': 'Service communautaire',
   'Autre': 'Autre',
   // Types existants pour compatibilité
-  'Messe/Culte principal': 'Messe/Culte principal',
-  'Messe en semaine': 'Messe en semaine',
-  'Catéchisme': 'Catéchisme',
+  'Messe en semaine': 'Célébration en semaine',
   'Jeûne': 'Jeûne/Retraite spirituelle',
   'Vêpres': 'Vêpres',
   'Laudes': 'Laudes',
@@ -291,4 +290,42 @@ export function getAvailableCities(places: WorshipPlace[]): string[] {
   });
 
   return Array.from(cities).sort();
-} 
+}
+
+const denominationTranslations: Record<string, string> = {
+  'Catholic': 'Confession : Catholique',
+  'Protestant': 'Confession : Protestante',
+  'Orthodox': 'Confession : Orthodoxe',
+  'Evangelical': 'Confession : Évangélique',
+  'Pentecostal': 'Confession : Pentecôtiste',
+  'Baptist': 'Confession : Baptiste',
+  'Neo-Apostolic': 'Confession : Néo-apostolique',
+  'Other': 'Confession : Autre'
+};
+
+const celebrationTypeTranslations: Record<string, string> = {
+  'Célébration': 'Célébration',
+  'Prière': 'Prière',
+  'Confession': 'Confession',
+  'Adoration': 'Adoration',
+  'Catéchisme': 'Catéchisme',
+  'Groupe de prière': 'Groupe de prière',
+  'Évangélisation': 'Évangélisation',
+  'Service communautaire': 'Service communautaire',
+  'Autre': 'Autre'
+};
+
+const eventTypeTranslations: Record<string, string> = {
+  'Célébration principale': 'Célébration principale',
+  'Célébration en semaine': 'Célébration en semaine',
+  'Prière du matin': 'Prière du matin',
+  'Prière du soir': 'Prière du soir',
+  'Confession': 'Confession',
+  'Adoration': 'Adoration',
+  'Catéchisme': 'Catéchisme',
+  'Groupe de prière': 'Groupe de prière',
+  'Bible study': 'Bible study',
+  'Évangélisation': 'Évangélisation',
+  'Service communautaire': 'Service communautaire',
+  'Autre': 'Autre'
+}; 

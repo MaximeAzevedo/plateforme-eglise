@@ -9,6 +9,7 @@ interface Schedule {
   type: string;
   startTime: string;
   endTime: string;
+  description?: string;
 }
 
 interface FormData {
@@ -43,16 +44,37 @@ const days = [
   'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'
 ];
 
+const denominationOptions: Record<string, string> = {
+  Catholic: 'Confession : Catholique',
+  Protestant: 'Confession : Protestante',
+  Orthodox: 'Confession : Orthodoxe',
+  Evangelical: 'Confession : Évangélique',
+  Pentecostal: 'Confession : Pentecôtiste',
+  Baptist: 'Confession : Baptiste',
+  'Neo-Apostolic': 'Confession : Néo-apostolique',
+  Other: 'Confession : Autre'
+};
+
 const celebrationTypes = [
-  'Messe',
-  'Culte',
+  'Célébration',
+  'Prière',
   'Confession',
   'Adoration',
+  'Catéchisme',
   'Groupe de prière',
-  'Réunion de jeunes',
-  'Étude biblique',
+  'Bible study',
+  'Évangélisation',
+  'Service communautaire',
   'Autre'
 ];
+
+const defaultSchedule: Schedule = {
+  day: 'Dimanche',
+  startTime: '10:00',
+  endTime: '11:00',
+  type: 'Célébration',
+  description: ''
+};
 
 export default function ContributeForm({ isOpen, onClose, supabase }: { 
   isOpen: boolean, 
@@ -601,8 +623,8 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 <Church className="h-8 w-8 text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Ajouter un lieu de culte
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              Référencer une Église
             </h2>
             <p className="text-gray-600">
               Aidez la communauté en partageant les informations d'un lieu de culte
@@ -759,22 +781,23 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 <Calendar className="h-5 w-5 text-blue-600" />
                 Horaires des événements *
               </h3>
-              <p className="text-sm text-gray-600">
-                Ajoutez les horaires des messes, cultes, confessions, groupes de prière, etc.
+              <p className="text-sm text-gray-600 mb-4">
+                📍 Ajoutez les horaires des célébrations, prières, confessions, groupes de prière, etc.
               </p>
               
               {/* Formulaire d'ajout d'horaire */}
               <div className="bg-gray-50 p-4 rounded-lg space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Type d'événement
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      🕒 Type de célébration
                     </label>
                     <select
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={currentSchedule.type}
                       onChange={e => setCurrentSchedule(prev => ({ ...prev, type: e.target.value }))}
                     >
+                      <option value="">Sélectionner le type</option>
                       {celebrationTypes.map(type => (
                         <option key={type} value={type}>{type}</option>
                       ))}
@@ -928,15 +951,15 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-8 rounded-2xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold text-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Envoi en cours...
-                  </>
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Validation en cours...</span>
+                  </div>
                 ) : (
-                  'Envoyer ma contribution'
+                  '✅ Valider ce lieu'
                 )}
               </button>
             </div>
