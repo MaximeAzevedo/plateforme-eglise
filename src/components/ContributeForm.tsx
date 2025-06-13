@@ -607,8 +607,8 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto">
-        <div className="p-8 space-y-8">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+        <div className="p-6 space-y-6">
           {/* Header */}
           <div className="text-center relative">
             <button 
@@ -616,32 +616,32 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
               type="button" 
               className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <X className="h-5 w-5 text-gray-500" />
+              <X className="h-4 w-4 text-gray-500" />
             </button>
-            <div className="flex justify-center mb-4">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full">
-                <Church className="h-8 w-8 text-white" />
+            <div className="flex justify-center mb-3">
+              <div className="p-2 bg-yellow-500 rounded-lg">
+                <Church className="h-6 w-6 text-white" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-xl font-body font-semibold text-gray-800 mb-2">
               Référencer une Église
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600 font-body">
               Aidez la communauté en partageant les informations d'un lieu de culte
             </p>
           </div>
 
           {/* Erreurs */}
           {errors.length > 0 && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+            <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-lg">
               <div className="flex">
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
+                  <h3 className="text-sm font-medium text-red-800 font-body">
                     Veuillez corriger les erreurs suivantes :
                   </h3>
                   <div className="mt-2 text-sm text-red-700">
                     <ul className="list-disc pl-5 space-y-1">
-                      {errors.map((error, i) => <li key={i}>{error}</li>)}
+                      {errors.map((error, i) => <li key={i} className="font-body">{error}</li>)}
                     </ul>
                   </div>
                 </div>
@@ -649,23 +649,23 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Informations du lieu */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Church className="h-5 w-5 text-blue-600" />
+            <div className="space-y-3">
+              <h3 className="text-base font-body font-medium text-gray-900 flex items-center gap-2">
+                <Church className="h-4 w-4 text-yellow-600" />
                 Informations du lieu de culte
               </h3>
               
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                     Nom du lieu de culte *
                   </label>
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     placeholder="Ex: Église Saint-Pierre, Temple Protestant..."
                     value={formData.name}
                     onChange={e => setFormData(f => ({ ...f, name: e.target.value }))}
@@ -673,12 +673,12 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                     Dénomination *
                   </label>
                   <select
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     value={formData.denomination}
                     onChange={e => setFormData(f => ({ ...f, denomination: e.target.value as Denomination }))}
                   >
@@ -689,41 +689,41 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                     Adresse complète *
                   </label>
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     placeholder="Ex: 14 rue Mozart"
                     value={formData.address}
                     onChange={e => setFormData(f => ({ ...f, address: e.target.value }))}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       Code postal *
                     </label>
                     <input
                       type="text"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                       placeholder="57000"
                       value={formData.postalCode}
                       onChange={e => setFormData(f => ({ ...f, postalCode: e.target.value }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       Ville *
                     </label>
                     <input
                       type="text"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                       placeholder="Metz"
                       value={formData.city}
                       onChange={e => setFormData(f => ({ ...f, city: e.target.value }))}
@@ -732,13 +732,13 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <Globe className="h-3 w-3" />
                     Site web (optionnel)
                   </label>
                   <input
                     type="url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     placeholder="https://exemple.fr"
                     value={formData.website}
                     onChange={e => setFormData(f => ({ ...f, website: e.target.value }))}
@@ -746,13 +746,13 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <Globe className="h-3 w-3" />
                     Instagram (optionnel)
                   </label>
                   <input
                     type="url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     placeholder="https://instagram.com/exemple"
                     value={formData.instagram}
                     onChange={e => setFormData(f => ({ ...f, instagram: e.target.value }))}
@@ -760,13 +760,13 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
+                  <label className="block text-sm font-body font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <Globe className="h-3 w-3" />
                     YouTube (optionnel)
                   </label>
                   <input
                     type="url"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
                     placeholder="https://youtube.com/exemple"
                     value={formData.youtube}
                     onChange={e => setFormData(f => ({ ...f, youtube: e.target.value }))}
@@ -776,24 +776,24 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
             </div>
 
             {/* Horaires des événements - OBLIGATOIRES */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-blue-600" />
+            <div className="space-y-3">
+              <h3 className="text-base font-body font-medium text-gray-900 flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-yellow-600" />
                 Horaires des événements *
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-gray-600 font-body">
                 📍 Ajoutez les horaires des célébrations, prières, confessions, groupes de prière, etc.
               </p>
               
               {/* Formulaire d'ajout d'horaire */}
-              <div className="bg-gray-50 p-4 rounded-lg space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-3 rounded-lg space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       🕒 Type de célébration
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
                       value={currentSchedule.type}
                       onChange={e => setCurrentSchedule(prev => ({ ...prev, type: e.target.value }))}
                     >
@@ -805,11 +805,11 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       Jour
                     </label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
                       value={currentSchedule.day}
                       onChange={e => setCurrentSchedule(prev => ({ ...prev, day: e.target.value }))}
                     >
@@ -820,26 +820,26 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       Heure de début
                     </label>
                     <input
                       type="time"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
                       value={currentSchedule.startTime}
                       onChange={e => setCurrentSchedule(prev => ({ ...prev, startTime: e.target.value }))}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-body font-medium text-gray-700 mb-1">
                       Heure de fin
                     </label>
                     <input
                       type="time"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
                       value={currentSchedule.endTime}
                       onChange={e => setCurrentSchedule(prev => ({ ...prev, endTime: e.target.value }))}
                     />
@@ -849,7 +849,7 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                 <button
                   type="button"
                   onClick={addSchedule}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-body"
                 >
                   <Plus className="h-4 w-4" />
                   Ajouter cet horaire
@@ -859,10 +859,10 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
               {/* Liste des horaires ajoutés */}
               {formData.schedules.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="font-medium text-gray-900">Horaires ajoutés :</h4>
+                  <h4 className="font-body font-medium text-gray-900 text-sm">Horaires ajoutés :</h4>
                   {formData.schedules.map((schedule, index) => (
-                    <div key={index} className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-                      <span className="text-sm">
+                    <div key={index} className="flex items-center justify-between bg-blue-50 p-2 rounded-lg">
+                      <span className="text-sm font-body">
                         <strong>{schedule.type}</strong> - {schedule.day} de {schedule.startTime} à {schedule.endTime}
                       </span>
                       <button
@@ -880,15 +880,15 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
 
             {/* Géolocalisation discrète - seulement si problème */}
             {(geoError || (!formData.latitude && !isGeolocating && formData.address && formData.city && formData.postalCode)) && (
-              <div className="space-y-4">
-                <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-lg">
+              <div className="space-y-3">
+                <div className="bg-orange-50 border-l-4 border-orange-400 p-3 rounded-lg">
                   <div className="flex items-center">
-                    <MapPin className="h-5 w-5 text-orange-500 mr-2" />
+                    <MapPin className="h-4 w-4 text-orange-500 mr-2" />
                     <div>
-                      <h4 className="text-sm font-medium text-orange-800">
+                      <h4 className="text-sm font-body font-medium text-orange-800">
                         Localisation non trouvée
                       </h4>
-                      <p className="text-sm text-orange-700 mt-1">
+                      <p className="text-sm text-orange-700 mt-1 font-body">
                         Vérifiez l'adresse ou cliquez pour réessayer la géolocalisation
                       </p>
                     </div>
@@ -897,7 +897,7 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
                     type="button"
                     onClick={manualGeocode}
                     disabled={isGeolocating}
-                    className="mt-3 flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors disabled:opacity-50"
+                    className="mt-2 flex items-center gap-2 px-3 py-2 text-sm bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors disabled:opacity-50 font-body"
                   >
                     {isGeolocating ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -912,50 +912,50 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
 
             {/* Indicateur discret de géolocalisation réussie */}
             {formData.latitude && formData.longitude && (
-              <div className="text-xs text-green-600 flex items-center gap-1">
+              <div className="text-xs text-green-600 flex items-center gap-1 font-body">
                 <MapPin className="h-3 w-3" />
                 Localisation trouvée
               </div>
             )}
 
             {/* Accessibilité */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Accessibility className="h-5 w-5 text-blue-600" />
+            <div className="space-y-3">
+              <h3 className="text-base font-body font-medium text-gray-900 flex items-center gap-2">
+                <Accessibility className="h-4 w-4 text-yellow-600" />
                 Accessibilité
               </h3>
               
-              <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.accessibility}
                   onChange={e => setFormData(f => ({ ...f, accessibility: e.target.checked }))}
-                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500"
                 />
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-body font-medium text-gray-700">
                   Accessible aux personnes à mobilité réduite
                 </span>
               </label>
             </div>
 
             {/* Boutons */}
-            <div className="flex gap-4 pt-6 border-t border-gray-200">
+            <div className="flex gap-3 pt-4 border-t border-gray-200">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-8 rounded-2xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold text-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center space-x-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     <span>Validation en cours...</span>
                   </div>
                 ) : (

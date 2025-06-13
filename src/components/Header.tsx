@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ placesCount, onContributeClick }) => {
     <header className="header-vers-lui sticky top-0 z-50 bg-white border-b border-border shadow-soft">
       <div className="container-dune">
         <div className="flex items-center justify-between py-4">
-          {/* Logo et Identité Vers Lui */}
+          {/* Logo et Identité Mon Église */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               {/* Icône avec style doré */}
@@ -22,10 +22,10 @@ const Header: React.FC<HeaderProps> = ({ placesCount, onContributeClick }) => {
               {/* Nom et slogan */}
               <div className="flex flex-col">
                 <h1 className="logo-vers-lui font-heading text-2xl font-bold text-title leading-none">
-                  Vers Lui
+                  Mon Église
                 </h1>
-                <p className="slogan-vers-lui font-body text-sm text-text opacity-90 italic">
-                  Dieu t'attend quelque part
+                <p className="slogan-vers-lui font-body text-sm text-title opacity-90 italic">
+                  Le lieu de votre rencontre.
                 </p>
               </div>
             </div>
@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ placesCount, onContributeClick }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={onContributeClick}
-              className="btn-dune-primary flex items-center space-x-2 px-6 py-3 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-soft hover:shadow-medium"
+              className="btn-dune-primary flex items-center space-x-2 px-4 py-2 text-white font-medium text-sm rounded-lg transition-all duration-300 transform hover:scale-105 shadow-soft hover:shadow-medium"
             >
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Référencer</span>

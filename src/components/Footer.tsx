@@ -1,141 +1,119 @@
 import React from 'react';
-import { Heart, Mail, Github, Twitter, MapPin, Church, Star } from 'lucide-react';
+import { Church, Mail, Twitter, Facebook, Instagram } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-title text-white relative overflow-hidden">
-      {/* Fond décoratif subtil */}
-      <div className="absolute inset-0 bg-gradient-to-br from-title via-text to-title opacity-90"></div>
-      
-      <div className="relative z-10 container-dune py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-slate-800 text-white">
+      <div className="container mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
-          {/* Section identité Vers Lui */}
-          <div className="space-y-6">
-            {/* Logo et slogan */}
+          {/* Logo et identité */}
+          <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-accent-gradient rounded-xl shadow-soft">
-                <Church className="h-8 w-8 text-white" />
+              <div className="p-2 bg-yellow-500 rounded-lg">
+                <Church className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-heading font-bold text-white">
-                  Vers Lui
+                <h3 className="text-xl font-body font-semibold text-white">
+                  Mon Église
                 </h3>
-                <p className="text-sand-light font-body italic">
-                  Dieu t'attend quelque part
+                <p className="text-gray-300 font-body text-sm">
+                  Le lieu de votre rencontre.
                 </p>
               </div>
             </div>
-            
-            {/* Statistiques Dune */}
-            <div className="flex space-x-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                <div className="text-lg font-bold text-accent font-heading">1,500+</div>
-                <div className="text-xs text-sand-light">Lieux référencés</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                <div className="text-lg font-bold text-accent font-heading">2.4k+</div>
-                <div className="text-xs text-sand-light">Communauté</div>
-              </div>
-            </div>
           </div>
 
-          {/* Navigation spirituelle */}
+          {/* À Propos */}
           <div className="space-y-4">
-            <h4 className="text-lg font-heading font-semibold text-white flex items-center space-x-2">
-              <span>🗺️</span>
-              <span>Navigation spirituelle</span>
+            <h4 className="text-base font-body font-medium text-white">
+              À Propos
             </h4>
-            <div className="space-y-2 text-sm text-sand-light">
-              <div className="hover:text-accent transition-colors cursor-pointer">Explorer la carte</div>
-              <div className="hover:text-accent transition-colors cursor-pointer">Rechercher un lieu</div>
-              <div className="hover:text-accent transition-colors cursor-pointer">Référencer une Église</div>
-              <div className="hover:text-accent transition-colors cursor-pointer">À propos de Vers Lui</div>
+            <div className="space-y-2">
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Notre Mission
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Notre Équipe
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Notre Histoire
+              </a>
             </div>
           </div>
 
-          {/* Contact & Social */}
+          {/* Informations Légales */}
           <div className="space-y-4">
-            <h4 className="text-lg font-heading font-semibold text-white flex items-center space-x-2">
-              <span>📬</span>
-              <span>Restez connectés</span>
+            <h4 className="text-base font-body font-medium text-white">
+              Informations
+            </h4>
+            <div className="space-y-2">
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Notre Charte
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Mentions Légales
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-colors text-sm font-body">
+                Politique de Confidentialité
+              </a>
+            </div>
+          </div>
+
+          {/* Contact et Réseaux Sociaux */}
+          <div className="space-y-4">
+            <h4 className="text-base font-body font-medium text-white">
+              Contact
             </h4>
             <div className="space-y-3">
               <a 
-                href="mailto:contact@vers-lui.fr" 
-                className="group flex items-center space-x-3 text-sand-light hover:text-accent transition-all duration-200"
+                href="mailto:contact@mon-eglise.fr" 
+                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors text-sm font-body"
               >
-                <div className="p-2 bg-white/10 rounded-lg group-hover:bg-accent/20 transition-colors">
-                  <Mail size={16} />
-                </div>
-                <span className="text-sm">contact@vers-lui.fr</span>
+                <Mail size={16} />
+                <span>contact@mon-eglise.fr</span>
               </a>
               
-              {/* Social links */}
-              <div className="flex space-x-3 pt-2">
-                <a 
-                  href="#" 
-                  className="p-2 bg-white/10 rounded-lg hover:bg-accent/20 transition-all duration-200"
-                >
-                  <Github size={16} className="text-sand-light hover:text-accent" />
-                </a>
-                <a 
-                  href="#" 
-                  className="p-2 bg-white/10 rounded-lg hover:bg-accent/20 transition-all duration-200"
-                >
-                  <Twitter size={16} className="text-sand-light hover:text-accent" />
-                </a>
+              {/* Réseaux sociaux */}
+              <div className="pt-2">
+                <p className="text-sm font-body text-gray-300 mb-3">Suivez-nous</p>
+                <div className="flex space-x-3">
+                  <a 
+                    href="#" 
+                    className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    aria-label="Facebook"
+                  >
+                    <Facebook size={16} className="text-gray-300 hover:text-white" />
+                  </a>
+                  <a 
+                    href="#" 
+                    className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    aria-label="Twitter"
+                  >
+                    <Twitter size={16} className="text-gray-300 hover:text-white" />
+                  </a>
+                  <a 
+                    href="#" 
+                    className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    aria-label="Instagram"
+                  >
+                    <Instagram size={16} className="text-gray-300 hover:text-white" />
+                  </a>
+                </div>
               </div>
             </div>
-
-            {/* Status indicator */}
-            <div className="flex items-center space-x-2 text-sm">
-              <div className="w-2 h-2 bg-success rounded-full animate-pulse-soft"></div>
-              <span className="text-sand-light">Service en ligne</span>
-            </div>
           </div>
         </div>
 
-        {/* Divider harmonieux */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-8"></div>
-
-        {/* Section finale */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-2 text-sm text-sand-light">
-            <span>Réalisé avec</span>
-            <Heart size={16} className="text-accent animate-pulse-soft" />
-            <span>pour la communauté chrétienne, 2025</span>
-            <span className="text-sand">•</span>
-            <span className="text-accent font-medium">
-              Nouvelle génération
-            </span>
-          </div>
-
-          <div className="text-xs text-sand text-center md:text-right">
-            <p>Plateforme œcuménique • Toutes confessions chrétiennes • Version 1.0</p>
-            <p className="mt-1">
-              Powered by 
-              <span className="text-accent font-medium ml-1">React</span> • 
-              <span className="text-accent font-medium ml-1">Supabase</span> • 
-              <span className="text-accent font-medium ml-1">Modern Web</span>
+        {/* Ligne de séparation */}
+        <div className="border-t border-gray-700 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-gray-400 text-sm font-body">
+              © 2025 Mon Église. Tous droits réservés.
             </p>
-          </div>
-        </div>
-
-        {/* Call to action spirituel */}
-        <div className="mt-8 p-6 bg-sand-gradient/10 rounded-2xl border border-white/10 backdrop-blur-sm">
-          <div className="text-center">
-            <h5 className="text-lg font-heading font-semibold text-white mb-2 flex items-center justify-center space-x-2">
-              <Star className="text-accent" size={20} />
-              <span>Contribuez à Vers Lui</span>
-              <Star className="text-accent" size={20} />
-            </h5>
-            <p className="text-sand-light text-sm mb-4">
-              Aidez-nous à enrichir cette carte spirituelle en référençant les lieux de culte de votre région.
+            <p className="text-gray-400 text-sm font-body">
+              Plateforme œcuménique • Toutes confessions chrétiennes
             </p>
-            <button className="btn-dune-primary text-sm font-medium">
-              🙏 Commencer maintenant
-            </button>
           </div>
         </div>
       </div>

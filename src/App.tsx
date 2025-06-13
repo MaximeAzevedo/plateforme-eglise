@@ -6,7 +6,9 @@ import { parseScheduleString } from './utils/scheduleParser';
 import Header from './components/Header';
 import Search from './components/Search';
 import MapView from './components/MapView';
-import PlacesList from './components/PlacesList';
+import WhoWeAreFor from './components/WhoWeAreFor';
+import OurCommitment from './components/OurCommitment';
+import Contribution from './components/Contribution';
 import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -371,7 +373,11 @@ function App() {
           </div>
         </div>
         
-        <PlacesList places={filteredPlaces} />
+        <WhoWeAreFor />
+        
+        <OurCommitment />
+        
+        <Contribution onAddPlace={() => setShowContributeForm(true)} />
       </main>
       
       <Footer />
