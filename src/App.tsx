@@ -12,7 +12,7 @@ import Contribution from './components/Contribution';
 import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
-import ContributeForm from './components/ContributeForm';
+import ContributionHub from './components/ContributionHub';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -335,43 +335,75 @@ function App() {
       {/* Section Hero */}
       <Hero />
       
-      <main className="flex-grow container mx-auto px-6 py-8 space-y-8">
-        {/* Section de recherche avec ID pour le scroll */}
-        <div id="search-section">
-          <Search 
-            places={places}
-            onSearch={handleSearch} 
-            onDenominationFilter={handleDenominationFilter}
-            onEventFilter={handleEventFilter}
-            selectedDenominations={selectedDenominations}
-            eventFilter={eventFilter}
-            onLocationFound={handleLocationFound}
-            currentLocation={currentLocation}
-          />
-        </div>
+      <main className="flex-grow container mx-auto px-6 py-12 space-y-16">
+        {/* Section de recherche moderne avec ID pour le scroll */}
+        <section id="search-section" className="space-y-8">
+          {/* Titre de section moderne */}
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Découvrez votre communauté spirituelle
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+              Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
+            </p>
+          </div>
+
+          {/* Zone de recherche épurée */}
+          <div className="max-w-5xl mx-auto">
+            <Search 
+              places={places}
+              onSearch={handleSearch} 
+              onDenominationFilter={handleDenominationFilter}
+              onEventFilter={handleEventFilter}
+              selectedDenominations={selectedDenominations}
+              eventFilter={eventFilter}
+              onLocationFound={handleLocationFound}
+              currentLocation={currentLocation}
+            />
+          </div>
+        </section>
         
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar - Prochaines célébrations */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            <UpcomingCelebrations 
-              places={filteredPlaces}
-              mapCenter={mapCenter}
-              mapBounds={mapBounds}
-              onPlaceClick={handlePlaceClick}
-              timeFilter={eventFilter.dateTimeFilter}
-            />
+        {/* Section carte et résultats moderne */}
+        <section className="space-y-8">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              Explorez la carte interactive
+            </h3>
+            <p className="text-gray-600">
+              {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
+            </p>
           </div>
-          
-          {/* Carte */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
-            <MapView 
-              places={filteredPlaces} 
-              selectedDenomination={selectedDenominations?.[0] || null}
-              onMapMove={handleMapMove}
-              centerOnPosition={shouldCenterMap}
-            />
+
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-0">
+              {/* Sidebar - Prochaines célébrations */}
+              <div className="lg:col-span-1 bg-gray-50/50 border-r border-gray-100">
+                <div className="p-6">
+                  <UpcomingCelebrations 
+                    places={filteredPlaces}
+                    mapCenter={mapCenter}
+                    mapBounds={mapBounds}
+                    onPlaceClick={handlePlaceClick}
+                    timeFilter={eventFilter.dateTimeFilter}
+                  />
+                </div>
+              </div>
+              
+              {/* Carte principale */}
+              <div className="lg:col-span-3">
+                <div className="p-6">
+                  <MapView 
+                    places={filteredPlaces} 
+                    selectedDenomination={selectedDenominations?.[0] || null}
+                    onMapMove={handleMapMove}
+                    centerOnPosition={shouldCenterMap}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
         
         <WhoWeAreFor />
         
@@ -383,7 +415,7 @@ function App() {
       <Footer />
       
       {/* Modal de contribution */}
-      <ContributeForm 
+      <ContributionHub 
         isOpen={showContributeForm}
         onClose={() => setShowContributeForm(false)}
         supabase={supabase}

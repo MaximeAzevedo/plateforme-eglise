@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Church, X, MapPin, Loader2, Calendar, Globe, Accessibility, Plus, Trash2 } from 'lucide-react';
+import { Church, X, MapPin, Loader2, Calendar, Globe, Accessibility, Plus, Trash2, ArrowLeft } from 'lucide-react';
 
 // Types cohérents avec votre BDD
 type Denomination = 'Catholic' | 'Protestant' | 'Orthodox' | 'Evangelical' | 'Neo-Apostolic' | 'Pentecostal' | 'Baptist' | 'Other';
@@ -76,9 +76,10 @@ const defaultSchedule: Schedule = {
   description: ''
 };
 
-export default function ContributeForm({ isOpen, onClose, supabase }: { 
+export default function ContributeForm({ isOpen, onClose, onBack, supabase }: { 
   isOpen: boolean, 
   onClose: () => void,
+  onBack?: () => void,
   supabase: any
 }) {
   const [formData, setFormData] = useState<FormData>({
@@ -611,6 +612,14 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="text-center relative">
+            {onBack && (
+              <button 
+                onClick={onBack}
+                className="absolute left-0 top-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 text-gray-500" />
+              </button>
+            )}
             <button 
               onClick={onClose} 
               type="button" 
@@ -938,30 +947,59 @@ export default function ContributeForm({ isOpen, onClose, supabase }: {
               </label>
             </div>
 
-            {/* Boutons */}
+            {/* Actions */}
             <div className="flex gap-3 pt-4 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isSubmitting}
-                className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Validation en cours...</span>
-                  </div>
-                ) : (
-                  '✅ Valider ce lieu'
-                )}
-              </button>
+              {onBack ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
+                  >
+                    Retour
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Validation en cours...</span>
+                      </div>
+                    ) : (
+                      '✅ Valider ce lieu'
+                    )}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Validation en cours...</span>
+                      </div>
+                    ) : (
+                      '✅ Valider ce lieu'
+                    )}
+                  </button>
+                </>
+              )}
             </div>
           </form>
         </div>

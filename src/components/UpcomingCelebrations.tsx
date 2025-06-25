@@ -199,90 +199,109 @@ export default function UpcomingCelebrations({
   }
 
   return (
-    <div className="celebrations-sidebar p-6">
-      {/* Header avec horloge en temps réel */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-title font-heading text-xs font-semibold">
-          ⛪ Prochaines Célébrations
+    <div className="space-y-6">
+      {/* Header moderne */}
+      <div className="text-center">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          Prochaines célébrations
         </h3>
-        <div className="text-xs text-text bg-sand-light px-2 py-1 rounded-full font-body font-medium">
-          {currentDateTime.toLocaleTimeString('fr-FR', { 
-            hour: '2-digit', 
-            minute: '2-digit'
-          })}
-        </div>
+        <p className="text-sm text-gray-600">
+          Dans votre zone de recherche
+        </p>
       </div>
 
       {/* Liste des célébrations */}
-      <div className="space-y-2">
-        {celebrations.slice(0, 3).map((celebration, index) => (
-          <div 
-            key={`${celebration.id}-${celebration.type}-${celebration.startTime}`}
-            className="group p-3 bg-sand-light hover:bg-sand border border-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-soft"
-            onClick={() => handleCelebrationClick(celebration)}
-          >
-            {/* Header avec type et badge confession */}
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1 min-w-0">
-                <h4 className="text-title font-heading font-semibold text-xs leading-tight mb-1 truncate">
+      <div className="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
+        {celebrations.length > 0 ? (
+          celebrations.map((celebration, index) => (
+            <div
+              key={`${celebration.id}-${celebration.type}-${index}`}
+              className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+              onClick={() => {
+                if (celebration.position && onPlaceClick) {
+                  onPlaceClick(celebration.position, celebration.placeName);
+                }
+              }}
+            >
+              {/* En-tête avec heure */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Clock className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-gray-900">
+                      {celebration.startTime} - {celebration.endTime}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {celebration.date.toLocaleDateString('fr-FR')}
+                    </div>
+                  </div>
+                </div>
+                {celebration.distance && (
+                  <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+                    {formatDistance(celebration.distance)}
+                  </div>
+                )}
+              </div>
+
+              {/* Type de célébration */}
+              <div className="mb-3">
+                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-1 rounded-full">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm font-medium text-blue-700">
+                    {celebration.type}
+                  </span>
+                </div>
+              </div>
+
+              {/* Lieu */}
+              <div className="space-y-2">
+                <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
                   {celebration.placeName}
                 </h4>
-                <p className="text-accent font-body font-medium text-xs">
-                  {celebration.type}
-                </p>
-              </div>
-              <div className={`px-2 py-0.5 rounded-full text-xs font-body font-medium border ${denominationColors[celebration.denomination] || denominationColors.Other}`}>
-                {denominationLabels[celebration.denomination] || 'Autre'}
-              </div>
-            </div>
-
-            {/* Timing et détails */}
-            <div className="space-y-1 text-xs">
-              <div className="flex items-center space-x-2 text-text">
-                <Clock className="w-3 h-3 text-accent" />
-                <span className="font-body font-medium">
-                  {formatCelebrationTime(celebration.date)}
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-2 text-text">
-                <MapPin className="w-3 h-3 text-accent" />
-                <span className="truncate font-body font-medium">{celebration.placeCity}</span>
-              </div>
-
-              {/* Distance si disponible */}
-              {celebration.distance && (
-                <div className="text-text/80 text-xs font-body font-medium">
-                  📍 {formatDistance(celebration.distance)}
+                <div className="flex items-center space-x-2 text-xs text-gray-600">
+                  <MapPin className="h-3 w-3" />
+                  <span>{celebration.placeCity}</span>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Indicateur de temps restant */}
-            <div className="mt-2 pt-2 border-t border-border/50 flex items-center justify-between">
-              <span className="text-xs text-text/70 font-body font-medium">
-                {celebration.startTime} - {celebration.endTime}
-              </span>
-              <div className="w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              {/* Indicateur cliquable */}
+              <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <div className="text-xs text-gray-500 font-medium">
+                  Cliquez pour localiser
+                </div>
+                <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-12 space-y-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl mx-auto flex items-center justify-center">
+              <Clock className="h-8 w-8 text-gray-400" />
+            </div>
+            <div>
+              <h4 className="font-bold text-gray-900 mb-2">
+                Aucune célébration trouvée
+              </h4>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Aucun événement prévu dans cette zone. Essayez d'élargir votre recherche ou modifier vos filtres.
+              </p>
             </div>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* Footer avec lien vers plus */}
-      {celebrations.length > 3 && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <button className="w-full text-center text-xs text-accent hover:text-title font-body font-medium transition-colors">
-            Voir toutes les célébrations ({celebrations.length})
-          </button>
+      {/* Note informative */}
+      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
+        <div className="flex items-start space-x-3">
+          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-xs">💡</span>
+          </div>
+          <p className="text-sm text-amber-800 font-medium">
+            Cliquez sur une célébration pour localiser l'église sur la carte
+          </p>
         </div>
-      )}
-
-      {/* Tip du jour */}
-      <div className="mt-4 p-2 bg-sand-gradient border-l-4 border-accent rounded-lg">
-        <p className="text-xs text-text font-body font-medium">
-          💡 Tip : Cliquez sur une célébration pour localiser l'église sur la carte
-        </p>
       </div>
     </div>
   );

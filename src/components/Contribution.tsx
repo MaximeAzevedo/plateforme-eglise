@@ -48,8 +48,8 @@ const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
           {/* Paragraphe explicatif */}
           <div className="space-y-6">
             <p className="text-gray-700 font-body text-base leading-relaxed">
-              <strong>Mon Église</strong> est une plateforme collaborative. La richesse de l'information dépend de vous. 
-              Aidez-nous à faire de cette carte le reflet le plus juste et le plus vivant de l'Église en France.
+              <strong>GOD × CONNECT</strong> est une plateforme collaborative. La richesse de l'information dépend de vous. 
+              Aidez-nous à créer une communauté spirituelle vivante en partageant vos lieux de culte, témoignages et demandes de prière.
             </p>
           </div>
         </div>
@@ -69,15 +69,18 @@ const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
               <div className="p-2 bg-white/20 rounded-full">
                 <Plus className="h-5 w-5" />
               </div>
-              <span className="font-body font-medium text-sm">Ajouter un lieu</span>
+              <span className="font-body font-medium text-sm">Contribuer à la plateforme</span>
             </button>
 
             {/* Bouton Suggérer une modification */}
-            <button className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-2xl shadow-md hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 transform hover:scale-105">
+            <button 
+              onClick={onAddPlace}
+              className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-2xl shadow-md hover:border-yellow-300 hover:bg-yellow-50 transition-all duration-200 transform hover:scale-105"
+            >
               <div className="p-2 bg-gray-100 rounded-full">
                 <AlertCircle className="h-5 w-5 text-gray-600" />
               </div>
-              <span className="font-body font-medium text-sm">Suggérer une modification</span>
+              <span className="font-body font-medium text-sm">Découvrir toutes les options</span>
             </button>
 
             {/* Message d'encouragement */}

@@ -1,54 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ==========================================
-   VARIABLES CSS - PALETTE DUNE "VERS LUI"
-========================================== */
-
+/* ===== VARIABLES GLOBALES GOD x CONNECT ===== */
 :root {
-  /* Couleurs principales */
-  --color-primary: #F8F8F4;      /* Blanc Craie - Fond principal */
-  --color-title: #2C3E50;        /* Bleu Ardoise - Titres */
-  --color-text: #34495E;         /* Gris Anthracite - Paragraphes */
-  --color-accent: #D3A625;       /* Or Doux - Boutons, liens, icônes */
+  /* Palette principale */
+  --god-primary: #F59E0B; /* Or divin */
+  --god-secondary: #8B5CF6; /* Violet spirituel */
+  --god-accent: #3B82F6; /* Bleu espoir */
+  --god-success: #10B981; /* Vert paix */
+  --god-warning: #F97316; /* Orange lumière */
+  --god-danger: #EF4444; /* Rouge amour */
   
-  /* Couleurs secondaires - Tons sable */
-  --color-sand-light: #F5F3EF;   /* Sable très clair */
-  --color-sand: #ECE8E1;         /* Sable clair */
-  --color-sand-medium: #E3DDD4;  /* Sable moyen */
+  /* Tons neutres premium */
+  --god-white: #FFFFFF;
+  --god-gray-50: #FAFBFC;
+  --god-gray-100: #F1F5F9;
+  --god-gray-200: #E2E8F0;
+  --god-gray-300: #CBD5E1;
+  --god-gray-400: #94A3B8;
+  --god-gray-500: #64748B;
+  --god-gray-600: #475569;
+  --god-gray-700: #334155;
+  --god-gray-800: #1E293B;
+  --god-gray-900: #0F172A;
   
-  /* Couleurs utilitaires */
-  --color-white: #FFFFFF;
-  --color-gray-light: #F7F7F7;
-  --color-gray: #BDC3C7;
-  --color-gray-dark: #7F8C8D;
-  --color-border: #E8E6E0;
+  /* Dégradés spirituels */
+  --god-gradient-divine: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+  --god-gradient-spiritual: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+  --god-gradient-peaceful: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --god-gradient-holy: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #F97316 100%);
   
-  /* États et actions */
-  --color-success: #27AE60;
-  --color-warning: #F39C12;
-  --color-error: #E74C3C;
-  --color-info: #3498DB;
+  /* Ombres divines */
+  --god-shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --god-shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --god-shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  --god-shadow-divine: 0 25px 50px -12px rgba(245, 158, 11, 0.25);
+  --god-shadow-spiritual: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
   
-  /* Typographie */
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'Lato', sans-serif;
-  
-  /* Ombres douces */
-  --shadow-soft: 0 2px 8px rgba(44, 62, 80, 0.08);
-  --shadow-medium: 0 4px 16px rgba(44, 62, 80, 0.12);
-  --shadow-strong: 0 8px 32px rgba(44, 62, 80, 0.16);
-  
-  /* Transitions */
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animations */
+  --god-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --god-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --god-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ==========================================
-   BASE RESET & TYPOGRAPHIE
-========================================== */
-
+/* ===== RESET & BASE ===== */
 * {
   margin: 0;
   padding: 0;
@@ -57,366 +54,382 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--color-primary);
-  color: var(--color-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--god-gray-50);
+  color: var(--god-gray-900);
   line-height: 1.6;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Titres avec Playfair Display */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  color: var(--color-title);
-  font-weight: 600;
-  line-height: 1.3;
-  margin-bottom: 0.5em;
-}
-
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1.125rem; }
-h6 { font-size: 1rem; }
-
-/* Paragraphes et texte courant */
-p, li, span, div {
-  font-family: var(--font-body);
-  color: var(--color-text);
-  line-height: 1.7;
-}
-
-/* Liens */
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: var(--transition-smooth);
-}
-
-a:hover {
-  color: #B8941F;
-  text-decoration: underline;
-}
-
-/* ==========================================
-   COMPOSANTS RÉUTILISABLES
-========================================== */
-
-/* Conteneurs */
-.container-dune {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Cartes avec style sable */
-.card-dune {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-soft);
-  transition: var(--transition-smooth);
-}
-
-.card-dune:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-2px);
-}
-
-/* Boutons style Dune */
-.btn-dune-primary {
-  background: linear-gradient(135deg, var(--color-accent), #E6B82A);
-  color: var(--color-white);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  box-shadow: var(--shadow-soft);
-}
-
-.btn-dune-primary:hover {
-  background: linear-gradient(135deg, #B8941F, var(--color-accent));
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-medium);
-}
-
-.btn-dune-secondary {
-  background: var(--color-sand);
-  color: var(--color-title);
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.btn-dune-secondary:hover {
-  background: var(--color-sand-medium);
-  border-color: var(--color-accent);
-}
-
-/* Badges de confession */
-.badge-dune {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  background: var(--color-sand-light);
-  color: var(--color-title);
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: var(--font-body);
-}
-
-/* Texte avec accent doré */
-.text-accent {
-  color: var(--color-accent);
-  font-weight: 600;
-}
-
-.text-title {
-  color: var(--color-title);
-  font-family: var(--font-heading);
-}
-
-/* Dégradés de fond sable */
-.bg-sand-gradient {
-  background: linear-gradient(135deg, var(--color-sand-light), var(--color-sand));
-}
-
-.bg-warm-gradient {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-sand-light));
-}
-
-/* ==========================================
-   STYLES SPÉCIFIQUES COMPOSANTS
-========================================== */
-
-/* Header avec nouvelle identité */
-.header-vers-lui {
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-soft);
-}
-
-.logo-vers-lui {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
+/* ===== TYPOGRAPHIE DIVINE ===== */
+.font-heading {
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
-  color: var(--color-title);
-  text-decoration: none;
+  letter-spacing: -0.025em;
 }
 
-.slogan-vers-lui {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--color-text);
-  font-style: italic;
-  opacity: 0.9;
+.font-body {
+  font-family: 'Inter', sans-serif;
 }
 
-/* Carte de lieu de culte */
-.place-card-dune {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  overflow: hidden;
-  transition: var(--transition-smooth);
-  box-shadow: var(--shadow-soft);
+.text-divine {
+  background: var(--god-gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
 }
 
-.place-card-dune:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-4px);
+.text-spiritual {
+  background: var(--god-gradient-spiritual);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
 }
 
-/* Bouton de recherche */
-.search-btn-dune {
-  background: linear-gradient(135deg, var(--color-accent), #E6B82A);
-  color: var(--color-white);
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 0 12px 12px 0;
-  font-family: var(--font-body);
+.text-peaceful {
+  background: var(--god-gradient-peaceful);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+/* ===== BOUTONS DIVINS ===== */
+.btn-divine {
+  background: var(--god-gradient-divine);
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: 1rem;
   font-weight: 600;
-  transition: var(--transition-smooth);
-}
-
-.search-btn-dune:hover {
-  background: linear-gradient(135deg, #B8941F, var(--color-accent));
-}
-
-/* Input de recherche */
-.search-input-dune {
-  border: 2px solid var(--color-border);
-  background: var(--color-white);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  transition: var(--transition-smooth);
-}
-
-.search-input-dune:focus {
-  border-color: var(--color-accent);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(211, 166, 37, 0.1);
-}
-
-/* Sidebar célébrations */
-.celebrations-sidebar {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-soft);
-}
-
-/* Messages de statut */
-.message-success {
-  background: rgba(39, 174, 96, 0.1);
-  border: 1px solid rgba(39, 174, 96, 0.2);
-  color: var(--color-success);
-}
-
-.message-warning {
-  background: rgba(243, 156, 18, 0.1);
-  border: 1px solid rgba(243, 156, 18, 0.2);
-  color: var(--color-warning);
-}
-
-.message-error {
-  background: rgba(231, 76, 60, 0.1);
-  border: 1px solid rgba(231, 76, 60, 0.2);
-  color: var(--color-error);
-}
-
-/* ==========================================
-   ANIMATIONS DOUCES
-========================================== */
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse-soft {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.animate-pulse-soft {
-  animation: pulse-soft 2s infinite;
-}
-
-/* ==========================================
-   RESPONSIVE DESIGN
-========================================== */
-
-@media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.25rem; }
-  
-  .container-dune {
-    padding: 0 1rem;
-  }
-  
-  .card-dune {
-    padding: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 { font-size: 1.75rem; }
-  h2 { font-size: 1.5rem; }
-  
-  .btn-dune-primary,
-  .btn-dune-secondary {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-  }
-}
-
-/* ==========================================
-   LEAFLET MAP OVERRIDE
-========================================== */
-
-.leaflet-container {
-  background: var(--color-sand-light) !important;
-  border-radius: 16px;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--god-transition);
+  box-shadow: var(--god-shadow-divine);
+  position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-medium);
+}
+
+.btn-divine:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-divine:active {
+  transform: translateY(0);
+}
+
+.btn-spiritual {
+  background: var(--god-gradient-spiritual);
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--god-transition);
+  box-shadow: var(--god-shadow-spiritual);
+}
+
+.btn-spiritual:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--god-gray-700);
+  padding: 0.875rem 2rem;
+  border: 2px solid var(--god-gray-200);
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--god-transition);
+}
+
+.btn-outline:hover {
+  border-color: var(--god-primary);
+  color: var(--god-primary);
+  background: rgba(245, 158, 11, 0.05);
+  transform: translateY(-1px);
+}
+
+/* ===== CARTES SACRÉES ===== */
+.card-divine {
+  background: var(--god-white);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: var(--god-shadow-medium);
+  border: 1px solid var(--god-gray-100);
+  transition: var(--god-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-divine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--god-gradient-divine);
+}
+
+.card-divine:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--god-shadow-large);
+}
+
+.card-spiritual {
+  background: var(--god-white);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: var(--god-shadow-medium);
+  border: 1px solid var(--god-gray-100);
+  transition: var(--god-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-spiritual::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--god-gradient-spiritual);
+}
+
+.card-spiritual:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--god-shadow-large);
+}
+
+/* ===== GLASSMORPHISM DIVIN ===== */
+.glass-divine {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--god-shadow-medium);
+}
+
+.glass-dark {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* ===== ANIMATIONS SPIRITUELLES ===== */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+.animate-pulse-divine {
+  animation: pulseDivine 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes pulseDivine {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); 
+  }
+  50% { 
+    box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); 
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+  to { box-shadow: 0 0 30px rgba(245, 158, 11, 0.6); }
+}
+
+/* ===== SCROLLBAR DIVINE ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--god-gray-100);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--god-gradient-divine);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--god-gradient-spiritual);
+}
+
+/* ===== UTILITAIRES ===== */
+.border-divine {
+  border-color: var(--god-primary) !important;
+}
+
+.border-spiritual {
+  border-color: var(--god-secondary) !important;
+}
+
+.bg-divine {
+  background: var(--god-gradient-divine) !important;
+}
+
+.bg-spiritual {
+  background: var(--god-gradient-spiritual) !important;
+}
+
+.bg-peaceful {
+  background: var(--god-gradient-peaceful) !important;
+}
+
+.shadow-divine {
+  box-shadow: var(--god-shadow-divine) !important;
+}
+
+.shadow-spiritual {
+  box-shadow: var(--god-shadow-spiritual) !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .card-divine,
+  .card-spiritual {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+  
+  .btn-divine,
+  .btn-spiritual,
+  .btn-outline {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== FOCUS ACCESSIBILITY ===== */
+*:focus {
+  outline: 2px solid var(--god-primary);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background: var(--god-gray-900);
+    color: var(--god-gray-100);
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* ===== Z-INDEX FIXES ===== */
+.leaflet-container {
   z-index: 1 !important;
 }
 
-.leaflet-popup-content-wrapper {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-medium);
+.leaflet-popup-pane {
+  z-index: 10 !important;
 }
 
-.leaflet-popup-content {
-  font-family: var(--font-body);
-  color: var(--color-text);
-}
-
-/* Contrôles de carte Leaflet */
 .leaflet-control-container {
-  z-index: 10 !important;
+  z-index: 20 !important;
 }
 
-.leaflet-control-zoom {
-  z-index: 10 !important;
+/* Modales et overlays */
+.modal-overlay {
+  z-index: 9999 !important;
 }
 
-.leaflet-control-attribution {
-  z-index: 10 !important;
+/* Header flottant */
+header {
+  z-index: 50;
 }
 
-/* Marker clusters */
-.custom-cluster-icon {
-  z-index: 10 !important;
+/* Toasts et notifications */
+.toast {
+  z-index: 9998 !important;
 }
-
-/* Map container wrapper */
-.map-container {
-  position: relative;
-  z-index: 1;
-}
-
-/* ==========================================
-   UTILITAIRES
-========================================== */
-
-.text-heading { font-family: var(--font-heading); }
-.text-body { font-family: var(--font-body); }
-.shadow-dune { box-shadow: var(--shadow-soft); }
-.shadow-dune-medium { box-shadow: var(--shadow-medium); }
-.shadow-dune-strong { box-shadow: var(--shadow-strong); }

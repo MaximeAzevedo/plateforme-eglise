@@ -84,158 +84,159 @@ const Search: React.FC<SearchProps> = ({
   const isAllSelected = !selectedDenominations || selectedDenominations.length === 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8">
-      {/* Header principal avec recherche épuré */}
-      <div className="p-6 space-y-6">
-        {/* Titre de section sobre */}
-        <div className="text-center">
-          <h2 className="text-gray-800 font-body text-lg font-medium">
-            Commencez votre recherche
-          </h2>
+    <div className="bg-white/80 backdrop-blur-xl border border-gray-200/50 rounded-3xl shadow-xl overflow-hidden">
+      {/* Section de recherche principale */}
+      <div className="p-8">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Barre de recherche */}
+          <div className="flex-1">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Entrez une ville, une adresse, un code postal..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+                className={`w-full px-6 py-4 pr-12 rounded-2xl border-2 border-gray-200 bg-white/70 backdrop-blur-sm text-gray-800 font-medium placeholder:text-gray-500 transition-all duration-300 focus:border-amber-400 focus:ring-4 focus:ring-amber-100 focus:bg-white ${
+                  isSearchFocused ? 'scale-[1.02] shadow-lg' : 'hover:border-gray-300'
+                }`}
+              />
+              <SearchIcon className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            </div>
+          </div>
+
+          {/* Boutons d'action */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    pos => onLocationFound && onLocationFound([pos.coords.latitude, pos.coords.longitude])
+                  );
+                }
+              }}
+              className="group flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            >
+              <MapPin className="h-5 w-5 group-hover:scale-110 transition-transform" />
+              <span>Près de moi</span>
+            </button>
+            
+            <button
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className={`group flex items-center gap-3 px-6 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${
+                hasActiveEventFilters() || !isAllSelected
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:scale-105'
+                  : 'bg-white/80 border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
+              }`}
+            >
+              <Filter className="h-5 w-5 group-hover:scale-110 transition-transform" />
+              <span>
+                Filtres
+                {getActiveFiltersCount() > 0 && (
+                  <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-white/30 rounded-full text-xs font-bold">
+                    {getActiveFiltersCount()}
+                  </span>
+                )}
+              </span>
+              {showAdvancedFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
 
-        <form
-          className="flex flex-col lg:flex-row gap-3 items-center justify-center"
-          onSubmit={e => { e.preventDefault(); onSearch(searchQuery); }}
-        >
-          <div className="flex-1 w-full relative">
-            <input
-              type="text"
-              placeholder="Entrez une ville, une adresse, un code postal..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              className={`w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-800 text-sm font-body transition-all duration-200 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 shadow-sm placeholder:text-gray-500 ${isSearchFocused ? 'ring-2 ring-yellow-100 border-yellow-400' : ''}`}
-            />
-            <SearchIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          </div>
-          <button
-            type="submit"
-            className="px-6 py-3 rounded-lg font-body font-medium text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-sm hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200"
-          >
-            Rechercher
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                  pos => onLocationFound && onLocationFound([pos.coords.latitude, pos.coords.longitude])
-                );
-              }
-            }}
-            className="flex items-center gap-2 px-5 py-3 rounded-lg font-body text-sm bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-yellow-300 transition-all duration-200 shadow-sm"
-          >
-            <MapPin className="h-4 w-4" />
-            <span>Près de moi</span>
-          </button>
-          <button
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className={`flex items-center gap-2 px-5 py-3 rounded-lg shadow-sm transition-all duration-200 font-medium text-sm ${
-              hasActiveEventFilters() || !isAllSelected
-                ? 'bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100'
-                : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <Filter className="h-4 w-4" />
-            <span>
-              Filtres
-              {getActiveFiltersCount() > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-yellow-600 text-white text-xs font-medium rounded-full">
-                  {getActiveFiltersCount()}
-                </span>
-              )}
-            </span>
-            <div>
-              {showAdvancedFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </div>
-          </button>
-        </form>
-
-        {/* Message de géolocalisation sobre */}
+        {/* Message de géolocalisation */}
         {locationMessage && (
-          <div className={`p-3 rounded-lg border ${
+          <div className={`mt-4 p-4 rounded-2xl border-2 ${
             locationMessage.includes('trouvée') 
               ? 'bg-green-50 border-green-200 text-green-800'
               : 'bg-amber-50 border-amber-200 text-amber-800'
           }`}>
-            <div className="flex items-center space-x-2 text-sm">
-              <MapPin size={16} />
-              <span>{locationMessage}</span>
+            <div className="flex items-center space-x-3">
+              <MapPin size={18} />
+              <span className="font-medium">{locationMessage}</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Section des filtres avec design épuré */}
+      {/* Section des filtres avancés */}
       {showAdvancedFilters && (
-        <div className="border-t border-gray-100 p-6 space-y-6">
-          {/* Filtres par confession avec touches dorées subtiles */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div className="flex flex-wrap gap-2 justify-center">
-              <button
-                onClick={handleSelectAll}
-                className={`px-4 py-2 rounded-md text-sm font-medium font-body transition-all duration-200
-                  ${isAllSelected
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-sm border border-yellow-500'
-                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-yellow-300 shadow-sm'}
-                `}
-              >
-                Toutes
-              </button>
-              {denominations.map((denom, index) => (
+        <div className="border-t border-gray-200/50 bg-gray-50/50 backdrop-blur-sm">
+          <div className="p-8 space-y-8">
+            {/* Filtres par confession */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                  <Sparkles className="h-4 w-4 text-white" />
+                </div>
+                Confessions religieuses
+              </h4>
+              
+              <div className="flex flex-wrap gap-3">
                 <button
-                  key={denom}
-                  onClick={() => handleDenominationToggle(denom)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium font-body transition-all duration-200
-                    ${selectedDenominations?.includes(denom)
-                      ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-sm border border-yellow-500'
-                      : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-yellow-300 shadow-sm'}
-                  `}
+                  onClick={handleSelectAll}
+                  className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                    isAllSelected
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
+                      : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
+                  }`}
                 >
-                  {denominationLabels[denom]}
+                  Toutes
                 </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Grille des filtres avancés avec accents dorés */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Filtres par type d'événement */}
-            <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Sparkles className="text-yellow-600" size={16} />
-                </div>
-                <h4 className="text-base font-medium text-gray-800 font-body">
-                  Types d'événements
-                </h4>
+                {denominations.map(denomination => (
+                  <button
+                    key={denomination}
+                    onClick={() => handleDenominationToggle(denomination)}
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                      selectedDenominations?.includes(denomination)
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
+                        : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
+                    }`}
+                  >
+                    {denominationLabels[denomination]}
+                  </button>
+                ))}
               </div>
-              <AdvancedFilters
-                places={places}
-                eventFilter={eventFilter}
-                onEventFilterChange={onEventFilter}
-                isVisible={true}
-              />
             </div>
 
-            {/* Filtres par localisation et heure */}
-            <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <MapPin className="text-yellow-600" size={16} />
+            {/* Filtres avancés */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Filtres par type d'événement */}
+              <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-white" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900">
+                    Types d'événements
+                  </h4>
                 </div>
-                <h4 className="text-base font-medium text-gray-800 font-body">
-                  Localisation & Horaires
-                </h4>
+                <AdvancedFilters
+                  places={places}
+                  eventFilter={eventFilter}
+                  onEventFilterChange={onEventFilter}
+                  isVisible={true}
+                />
               </div>
-              <LocationTimeFilters
-                places={places}
-                eventFilter={eventFilter}
-                onEventFilterChange={onEventFilter}
-                currentLocation={currentLocation}
-              />
+
+              {/* Filtres par localisation et heure */}
+              <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900">
+                    Localisation & Horaires
+                  </h4>
+                </div>
+                <LocationTimeFilters
+                  places={places}
+                  eventFilter={eventFilter}
+                  onEventFilterChange={onEventFilter}
+                  currentLocation={currentLocation}
+                />
+              </div>
             </div>
           </div>
         </div>

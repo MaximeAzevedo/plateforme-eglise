@@ -2,7 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { WorshipPlace, Denomination } from '../types';
-import { Globe, MapPin, Clock, ExternalLink, Star, Navigation, Church, Cross, Heart, Flame, Waves, Bird } from 'lucide-react';
+import { Globe, MapPin, Clock, ExternalLink, Star, Navigation, Church, Cross, Heart, Flame, Waves, Bird, Plus, Minus } from 'lucide-react';
 import { divIcon } from 'leaflet';
 
 interface MapViewProps {
@@ -156,12 +156,13 @@ const createCustomIcon = (denomination: Denomination) => {
 
 const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMove, centerOnPosition }) => {
   return (
-    <div className="map-container h-[500px] md:h-[600px] animate-fade-in">
+    <div className="map-container h-[500px] md:h-[600px] animate-fade-in relative">
       <MapContainer 
         center={[49.1193, 6.1757]} 
         zoom={12} 
         scrollWheelZoom={true} 
-        className="h-full"
+        className="h-full rounded-2xl overflow-hidden"
+        zoomControl={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -182,26 +183,27 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
             return divIcon({
               html: `
                 <div style="
-                  width: 36px;
-                  height: 36px;
+                  width: 40px;
+                  height: 40px;
                   border-radius: 50%;
-                  background: linear-gradient(135deg, #D3A625 60%, #E6B82A 100%);
-                  border: 2.5px solid #fff;
-                  box-shadow: 0 2px 8px rgba(44,62,80,0.18);
+                  background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+                  border: 3px solid #fff;
+                  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4), 0 0 0 1px rgba(0,0,0,0.1);
                   display: flex;
                   align-items: center;
                   justify-content: center;
                   font-weight: bold;
                   color: #fff;
-                  font-size: 1rem;
+                  font-size: 1.1rem;
                   position: relative;
+                  backdrop-filter: blur(10px);
                 ">
                   ${count}
                 </div>
               `,
               className: 'custom-cluster-icon',
-              iconSize: [36, 36],
-              iconAnchor: [18, 18]
+              iconSize: [40, 40],
+              iconAnchor: [20, 20]
             });
           }}
         >
@@ -211,51 +213,54 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
               position={place.position}
               icon={createCustomIcon(place.denomination)}
             >
-              <Popup className="map-popup" closeButton={false} maxWidth={200}>
-                <div className="bg-white/95 backdrop-blur-lg border border-border rounded-xl p-3 min-w-[240px] max-w-[280px] shadow-medium">
-                  <h3 className="font-heading font-semibold text-title text-base leading-tight">
+              <Popup className="map-popup" closeButton={false} maxWidth={320}>
+                <div className="bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl p-6 min-w-[280px] max-w-[320px] shadow-2xl">
+                  <h3 className="font-bold text-gray-900 text-xl leading-tight mb-4">
                     {place.name}
                   </h3>
 
-                  {/* Informations avec icônes */}
-                  <div className="space-y-2 text-xs">
-                    <div className="flex items-start space-x-2">
-                      <div className="flex items-center space-x-1">
-                        <span>📍</span>
-                        <span className="text-text">{place.address}, {place.city}</span>
+                  {/* Informations avec icônes modernisées */}
+                  <div className="space-y-4 text-sm">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <MapPin className="h-4 w-4 text-white" />
                       </div>
+                      <span className="text-gray-700 leading-relaxed font-medium">{place.address}, {place.city}</span>
                     </div>
 
                     {place.serviceTimes && (
-                      <div className="flex items-start space-x-2">
-                        <div className="flex items-center space-x-1">
-                          <span>🕒</span>
-                          <span className="text-text">{place.serviceTimes}</span>
+                      <div className="flex items-start space-x-4">
+                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                          <Clock className="h-4 w-4 text-white" />
                         </div>
+                        <span className="text-gray-700 leading-relaxed font-medium">{place.serviceTimes}</span>
                       </div>
                     )}
 
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">{denominationConfig[place.denomination]?.emoji || '🏛️'}</span>
-                      <div className="badge-dune text-xs">
-                        <div className={`w-2 h-2 rounded-full ${denominationConfig[place.denomination]?.color || 'bg-gray'}`}></div>
-                        <span>{denominationLabels[place.denomination]}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <Star className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="bg-gradient-to-r from-gray-100 to-gray-200 px-4 py-2 rounded-full shadow-sm">
+                        <span className="text-gray-800 font-bold text-sm">
+                          {denominationLabels[place.denomination]}
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Actions compactes */}
+                  {/* Actions modernisées */}
                   {place.website && (
-                    <div className="mt-3 pt-2 border-t border-border">
+                    <div className="mt-6 pt-4 border-t border-gray-200/50">
                       <a
                         href={place.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center space-x-2 text-accent hover:text-title transition-colors text-xs font-medium"
+                        className="flex items-center justify-center space-x-3 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                       >
-                        <Globe size={12} />
+                        <Globe className="h-5 w-5" />
                         <span>Voir le site web</span>
-                        <ExternalLink size={10} />
+                        <ExternalLink className="h-4 w-4" />
                       </a>
                     </div>
                   )}
@@ -267,6 +272,28 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
         
         <ChangeMapView places={places} />
       </MapContainer>
+      
+      {/* Contrôles de zoom personnalisés modernisés */}
+      <div className="absolute top-6 right-6 z-20 flex flex-col gap-3">
+        <button 
+          className="w-12 h-12 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110 hover:bg-white"
+          onClick={() => {
+            const map = (window as any).mapInstance;
+            if (map) map.zoomIn();
+          }}
+        >
+          <Plus className="h-5 w-5 text-gray-700" />
+        </button>
+        <button 
+          className="w-12 h-12 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110 hover:bg-white"
+          onClick={() => {
+            const map = (window as any).mapInstance;
+            if (map) map.zoomOut();
+          }}
+        >
+          <Minus className="h-5 w-5 text-gray-700" />
+        </button>
+      </div>
     </div>
   );
 };
