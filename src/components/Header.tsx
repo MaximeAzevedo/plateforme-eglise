@@ -16,13 +16,15 @@ interface HeaderProps {
   onContributeClick: () => void;
   onTestimonyClick?: () => void;
   onPrayerWallClick?: () => void;
+  supabase: any;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   placesCount, 
   onContributeClick,
   onTestimonyClick,
-  onPrayerWallClick
+  onPrayerWallClick,
+  supabase
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showTestimonyGallery, setShowTestimonyGallery] = useState(false);
@@ -216,14 +218,16 @@ const Header: React.FC<HeaderProps> = ({
       {showTestimonyGallery && (
         <TestimonyGallery 
           isOpen={showTestimonyGallery}
-          onClose={() => setShowTestimonyGallery(false)} 
+          onClose={() => setShowTestimonyGallery(false)}
+          supabase={supabase}
         />
       )}
       
       {showPrayerWall && (
         <PrayerWall 
           isOpen={showPrayerWall}
-          onClose={() => setShowPrayerWall(false)} 
+          onClose={() => setShowPrayerWall(false)}
+          supabase={supabase}
         />
       )}
     </>

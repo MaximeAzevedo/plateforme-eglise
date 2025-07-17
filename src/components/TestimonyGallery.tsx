@@ -27,6 +27,7 @@ import { Testimony, TestimonyType, TestimonyComment } from '../types/community';
 interface TestimonyGalleryProps {
   isOpen: boolean;
   onClose: () => void;
+  supabase: any;
 }
 
 const TESTIMONY_TYPES: { value: TestimonyType; label: string; icon: any; color: string; description: string }[] = [
@@ -88,83 +89,62 @@ const TESTIMONY_TYPES: { value: TestimonyType; label: string; icon: any; color: 
   }
 ];
 
-const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose }) => {
+const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, supabase }) => {
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
   const [selectedTestimony, setSelectedTestimony] = useState<Testimony | null>(null);
   const [selectedType, setSelectedType] = useState<TestimonyType | 'all'>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'trending'>('trending');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewTestimonyForm, setShowNewTestimonyForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Simuler des données de témoignages pour la démo
+  // Charger les témoignages depuis Supabase
   useEffect(() => {
     if (isOpen) {
-      const mockTestimonies: Testimony[] = [
-        {
-          id: '1',
-          userId: 'user1',
-          title: 'Guérison miraculeuse de ma fille',
-          type: 'healing',
-          description: 'Ma fille de 8 ans était dans le coma après un accident. Après 3 semaines de prières intensives de toute notre communauté, elle s\'est réveillée sans séquelles. Les médecins parlent de miracle médical.',
-          beforeSituation: 'Ma fille était dans le coma, les médecins avaient perdu espoir',
-          afterSituation: 'Elle est complètement rétablie, plus joyeuse que jamais',
-          timeframe: '3 semaines',
-          isAnonymous: false,
-          likes: 234,
-          shares: 67,
-          comments: [],
-          tags: ['famille', 'enfant', 'hôpital', 'miracle'],
-          denomination: 'Catholic',
-          location: 'Metz, France',
-          isVerified: true,
-          verifiedBy: 'Père Michel - Paroisse Saint-Pierre',
-          createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-          updatedAt: new Date()
-        },
-        {
-          id: '2',
-          userId: 'user2',
-          title: 'De la dépression à la joie parfaite',
-          type: 'transformation',
-          description: 'Après 2 ans de dépression sévère, j\'ai découvert l\'amour inconditionnel de Dieu lors d\'une retraite spirituelle. Ma vie a basculé cette nuit-là.',
-          beforeSituation: 'Dépression, pensées suicidaires, isolement total',
-          afterSituation: 'Joie profonde, service aux autres, nouvelle famille spirituelle',
-          timeframe: '6 mois',
-          isAnonymous: false,
-          likes: 189,
-          shares: 43,
-          comments: [],
-          tags: ['dépression', 'guérison', 'retraite', 'communauté'],
-          denomination: 'Evangelical',
-          location: 'Nancy, France',
-          isVerified: true,
-          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          updatedAt: new Date()
-        },
-        {
-          id: '3',
-          userId: 'user3',
-          title: 'Provision miraculeuse pour notre famille',
-          type: 'provision',
-          description: 'Mon mari avait perdu son emploi et nous étions au bord de l\'expulsion. Le jour même où nous devions partir, il a reçu un appel pour un poste encore mieux payé.',
-          beforeSituation: 'Chômage, dettes, menace d\'expulsion',
-          afterSituation: 'Emploi stable, finances restaurées, famille apaisée',
-          timeframe: '2 mois',
-          isAnonymous: false,
-          likes: 156,
-          shares: 89,
-          comments: [],
-          tags: ['travail', 'provision', 'famille', 'finances'],
-          denomination: 'Protestant',
-          location: 'Strasbourg, France',
-          isVerified: false,
-          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-          updatedAt: new Date()
-        }
-      ];
-      setTestimonies(mockTestimonies);
+      loadTestimonies();
     }
-  }, [isOpen]);
+  }, [isOpen, selectedType, sortBy]);
+
+  const loadTestimonies = async () => {
+    setLoading(true);
+    try {
+      let query = supabase
+        .from('testimonies')
+        .select('*');
+
+      // Filtrer par type si sélectionné
+      if (selectedType !== 'all') {
+        query = query.eq('type', selectedType);
+      }
+
+      // Tri
+      switch (sortBy) {
+        case 'recent':
+          query = query.order('created_at', { ascending: false });
+          break;
+        case 'popular':
+          query = query.order('likes', { ascending: false });
+          break;
+        case 'trending':
+          query = query.order('likes', { ascending: false }).order('created_at', { ascending: false });
+          break;
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Erreur lors du chargement des témoignages:', error);
+        return;
+      }
+
+      console.log('Témoignages chargés:', data);
+      setTestimonies(data || []);
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLike = (testimonyId: string) => {
     setTestimonies(testimonies.map(testimony => 
@@ -339,7 +319,15 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose }) 
 
         {/* Grille des témoignages */}
         <div className="flex-1 overflow-y-auto p-6">
-          {filteredTestimonies.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center">
+                <Sparkles className="w-10 h-10 text-orange-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Chargement des témoignages...</h3>
+              <p className="text-gray-600">Veuillez patienter.</p>
+            </div>
+          ) : filteredTestimonies.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center">
                 <Search className="w-10 h-10 text-orange-500" />

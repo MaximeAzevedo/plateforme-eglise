@@ -330,6 +330,7 @@ function App() {
       <Header 
         placesCount={places.length}
         onContributeClick={() => setShowContributeForm(true)}
+        supabase={supabase}
       />
       
       {/* Section Hero */}

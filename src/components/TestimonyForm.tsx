@@ -86,28 +86,30 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     setIsSubmitting(true);
     try {
       const testimonyData = {
-        id: crypto.randomUUID(),
         title: formData.title,
         type: formData.type,
         description: formData.description,
-        beforeSituation: formData.beforeSituation,
-        afterSituation: formData.afterSituation,
+        before_situation: formData.beforeSituation,
+        after_situation: formData.afterSituation,
         timeframe: formData.timeframe,
-        isAnonymous: formData.isAnonymous,
+        is_anonymous: formData.isAnonymous,
         tags: formData.tags,
         denomination: formData.denomination || null,
-        location: formData.location || null,
-        likes: 0,
-        shares: 0,
-        isVerified: false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        location: formData.location || null
       };
 
-      // Note: Cette table sera créée plus tard dans Supabase
-      console.log('Témoignage à sauvegarder:', testimonyData);
-      
-      // Pour l'instant, on simule la sauvegarde
+      console.log('Envoi du témoignage:', testimonyData);
+
+      const { data, error } = await supabase
+        .from('testimonies')
+        .insert([testimonyData]);
+
+      if (error) {
+        console.error('Erreur Supabase:', error);
+        throw new Error(`Erreur lors de la sauvegarde: ${error.message}`);
+      }
+
+      console.log('Témoignage sauvegardé avec succès:', data);
       alert('Merci ! Votre témoignage a été partagé avec succès et sera visible après modération.');
       
       // Reset du formulaire
@@ -126,8 +128,8 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
       
       onClose();
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du témoignage:', error);
-      setErrors(['Erreur lors de l\'envoi. Veuillez réessayer.']);
+      console.error('Erreur lors de la soumission:', error);
+      setErrors([error instanceof Error ? error.message : 'Une erreur est survenue']);
     } finally {
       setIsSubmitting(false);
     }

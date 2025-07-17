@@ -131,34 +131,40 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
 
     setIsSubmitting(true);
     try {
+      // Calculer la date d'expiration
+      const expiresAt = formData.duration === 'ongoing' ? null : 
+        new Date(Date.now() + (
+          formData.duration === '7days' ? 7 * 24 * 60 * 60 * 1000 :
+          formData.duration === '30days' ? 30 * 24 * 60 * 60 * 1000 :
+          90 * 24 * 60 * 60 * 1000
+        )).toISOString();
+
       const prayerData = {
-        id: crypto.randomUUID(),
         title: formData.title,
         type: formData.type,
         description: formData.description,
         urgency: formData.urgency,
         duration: formData.duration,
-        isAnonymous: formData.isAnonymous,
-        allowComments: formData.allowComments,
+        is_anonymous: formData.isAnonymous,
+        allow_comments: formData.allowComments,
         tags: formData.tags,
-        firstName: formData.isAnonymous ? null : formData.firstName,
+        first_name: formData.isAnonymous ? null : formData.firstName,
         location: formData.location || null,
-        prayerCount: 0,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        expiresAt: formData.duration === 'ongoing' ? null : 
-          new Date(Date.now() + (
-            formData.duration === '7days' ? 7 * 24 * 60 * 60 * 1000 :
-            formData.duration === '30days' ? 30 * 24 * 60 * 60 * 1000 :
-            90 * 24 * 60 * 60 * 1000
-          )).toISOString()
+        expires_at: expiresAt
       };
 
-      // Note: Cette table sera créée plus tard dans Supabase
-      console.log('Demande de prière à sauvegarder:', prayerData);
-      
-      // Pour l'instant, on simule la sauvegarde
+      console.log('Envoi de la demande de prière:', prayerData);
+
+      const { data, error } = await supabase
+        .from('prayer_requests')
+        .insert([prayerData]);
+
+      if (error) {
+        console.error('Erreur Supabase:', error);
+        throw new Error(`Erreur lors de la sauvegarde: ${error.message}`);
+      }
+
+      console.log('Demande de prière sauvegardée avec succès:', data);
       alert('Merci ! Votre demande de prière a été partagée avec la communauté.');
       
       // Reset du formulaire
@@ -167,7 +173,7 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
         type: 'guidance',
         description: '',
         urgency: 'normal',
-        duration: '30days',
+        duration: '7days',
         isAnonymous: false,
         allowComments: true,
         tags: [],
@@ -177,8 +183,8 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
       
       onClose();
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de la demande de prière:', error);
-      setErrors(['Erreur lors de l\'envoi. Veuillez réessayer.']);
+      console.error('Erreur lors de la soumission:', error);
+      setErrors([error instanceof Error ? error.message : 'Une erreur est survenue']);
     } finally {
       setIsSubmitting(false);
     }

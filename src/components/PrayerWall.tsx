@@ -27,6 +27,7 @@ import { PrayerRequest, PrayerRequestCategory, PrayerSupport, TestimonyType } fr
 interface PrayerWallProps {
   isOpen: boolean;
   onClose: () => void;
+  supabase: any;
 }
 
 const PRAYER_CATEGORIES: { value: PrayerRequestCategory; label: string; icon: any; color: string }[] = [
@@ -42,11 +43,12 @@ const PRAYER_CATEGORIES: { value: PrayerRequestCategory; label: string; icon: an
   { value: 'salvation', label: 'Salut', icon: Crown, color: 'text-red-600 bg-red-100' }
 ];
 
-const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose }) => {
+const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose, supabase }) => {
   const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
   const [showNewPrayerForm, setShowNewPrayerForm] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<PrayerRequestCategory | 'all'>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'urgent' | 'most-prayed'>('recent');
+  const [loading, setLoading] = useState(false);
   const [newPrayer, setNewPrayer] = useState({
     title: '',
     category: 'spiritual-growth' as PrayerRequestCategory,
@@ -55,64 +57,54 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose }) => {
     isUrgent: false
   });
 
-  // Simuler des données de prière pour la démo
+  // Charger les demandes de prière depuis Supabase
   useEffect(() => {
     if (isOpen) {
-      const mockPrayers: PrayerRequest[] = [
-        {
-          id: '1',
-          userId: 'user1',
-          title: 'Prière pour ma famille',
-          category: 'family',
-          description: 'Ma famille traverse une période difficile. Merci de prier pour la réconciliation et la paix.',
-          isAnonymous: false,
-          isUrgent: true,
-          prayerCount: 47,
-          prayedByMe: false,
-          supportMessages: [
-            {
-              id: '1',
-              userId: 'user2',
-              message: 'Je prie pour vous. Dieu est fidèle ! 🙏',
-              isPraying: true,
-              createdAt: new Date()
-            }
-          ],
-          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // Il y a 2h
-          updatedAt: new Date()
-        },
-        {
-          id: '2',
-          userId: 'user3',
-          title: 'Guérison pour mon père',
-          category: 'healing',
-          description: 'Mon père est hospitalisé. Prions ensemble pour sa guérison complète.',
-          isAnonymous: false,
-          isUrgent: true,
-          prayerCount: 156,
-          prayedByMe: true,
-          supportMessages: [],
-          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // Il y a 24h
-          updatedAt: new Date()
-        },
-        {
-          id: '3',
-          userId: 'anonymous',
-          title: 'Direction pour ma carrière',
-          category: 'guidance',
-          description: 'Je dois prendre une décision importante concernant mon avenir professionnel. Merci de prier pour la sagesse.',
-          isAnonymous: true,
-          isUrgent: false,
-          prayerCount: 23,
-          prayedByMe: false,
-          supportMessages: [],
-          createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // Il y a 6h
-          updatedAt: new Date()
-        }
-      ];
-      setPrayers(mockPrayers);
+      loadPrayers();
     }
-  }, [isOpen]);
+  }, [isOpen, selectedCategory, sortBy]);
+
+  const loadPrayers = async () => {
+    setLoading(true);
+    try {
+      let query = supabase
+        .from('prayer_requests')
+        .select('*')
+        .eq('is_active', true);
+
+      // Filtrer par catégorie si sélectionnée
+      if (selectedCategory !== 'all') {
+        query = query.eq('type', selectedCategory);
+      }
+
+      // Tri
+      switch (sortBy) {
+        case 'recent':
+          query = query.order('created_at', { ascending: false });
+          break;
+        case 'urgent':
+          query = query.order('urgency', { ascending: false }).order('created_at', { ascending: false });
+          break;
+        case 'most-prayed':
+          query = query.order('prayer_count', { ascending: false });
+          break;
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Erreur lors du chargement des prières:', error);
+        return;
+      }
+
+      console.log('Demandes de prière chargées:', data);
+      setPrayers(data || []);
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePray = (prayerId: string) => {
     setPrayers(prayers.map(prayer => 
@@ -280,115 +272,121 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose }) => {
 
         {/* Liste des prières */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {filteredPrayers.map(prayer => {
-            const categoryInfo = getCategoryInfo(prayer.category);
-            
-            return (
-              <div key={prayer.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
-                {/* Header de la prière */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3 flex-1">
-                    {categoryInfo && (
-                      <div className={`p-2 rounded-xl ${categoryInfo.color}`}>
-                        <categoryInfo.icon className="h-5 w-5" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">
-                          {prayer.title}
-                        </h3>
-                        {prayer.isUrgent && (
-                          <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full flex items-center space-x-1">
-                            <AlertCircle className="h-3 w-3" />
-                            <span>Urgent</span>
-                          </span>
-                        )}
-                        {prayer.isAnonymous && (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full flex items-center space-x-1">
-                            <EyeOff className="h-3 w-3" />
-                            <span>Anonyme</span>
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <span className="flex items-center space-x-1">
-                          <Clock className="h-4 w-4" />
-                          <span>{formatTimeAgo(prayer.createdAt)}</span>
-                        </span>
-                        {categoryInfo && (
+          {loading ? (
+            <div className="text-center py-10">Chargement des prières...</div>
+          ) : filteredPrayers.length === 0 ? (
+            <div className="text-center py-10">Aucune demande de prière trouvée.</div>
+          ) : (
+            filteredPrayers.map(prayer => {
+              const categoryInfo = getCategoryInfo(prayer.category);
+              
+              return (
+                <div key={prayer.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
+                  {/* Header de la prière */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3 flex-1">
+                      {categoryInfo && (
+                        <div className={`p-2 rounded-xl ${categoryInfo.color}`}>
+                          <categoryInfo.icon className="h-5 w-5" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="text-lg font-semibold text-gray-900 truncate">
+                            {prayer.title}
+                          </h3>
+                          {prayer.isUrgent && (
+                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full flex items-center space-x-1">
+                              <AlertCircle className="h-3 w-3" />
+                              <span>Urgent</span>
+                            </span>
+                          )}
+                          {prayer.isAnonymous && (
+                            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full flex items-center space-x-1">
+                              <EyeOff className="h-3 w-3" />
+                              <span>Anonyme</span>
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span className="flex items-center space-x-1">
-                            <span>{categoryInfo.label}</span>
+                            <Clock className="h-4 w-4" />
+                            <span>{formatTimeAgo(prayer.createdAt)}</span>
                           </span>
-                        )}
+                          {categoryInfo && (
+                            <span className="flex items-center space-x-1">
+                              <span>{categoryInfo.label}</span>
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Description */}
-                <p className="text-gray-700 mb-4 leading-relaxed">{prayer.description}</p>
+                  {/* Description */}
+                  <p className="text-gray-700 mb-4 leading-relaxed">{prayer.description}</p>
 
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => handlePray(prayer.id)}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105 ${
-                        prayer.prayedByMe
-                          ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-                          : 'bg-gray-100 text-gray-700 hover:bg-purple-100 hover:text-purple-700'
-                      }`}
-                    >
-                      <Heart className={`h-4 w-4 ${prayer.prayedByMe ? 'fill-current' : ''}`} />
-                      <span>{prayer.prayedByMe ? 'Je prie' : 'Prier'}</span>
-                      <span className="bg-white/80 px-2 py-0.5 rounded-full text-xs">
-                        {prayer.prayerCount}
-                      </span>
-                    </button>
+                  {/* Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={() => handlePray(prayer.id)}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105 ${
+                          prayer.prayedByMe
+                            ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-purple-100 hover:text-purple-700'
+                        }`}
+                      >
+                        <Heart className={`h-4 w-4 ${prayer.prayedByMe ? 'fill-current' : ''}`} />
+                        <span>{prayer.prayedByMe ? 'Je prie' : 'Prier'}</span>
+                        <span className="bg-white/80 px-2 py-0.5 rounded-full text-xs">
+                          {prayer.prayerCount}
+                        </span>
+                      </button>
 
-                    <button className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                      <MessageCircle className="h-4 w-4" />
-                      <span>Encourager</span>
-                    </button>
+                      <button className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                        <MessageCircle className="h-4 w-4" />
+                        <span>Encourager</span>
+                      </button>
 
-                    <button className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all">
-                      <Share2 className="h-4 w-4" />
-                      <span>Partager</span>
-                    </button>
+                      <button className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all">
+                        <Share2 className="h-4 w-4" />
+                        <span>Partager</span>
+                      </button>
+                    </div>
+
+                    {prayer.isAnswered && (
+                      <div className="flex items-center space-x-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Prière exaucée</span>
+                      </div>
+                    )}
                   </div>
 
-                  {prayer.isAnswered && (
-                    <div className="flex items-center space-x-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                      <CheckCircle className="h-4 w-4" />
-                      <span>Prière exaucée</span>
+                  {/* Messages de soutien */}
+                  {prayer.supportMessages.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="space-y-2">
+                        {prayer.supportMessages.slice(0, 2).map(message => (
+                          <div key={message.id} className="bg-gray-50 rounded-lg p-3">
+                            <p className="text-sm text-gray-700">{message.message}</p>
+                            <div className="mt-1 text-xs text-gray-500">
+                              {message.isPraying && (
+                                <span className="inline-flex items-center space-x-1">
+                                  <Heart className="h-3 w-3 text-purple-500" />
+                                  <span>Prie pour cette demande</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
-
-                {/* Messages de soutien */}
-                {prayer.supportMessages.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="space-y-2">
-                      {prayer.supportMessages.slice(0, 2).map(message => (
-                        <div key={message.id} className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-sm text-gray-700">{message.message}</p>
-                          <div className="mt-1 text-xs text-gray-500">
-                            {message.isPraying && (
-                              <span className="inline-flex items-center space-x-1">
-                                <Heart className="h-3 w-3 text-purple-500" />
-                                <span>Prie pour cette demande</span>
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Formulaire nouvelle demande */}
