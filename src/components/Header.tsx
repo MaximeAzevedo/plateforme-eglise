@@ -6,7 +6,8 @@ import {
   Crown,
   Menu,
   X,
-  Plus
+  Plus,
+  Shield
 } from 'lucide-react';
 import TestimonyGallery from './TestimonyGallery';
 import PrayerWall from './PrayerWall';
@@ -93,10 +94,10 @@ const Header: React.FC<HeaderProps> = ({
             <nav className="hidden md:flex items-center space-x-6">
               <button
                 onClick={scrollToSearch}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
+                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
                   isScrolled
-                    ? 'text-gray-700 hover:text-amber-600 hover:bg-gray-50'
-                    : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                    ? 'text-gray-700 hover:text-gray-900'
+                    : 'text-white/90 hover:text-white'
                 }`}
               >
                 <MapPin className="h-4 w-4" />
@@ -105,10 +106,10 @@ const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={handleTestimonyClick}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
+                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
                   isScrolled
-                    ? 'text-gray-700 hover:text-amber-600 hover:bg-gray-50'
-                    : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                    ? 'text-gray-700 hover:text-gray-900'
+                    : 'text-white/90 hover:text-white'
                 }`}
               >
                 <Star className="h-4 w-4" />
@@ -117,15 +118,27 @@ const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={handlePrayerWallClick}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
+                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
                   isScrolled
-                    ? 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
-                    : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                    ? 'text-gray-700 hover:text-gray-900'
+                    : 'text-white/90 hover:text-white'
                 }`}
               >
                 <Heart className="h-4 w-4" />
-                <span>Mur de Prière</span>
+                <span>Mur de prières</span>
               </button>
+
+              <a
+                href="#admin"
+                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
+                  isScrolled
+                    ? 'text-gray-700 hover:text-gray-900'
+                    : 'text-white/90 hover:text-white'
+                }`}
+              >
+                <Shield className="h-4 w-4" />
+                <span>Admin</span>
+              </a>
 
               <button
                 onClick={onContributeClick}
@@ -195,15 +208,28 @@ const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   <Heart className="h-4 w-4" />
-                  <span>Mur de Prière</span>
+                  <span>Mur de prières</span>
                 </button>
+
+                <a
+                  href="#admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    isScrolled
+                      ? 'text-gray-700 hover:bg-gray-50'
+                      : 'text-white/90 hover:bg-white/10'
+                  }`}
+                >
+                  <Shield className="h-4 w-4" />
+                  <span>Administration</span>
+                </a>
 
                 <button
                   onClick={() => {
                     onContributeClick();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 mt-4"
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-3 shadow-lg"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Contribuer</span>

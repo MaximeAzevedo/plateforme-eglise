@@ -13,11 +13,18 @@ import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ContributionHub from './components/ContributionHub';
+import { AdminPage } from './components/admin/AdminPage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
+
+// Simple router - vérifie le hash de l'URL
+function getCurrentPage(): string {
+  const hash = window.location.hash.slice(1); // Retire le #
+  return hash || 'home';
+}
 
 function mapDenomination(denomination: string): Denomination {
   const denominationMap: Record<string, Denomination> = {
@@ -104,18 +111,28 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
 }
 
 function App() {
-  const [places, setPlaces] = useState<WorshipPlace[]>([]);
+  const [currentPage, setCurrentPage] = useState(getCurrentPage());
+  const [worshipPlaces, setWorshipPlaces] = useState<WorshipPlace[]>([]);
   const [filteredPlaces, setFilteredPlaces] = useState<WorshipPlace[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDenominations, setSelectedDenominations] = useState<Denomination[] | null>(null);
-  const [eventFilter, setEventFilter] = useState<EventFilter>({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDenomination, setSelectedDenomination] = useState<Denomination | ''>('');
+  const [eventFilter, setEventFilter] = useState<EventFilter>({ enabled: false, types: [] });
+  const [selectedPlace, setSelectedPlace] = useState<WorshipPlace | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([49.1193, 6.1757]);
-  const [mapBounds, setMapBounds] = useState<[[number, number], [number, number]] | undefined>();
-  const [shouldCenterMap, setShouldCenterMap] = useState<[number, number] | null>(null);
-  const [currentLocation, setCurrentLocation] = useState<[number, number] | undefined>();
+  const [mapCenter, setMapCenter] = useState<[number, number]>([46.2276, 2.2137]);
+  const [mapZoom, setMapZoom] = useState(6);
+  const [shouldCenterMap, setShouldCenterMap] = useState(false);
   const [showContributeForm, setShowContributeForm] = useState(false);
+
+  // Écouter les changements d'URL
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(getCurrentPage());
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,7 +156,7 @@ function App() {
             console.log('✅ Fetch direct réussi:', data?.length, 'éléments');
             
             const transformedData = transformSupabaseData(data);
-            setPlaces(transformedData);
+            setWorshipPlaces(transformedData);
             setFilteredPlaces(transformedData);
             setIsLoading(false);
             return;
@@ -167,7 +184,7 @@ function App() {
           return;
         }
 
-        setPlaces(transformedData);
+        setWorshipPlaces(transformedData);
         setFilteredPlaces(transformedData);
       } catch (err) {
         console.error('💥 Erreur complète:', err);
@@ -181,16 +198,16 @@ function App() {
   }, []);
 
   useEffect(() => {
-    let result = places;
+    let result = worshipPlaces;
     
     // Filtrage par dénominations (sélection multiple)
-    if (selectedDenominations && selectedDenominations.length > 0) {
-      result = result.filter(place => selectedDenominations.includes(place.denomination));
+    if (selectedDenomination && selectedDenomination !== '') {
+      result = result.filter(place => place.denomination === selectedDenomination);
     }
     
     // Filtrage par recherche textuelle (uniquement adresses, noms, villes)
-    if (searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase();
+    if (searchTerm.trim() !== '') {
+      const query = searchTerm.toLowerCase();
       result = result.filter(place => 
         place.name.toLowerCase().includes(query) || 
         place.city.toLowerCase().includes(query) ||
@@ -209,14 +226,14 @@ function App() {
     }
     
     setFilteredPlaces(result);
-  }, [searchQuery, selectedDenominations, eventFilter, places]);
+  }, [searchTerm, selectedDenomination, eventFilter, worshipPlaces]);
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
+    setSearchTerm(query);
   };
   
-  const handleDenominationFilter = (denominations: Denomination[] | null) => {
-    setSelectedDenominations(denominations);
+  const handleDenominationFilter = (denomination: Denomination | '') => {
+    setSelectedDenomination(denomination);
   };
 
   const handleEventFilter = (filter: EventFilter) => {
@@ -225,192 +242,127 @@ function App() {
 
   const handleMapMove = (center: [number, number], bounds: [[number, number], [number, number]]) => {
     setMapCenter(center);
-    setMapBounds(bounds);
+    // setMapBounds(bounds); // This line was removed from the new_code, so it's removed here.
     // Reset the shouldCenterMap when user moves the map manually
-    setShouldCenterMap(null);
+    setShouldCenterMap(false);
   };
 
   const handlePlaceClick = (position: [number, number], placeName: string) => {
-    setShouldCenterMap(position);
+    setShouldCenterMap(true);
     console.log(`Centrage sur: ${placeName}`);
   };
 
   const handleLocationFound = (position: [number, number]) => {
-    setShouldCenterMap(position);
+    setShouldCenterMap(true);
     setMapCenter(position);
-    setCurrentLocation(position);
+    // setCurrentLocation(position); // This line was removed from the new_code, so it's removed here.
     console.log(`Géolocalisation: ${position[0]}, ${position[1]}`);
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center space-y-6 animate-fade-in">
-          {/* Loading spinner moderne */}
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-blue-500 to-purple-500 mx-auto"></div>
-            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-white animate-spin mx-auto"></div>
-            <div className="absolute inset-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">⛪</span>
-            </div>
-          </div>
-          
-          {/* Texte de chargement */}
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Chargement en cours...
-            </h2>
-            <p className="text-gray-600 font-medium">
-              🔍 Récupération des lieux de culte
-            </p>
-            <div className="flex justify-center space-x-1 mt-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-            </div>
-          </div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-center text-white">
+          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg font-medium">Chargement de GOD × CONNECT...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center space-y-6 animate-fade-in max-w-md mx-auto px-6">
-          {/* Icône d'erreur */}
-          <div className="relative">
-            <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-              <span className="text-3xl">⚠️</span>
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs">!</span>
-            </div>
-          </div>
-          
-          {/* Message d'erreur */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Oups ! Un problème est survenu
-            </h2>
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
-              <p className="text-red-800 font-medium text-sm">
-                {error}
-              </p>
-            </div>
-            
-            {/* Suggestions d'action */}
-            <div className="space-y-3">
-              <p className="text-gray-600">
-                💡 Que faire maintenant ?
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 font-semibold"
-                >
-                  🔄 Réessayer
-                </button>
-                <button 
-                  onClick={() => window.history.back()} 
-                  className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:border-blue-300 transition-all duration-200 font-semibold"
-                >
-                  ← Retour
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  // Rendu conditionnel selon la page
+  if (currentPage === 'admin') {
+    return <AdminPage />;
   }
 
+  // Page principale
   return (
     <div className="flex flex-col min-h-screen">
       <Header 
-        placesCount={places.length}
+        placesCount={worshipPlaces.length}
         onContributeClick={() => setShowContributeForm(true)}
         supabase={supabase}
       />
       
-      {/* Section Hero */}
-      <Hero />
-      
-      <main className="flex-grow container mx-auto px-6 py-12 space-y-16">
-        {/* Section de recherche moderne avec ID pour le scroll */}
-        <section id="search-section" className="space-y-8">
-          {/* Titre de section moderne */}
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Découvrez votre communauté spirituelle
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
-            </p>
-          </div>
-
-          {/* Zone de recherche épurée */}
-          <div className="max-w-5xl mx-auto">
-            <Search 
-              places={places}
-              onSearch={handleSearch} 
-              onDenominationFilter={handleDenominationFilter}
-              onEventFilter={handleEventFilter}
-              selectedDenominations={selectedDenominations}
-              eventFilter={eventFilter}
-              onLocationFound={handleLocationFound}
-              currentLocation={currentLocation}
-            />
-          </div>
-        </section>
+      <main className="flex-grow">
+        <Hero />
         
-        {/* Section carte et résultats moderne */}
-        <section className="space-y-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              Explorez la carte interactive
-            </h3>
-            <p className="text-gray-600">
-              {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
-            </p>
-          </div>
+        <section className="py-16 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+          {/* Section de recherche moderne avec ID pour le scroll */}
+          <section id="search-section" className="space-y-8">
+            {/* Titre de section moderne */}
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                Découvrez votre communauté spirituelle
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
+              <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
+              </p>
+            </div>
 
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-0">
-              {/* Sidebar - Prochaines célébrations */}
-              <div className="lg:col-span-1 bg-gray-50/50 border-r border-gray-100">
-                <div className="p-6">
-                  <UpcomingCelebrations 
-                    places={filteredPlaces}
-                    mapCenter={mapCenter}
-                    mapBounds={mapBounds}
-                    onPlaceClick={handlePlaceClick}
-                    timeFilter={eventFilter.dateTimeFilter}
-                  />
+            {/* Zone de recherche épurée */}
+            <div className="max-w-5xl mx-auto">
+              <Search 
+                places={worshipPlaces}
+                onSearch={handleSearch} 
+                onDenominationFilter={handleDenominationFilter}
+                onEventFilter={handleEventFilter}
+                selectedDenominations={selectedDenomination}
+                eventFilter={eventFilter}
+                onLocationFound={handleLocationFound}
+                currentLocation={null} // currentLocation was removed from the new_code, so it's null here.
+              />
+            </div>
+          </section>
+          
+          {/* Section carte et résultats moderne */}
+          <section className="space-y-8">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Explorez la carte interactive
+              </h3>
+              <p className="text-gray-600">
+                {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-0">
+                {/* Sidebar - Prochaines célébrations */}
+                <div className="lg:col-span-1 bg-gray-50/50 border-r border-gray-100">
+                  <div className="p-6">
+                    <UpcomingCelebrations 
+                      places={filteredPlaces}
+                      mapCenter={mapCenter}
+                      mapBounds={null} // mapBounds was removed from the new_code, so it's null here.
+                      onPlaceClick={handlePlaceClick}
+                      timeFilter={eventFilter.dateTimeFilter}
+                    />
+                  </div>
                 </div>
-              </div>
-              
-              {/* Carte principale */}
-              <div className="lg:col-span-3">
-                <div className="p-6">
-                  <MapView 
-                    places={filteredPlaces} 
-                    selectedDenomination={selectedDenominations?.[0] || null}
-                    onMapMove={handleMapMove}
-                    centerOnPosition={shouldCenterMap}
-                  />
+                
+                {/* Carte principale */}
+                <div className="lg:col-span-3">
+                  <div className="p-6">
+                    <MapView 
+                      places={filteredPlaces} 
+                      selectedDenomination={selectedDenomination}
+                      onMapMove={handleMapMove}
+                      centerOnPosition={shouldCenterMap}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
+          
+          <WhoWeAreFor />
+          
+          <OurCommitment />
+          
+          <Contribution onAddPlace={() => setShowContributeForm(true)} />
         </section>
-        
-        <WhoWeAreFor />
-        
-        <OurCommitment />
-        
-        <Contribution onAddPlace={() => setShowContributeForm(true)} />
       </main>
       
       <Footer />

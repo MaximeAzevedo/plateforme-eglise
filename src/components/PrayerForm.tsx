@@ -20,7 +20,6 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
     urgency: 'normal' as PrayerUrgency,
     duration: '30days' as PrayerDuration,
     isAnonymous: false,
-    allowComments: true,
     tags: [] as string[],
     firstName: '',
     location: ''
@@ -146,7 +145,6 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
         urgency: formData.urgency,
         duration: formData.duration,
         is_anonymous: formData.isAnonymous,
-        allow_comments: formData.allowComments,
         tags: formData.tags,
         first_name: formData.isAnonymous ? null : formData.firstName,
         location: formData.location || null,
@@ -175,7 +173,6 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
         urgency: 'normal',
         duration: '7days',
         isAnonymous: false,
-        allowComments: true,
         tags: [],
         firstName: '',
         location: ''
@@ -382,31 +379,6 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
                   />
                 </div>
               )}
-            </div>
-
-            {/* Options supplémentaires */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setFormData(f => ({ ...f, allowComments: !f.allowComments }))}
-                  className={`p-2 rounded-lg transition-colors ${
-                    formData.allowComments 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  <Users className="h-4 w-4" />
-                </button>
-                <div>
-                  <div className="font-medium text-gray-900">
-                    Autoriser les encouragements
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    La communauté pourra laisser des messages d'encouragement
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Tags */}
