@@ -86,15 +86,10 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     setIsSubmitting(true);
     try {
       const testimonyData = {
+        user_name: formData.isAnonymous ? 'Anonyme' : formData.firstName || 'Utilisateur',
+        user_email: 'user@example.com', // À remplacer par l'authentification réelle
         title: formData.title,
-        type: formData.type,
-        description: formData.description,
-        before_situation: formData.beforeSituation,
-        after_situation: formData.afterSituation,
-        timeframe: formData.timeframe,
-        is_anonymous: formData.isAnonymous,
-        tags: formData.tags,
-        denomination: formData.denomination || null,
+        content: formData.description, // Le champ description devient content
         location: formData.location || null
       };
 
@@ -110,19 +105,20 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
       }
 
       console.log('Témoignage sauvegardé avec succès:', data);
-      alert('Merci ! Votre témoignage a été partagé avec succès et sera visible après modération.');
+      alert('Merci ! Votre témoignage a été partagé et sera modéré avant publication.');
       
       // Reset du formulaire
       setFormData({
         title: '',
-        type: 'transformation',
+        type: 'healing',
         description: '',
         beforeSituation: '',
         afterSituation: '',
-        timeframe: '',
+        timeframe: 'recent',
         isAnonymous: false,
         tags: [],
         denomination: '',
+        firstName: '',
         location: ''
       });
       

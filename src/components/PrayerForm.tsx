@@ -130,25 +130,19 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
 
     setIsSubmitting(true);
     try {
-      // Calculer la date d'expiration
-      const expiresAt = formData.duration === 'ongoing' ? null : 
-        new Date(Date.now() + (
-          formData.duration === '7days' ? 7 * 24 * 60 * 60 * 1000 :
-          formData.duration === '30days' ? 30 * 24 * 60 * 60 * 1000 :
-          90 * 24 * 60 * 60 * 1000
-        )).toISOString();
-
       const prayerData = {
+        user_name: formData.isAnonymous ? 'Anonyme' : formData.firstName || 'Utilisateur',
+        user_email: 'user@example.com', // À remplacer par l'authentification réelle
         title: formData.title,
-        type: formData.type,
-        description: formData.description,
-        urgency: formData.urgency,
-        duration: formData.duration,
-        is_anonymous: formData.isAnonymous,
-        tags: formData.tags,
-        first_name: formData.isAnonymous ? null : formData.firstName,
-        location: formData.location || null,
-        expires_at: expiresAt
+        content: formData.description, // Le champ description devient content
+        category: formData.type === 'health' ? 'health' : 
+                 formData.type === 'family' ? 'family' :
+                 formData.type === 'work' ? 'work' :
+                 formData.type === 'guidance' ? 'spiritual' :
+                 formData.type === 'protection' ? 'general' :
+                 formData.type === 'gratitude' ? 'general' : 'general',
+        is_urgent: formData.urgency === 'urgent',
+        is_anonymous: formData.isAnonymous
       };
 
       console.log('Envoi de la demande de prière:', prayerData);
@@ -163,7 +157,7 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
       }
 
       console.log('Demande de prière sauvegardée avec succès:', data);
-      alert('Merci ! Votre demande de prière a été partagée avec la communauté.');
+      alert('Merci ! Votre demande de prière a été partagée et sera modérée avant publication.');
       
       // Reset du formulaire
       setFormData({
@@ -171,7 +165,7 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
         type: 'guidance',
         description: '',
         urgency: 'normal',
-        duration: '7days',
+        duration: '30days',
         isAnonymous: false,
         tags: [],
         firstName: '',
