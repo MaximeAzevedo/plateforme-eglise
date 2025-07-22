@@ -36,27 +36,40 @@ export const ModerationDashboard: React.FC = () => {
   }, []);
 
   const loadPendingContent = async () => {
+    console.log('🔍 Début du chargement des données pending...');
     try {
       // Récupérer les témoignages en attente
-      const { data: testimonies } = await supabase
+      console.log('📊 Récupération des témoignages...');
+      const { data: testimonies, error: testimoniesError } = await supabase
         .from('testimonies')
         .select('*')
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
+      console.log('✨ Témoignages récupérés:', testimonies);
+      console.log('❌ Erreur témoignages:', testimoniesError);
+
       // Récupérer les prières en attente
-      const { data: prayers } = await supabase
+      console.log('🙏 Récupération des prières...');
+      const { data: prayers, error: prayersError } = await supabase
         .from('prayer_requests')
         .select('*')
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
+      console.log('✨ Prières récupérées:', prayers);
+      console.log('❌ Erreur prières:', prayersError);
+
       setPendingTestimonies(testimonies || []);
       setPendingPrayers(prayers || []);
+
+      console.log('📈 État final - Témoignages:', testimonies?.length || 0);
+      console.log('📈 État final - Prières:', prayers?.length || 0);
     } catch (error) {
-      console.error('Erreur lors du chargement:', error);
+      console.error('💥 Erreur lors du chargement:', error);
     } finally {
       setLoading(false);
+      console.log('✅ Chargement terminé');
     }
   };
 

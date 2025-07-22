@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Church, Heart, Star, AlertTriangle, MapPin, Users, Globe, Plus } from 'lucide-react';
 import ContributeForm from './ContributeForm';
 import TestimonyForm from './TestimonyForm';
@@ -8,12 +8,20 @@ interface ContributionHubProps {
   isOpen: boolean;
   onClose: () => void;
   supabase: any;
+  defaultType?: ContributionType;
 }
 
 type ContributionType = 'church' | 'testimony' | 'prayer' | 'modification' | null;
 
-const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supabase }) => {
-  const [selectedType, setSelectedType] = useState<ContributionType>(null);
+const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supabase, defaultType = null }) => {
+  const [selectedType, setSelectedType] = useState<ContributionType>(defaultType);
+
+  // Réinitialiser le type sélectionné quand le modal s'ouvre/ferme
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedType(defaultType);
+    }
+  }, [isOpen, defaultType]);
 
   const handleBackToHub = () => {
     setSelectedType(null);

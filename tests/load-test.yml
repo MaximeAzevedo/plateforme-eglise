@@ -1,0 +1,91 @@
+config:
+  target: 'http://localhost:4173'
+  phases:
+    # Phase de montée en charge progressive
+    - duration: 60
+      arrivalRate: 1
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 10
+      name: "Ramp up load"
+    - duration: 300
+      arrivalRate: 10
+      name: "Sustained load"
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 1
+      name: "Cool down"
+  
+  # Configuration des métriques
+  engines:
+    http:
+      timeout: 30
+
+scenarios:
+  # Test de navigation normale
+  - name: "Navigation utilisateur typique"
+    weight: 70
+    flow:
+      - get:
+          url: "/"
+          capture:
+            - header: "content-length"
+              as: "homePageSize"
+      - think: 2
+      - get:
+          url: "/#search-section"
+      - think: 3
+      - get:
+          url: "/"
+          headers:
+            x-test: "search-interaction"
+      - think: 1
+
+  # Test d'ouverture des modales
+  - name: "Interaction avec les modales"
+    weight: 20
+    flow:
+      - get:
+          url: "/"
+      - think: 1
+      # Simulation d'ouverture de témoignages
+      - get:
+          url: "/"
+          headers:
+            x-modal: "testimonies"
+      - think: 2
+      # Simulation d'ouverture des prières
+      - get:
+          url: "/"
+          headers:
+            x-modal: "prayers"
+      - think: 2
+
+  # Test d'accès admin
+  - name: "Accès administration"
+    weight: 10
+    flow:
+      - get:
+          url: "/#admin"
+      - think: 3
+      - get:
+          url: "/"
+          headers:
+            x-admin: "dashboard"
+
+# Assertions de performance
+expect:
+  - statusCode: 200
+  - contentType: text/html
+  - maxResponseTime: 2000
+
+# Plugins pour des métriques avancées
+plugins:
+  metrics-by-endpoint:
+    useOnlyRequestNames: true
+  
+# Configuration des rapports
+output:
+  - type: json
+    path: "./reports/load-test-results.json" 

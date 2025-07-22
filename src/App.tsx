@@ -287,19 +287,20 @@ function App() {
       <main className="flex-grow">
         <Hero />
         
-        <section className="py-16 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-          {/* Section de recherche moderne avec ID pour le scroll */}
-          <section id="search-section" className="space-y-8">
-            {/* Titre de section moderne */}
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Découvrez votre communauté spirituelle
-              </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
-              <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-                Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
-              </p>
-            </div>
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            {/* Section de recherche moderne avec ID pour le scroll */}
+            <section id="search-section" className="space-y-8">
+              {/* Titre de section moderne */}
+              <div className="text-center space-y-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  Découvrez votre communauté spirituelle
+                </h2>
+                <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
+                <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                  Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
+                </p>
+              </div>
 
             {/* Zone de recherche épurée */}
             <div className="max-w-5xl mx-auto">
@@ -355,14 +356,15 @@ function App() {
                 </div>
               </div>
             </div>
-          </section>
-          
-          <WhoWeAreFor />
-          
-          <OurCommitment />
-          
-          <Contribution onAddPlace={() => setShowContributeForm(true)} />
+            </section>
+          </div>
         </section>
+        
+        <WhoWeAreFor />
+        
+        <OurCommitment />
+        
+        <Contribution onAddPlace={() => setShowContributeForm(true)} />
       </main>
       
       <Footer />

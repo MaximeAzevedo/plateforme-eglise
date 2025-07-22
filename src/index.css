@@ -3,6 +3,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Amélioration du scroll pour les modales */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Personnalisation de la scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animation fluide pour les interactions */
+.modal-content {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Amélioration des performances de scroll */
+.optimize-scroll {
+  will-change: scroll-position;
+  transform: translate3d(0, 0, 0);
+}
+
 /* ===== VARIABLES GLOBALES GOD x CONNECT ===== */
 :root {
   /* Palette principale */

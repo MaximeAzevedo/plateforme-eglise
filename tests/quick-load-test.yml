@@ -1,0 +1,25 @@
+config:
+  target: 'http://localhost:4173'
+  phases:
+    - duration: 30
+      arrivalRate: 2
+      name: "Warm up"
+    - duration: 60
+      arrivalRate: 5
+      name: "Load test"
+  engines:
+    http:
+      timeout: 10
+
+scenarios:
+  - name: "Page load test"
+    flow:
+      - get:
+          url: "/"
+      - think: 1
+      - get:
+          url: "/#search-section"
+
+expect:
+  - statusCode: 200
+  - maxResponseTime: 3000

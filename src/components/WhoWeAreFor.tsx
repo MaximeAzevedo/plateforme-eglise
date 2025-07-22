@@ -3,7 +3,9 @@ import { Search, MapPin, Users, Globe, Heart, Star } from 'lucide-react';
 
 const WhoWeAreFor: React.FC = () => {
   return (
-    <section className="bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-xl p-8 md:p-12">
+    <section className="bg-white py-16">
+      <div className="container mx-auto px-4">
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
       {/* Titre de la section */}
       <div className="text-center mb-16">
         <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-4">
@@ -153,6 +155,8 @@ const WhoWeAreFor: React.FC = () => {
             <Star className="h-5 w-5" />
             <span>Commencer maintenant</span>
           </button>
+        </div>
+      </div>
         </div>
       </div>
     </section>

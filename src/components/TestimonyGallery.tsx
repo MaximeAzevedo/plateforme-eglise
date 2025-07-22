@@ -23,6 +23,7 @@ import {
   Award
 } from 'lucide-react';
 import { Testimony, TestimonyType, TestimonyComment } from '../types/community';
+import ContributionHub from './ContributionHub';
 
 interface TestimonyGalleryProps {
   isOpen: boolean;
@@ -95,7 +96,7 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
   const [selectedType, setSelectedType] = useState<TestimonyType | 'all'>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'trending'>('trending');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showNewTestimonyForm, setShowNewTestimonyForm] = useState(false);
+  const [showContributionHub, setShowContributionHub] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Charger les témoignages depuis Supabase
@@ -110,7 +111,8 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
     try {
       let query = supabase
         .from('testimonies')
-        .select('*');
+        .select('*')
+        .eq('status', 'approved'); // AJOUT: Ne charger que les témoignages approuvés
 
       // Filtrer par type si sélectionné
       if (selectedType !== 'all') {
@@ -123,10 +125,10 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
           query = query.order('created_at', { ascending: false });
           break;
         case 'popular':
-          query = query.order('likes', { ascending: false });
+          query = query.order('likes_count', { ascending: false }); // Correction: utiliser likes_count au lieu de likes
           break;
         case 'trending':
-          query = query.order('likes', { ascending: false }).order('created_at', { ascending: false });
+          query = query.order('likes_count', { ascending: false }).order('created_at', { ascending: false });
           break;
       }
 
@@ -137,8 +139,32 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
         return;
       }
 
-      console.log('Témoignages chargés:', data);
-      setTestimonies(data || []);
+      console.log('Témoignages approuvés chargés:', data);
+      
+      // Transformer les données Supabase en format attendu par le composant
+      const transformedTestimonies = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.content || '', // content -> description
+        type: 'transformation', // valeur par défaut
+        beforeSituation: 'Situation difficile', // valeur par défaut
+        afterSituation: 'Transformation divine', // valeur par défaut
+        timeframe: '1 mois', // valeur par défaut
+        location: item.location || '',
+        denomination: '',
+        tags: [],
+        likes: item.likes_count || 0,
+        shares: 0,
+        comments: [],
+        createdAt: new Date(item.created_at), // Convertir string en Date
+        updatedAt: new Date(item.updated_at),
+        userId: item.user_name || 'Utilisateur',
+        isVerified: false,
+        verifiedBy: null,
+        isAnonymous: false
+      }));
+      
+      setTestimonies(transformedTestimonies);
     } catch (error) {
       console.error('Erreur:', error);
     } finally {
@@ -206,9 +232,9 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[90vh] overflow-hidden flex flex-col">
         {/* Header avec dégradé inspirant */}
-        <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-6 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-6 text-white relative overflow-hidden flex-shrink-0">
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -250,7 +276,7 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
         </div>
 
         {/* Toolbar de recherche et filtres */}
-        <div className="p-4 border-b border-gray-100 bg-gray-50">
+        <div className="p-4 border-b border-gray-100 bg-gray-50 flex-shrink-0">
           <div className="flex flex-wrap items-center justify-between gap-4">
             {/* Barre de recherche */}
             <div className="flex-1 min-w-64">
@@ -279,7 +305,7 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
               </select>
               
               <button
-                onClick={() => setShowNewTestimonyForm(true)}
+                onClick={() => setShowContributionHub(true)}
                 className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-medium flex items-center space-x-2 hover:from-orange-600 hover:to-red-700 transition-all transform hover:scale-105 shadow-lg"
               >
                 <Plus className="h-4 w-4" />
@@ -317,8 +343,8 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
           </div>
         </div>
 
-        {/* Grille des témoignages */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Grille des témoignages - ZONE SCROLLABLE */}
+        <div className="flex-1 overflow-y-auto p-6 smooth-scroll custom-scrollbar optimize-scroll">
           {loading ? (
             <div className="text-center py-12">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center">
@@ -525,6 +551,20 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
               </div>
             </div>
           </div>
+        )}
+        
+        {/* ContributionHub pour les nouveaux témoignages */}
+        {showContributionHub && (
+          <ContributionHub
+            isOpen={showContributionHub}
+            onClose={() => {
+              setShowContributionHub(false);
+              // Recharger les témoignages après fermeture pour afficher les nouveaux
+              loadTestimonies();
+            }}
+            supabase={supabase}
+            defaultType="testimony"
+          />
         )}
       </div>
     </div>
