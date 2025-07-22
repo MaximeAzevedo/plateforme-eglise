@@ -205,4 +205,4 @@ Ce projet est sous licence **MIT** - voir le fichier [LICENSE](LICENSE) pour les
 [![Powered by Supabase](https://img.shields.io/badge/Powered%20by-Supabase-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.io/)
 [![Built with TypeScript](https://img.shields.io/badge/Built%20with-TypeScript-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
-</div> 
+</div> # Force deployment trigger
