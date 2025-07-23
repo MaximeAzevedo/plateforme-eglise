@@ -144,12 +144,28 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('🔍 === DÉBUT DEBUG VERCEL ===');
         console.log('🔍 Tentative de connexion à Supabase...');
-        console.log('Configuration:', supabaseConfig);
+        console.log('🔧 Configuration complète:', {
+          ...supabaseConfig,
+          nodeEnv: process.env.NODE_ENV,
+          vitMode: import.meta.env.MODE,
+          isDev: import.meta.env.DEV,
+          isProd: import.meta.env.PROD,
+          baseUrl: import.meta.env.BASE_URL
+        });
+        
+        // Log très détaillé de l'environnement
+        if (import.meta.env.PROD) {
+          console.log('🚀 Environnement PRODUCTION détecté');
+          console.log('🔧 URL Supabase présente:', !!import.meta.env.VITE_SUPABASE_URL);
+          console.log('🔧 Key Supabase présente:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+        }
         
         // Vérification plus permissive en développement
         if (!supabaseConfig.canAttemptConnection) {
           console.warn('⚠️ Impossible de se connecter à Supabase, mode démo activé');
+          console.log('🔧 Détails config:', supabaseConfig);
           setWorshipPlaces([]);
           setFilteredPlaces([]);
           setIsLoading(false);
@@ -160,32 +176,49 @@ function App() {
           console.warn('⚠️ Configuration Supabase incomplète mais tentative de connexion...');
         }
         
+        console.log('🎯 Tentative de requête Supabase...');
         const { data, error } = await supabase
           .from('BDD')
           .select('*');
 
-        console.log('📊 Réponse Supabase:', { data, error });
+        console.log('📊 === RÉSULTAT SUPABASE ===');
+        console.log('📊 Données reçues:', data?.length || 0, 'éléments');
+        console.log('📊 Erreur:', error);
+        console.log('📊 Premier élément:', data?.[0]);
 
         if (error) {
-          console.error('❌ Erreur Supabase:', error);
+          console.error('❌ Erreur Supabase détaillée:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
 
-        console.log('✅ Données reçues:', data?.length, 'éléments');
+        console.log('🔧 Transformation des données...');
         const transformedData = transformSupabaseData(data);
+        console.log('✅ Données transformées:', transformedData.length, 'lieux valides');
         
         if (transformedData.length === 0) {
+          console.warn('⚠️ Aucun lieu de culte avec des coordonnées valides');
           setError('Aucun lieu de culte avec des coordonnées valides n\'a été trouvé');
           return;
         }
 
         setWorshipPlaces(transformedData);
         setFilteredPlaces(transformedData);
+        console.log('🎉 === CHARGEMENT RÉUSSI ===');
       } catch (err) {
-        console.error('💥 Erreur complète:', err);
+        console.error('💥 === ERREUR COMPLÈTE ===');
+        console.error('💥 Type:', typeof err);
+        console.error('💥 Message:', err.message);
+        console.error('💥 Stack:', err.stack);
+        console.error('💥 Objet complet:', err);
         setError('Une erreur est survenue lors du chargement des données');
       } finally {
         setIsLoading(false);
+        console.log('🏁 === FIN DEBUG VERCEL ===');
       }
     };
 
