@@ -1,30 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Validation des variables d'environnement
+// Récupération des variables d'environnement
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ Variables d\'environnement Supabase manquantes:', {
-    url: supabaseUrl ? '✅ Présente' : '❌ Manquante',
-    key: supabaseAnonKey ? '✅ Présente' : '❌ Manquante'
-  });
-  
-  // En développement, afficher des informations utiles
-  if (import.meta.env.DEV) {
-    console.log('🔧 Pour corriger ce problème en local:');
-    console.log('1. Créez un fichier .env à la racine du projet');
-    console.log('2. Ajoutez vos variables Supabase:');
-    console.log('   VITE_SUPABASE_URL=https://your-project.supabase.co');
-    console.log('   VITE_SUPABASE_ANON_KEY=your-anon-key');
-  } else {
-    console.log('🔧 Pour corriger ce problème en production:');
-    console.log('1. Configurez les variables d\'environnement sur Vercel');
-    console.log('2. Redéployez l\'application');
-  }
-}
+// Logs pour debugging
+console.log('🔧 Configuration Supabase:', {
+  url: supabaseUrl ? '✅ Présente' : '❌ Manquante',
+  key: supabaseAnonKey ? '✅ Présente' : '❌ Manquante',
+  env: import.meta.env.MODE
+});
 
-// Créer le client Supabase avec des valeurs par défaut si nécessaire
+// Créer le client Supabase (même avec des valeurs manquantes pour éviter les crashes)
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
   supabaseAnonKey || 'placeholder-key'

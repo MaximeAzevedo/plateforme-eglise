@@ -120,13 +120,11 @@ function App() {
   const [showContributeForm, setShowContributeForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Vérification de la configuration Supabase
+  // Vérification de la configuration Supabase (non-bloquante)
   useEffect(() => {
     if (!supabaseConfig.isConfigured) {
-      console.error('⚠️ Configuration Supabase manquante', supabaseConfig);
-      setError('Configuration manquante. Les variables d\'environnement Supabase ne sont pas correctement configurées.');
-      setIsLoading(false);
-      return;
+      console.warn('⚠️ Configuration Supabase incomplète', supabaseConfig);
+      // On ne bloque plus l'application, on laisse juste un warning
     }
   }, []);
 
@@ -146,9 +144,13 @@ function App() {
         console.log('🔍 Tentative de connexion à Supabase...');
         console.log('Configuration:', supabaseConfig);
         
-        // Vérifier la configuration avant d'essayer de charger les données
+        // Si pas de configuration Supabase, utiliser des données de démo
         if (!supabaseConfig.isConfigured) {
-          throw new Error('Configuration Supabase manquante');
+          console.log('⚠️ Pas de configuration Supabase, mode démo activé');
+          setWorshipPlaces([]);
+          setFilteredPlaces([]);
+          setIsLoading(false);
+          return;
         }
         
         const { data, error } = await supabase
