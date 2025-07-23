@@ -122,9 +122,12 @@ function App() {
 
   // Vérification de la configuration Supabase (non-bloquante)
   useEffect(() => {
+    console.log('🔧 État configuration Supabase:', supabaseConfig);
     if (!supabaseConfig.isConfigured) {
       console.warn('⚠️ Configuration Supabase incomplète', supabaseConfig);
-      // On ne bloque plus l'application, on laisse juste un warning
+    }
+    if (!supabaseConfig.canAttemptConnection) {
+      console.error('❌ Impossible de tenter une connexion Supabase');
     }
   }, []);
 
@@ -144,13 +147,17 @@ function App() {
         console.log('🔍 Tentative de connexion à Supabase...');
         console.log('Configuration:', supabaseConfig);
         
-        // Si pas de configuration Supabase, utiliser des données de démo
-        if (!supabaseConfig.isConfigured) {
-          console.log('⚠️ Pas de configuration Supabase, mode démo activé');
+        // Vérification plus permissive en développement
+        if (!supabaseConfig.canAttemptConnection) {
+          console.warn('⚠️ Impossible de se connecter à Supabase, mode démo activé');
           setWorshipPlaces([]);
           setFilteredPlaces([]);
           setIsLoading(false);
           return;
+        }
+        
+        if (!supabaseConfig.isConfigured) {
+          console.warn('⚠️ Configuration Supabase incomplète mais tentative de connexion...');
         }
         
         const { data, error } = await supabase
