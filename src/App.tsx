@@ -331,6 +331,107 @@ function App() {
     return <AdminPage />;
   }
 
+  // Page de debug pour tester les variables d'environnement Vercel
+  if (currentPage === 'debug') {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8 text-center">🔧 Debug Vercel - Variables d'environnement</h1>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Informations générales */}
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">📊 Informations générales</h2>
+              <pre className="text-sm bg-gray-700 p-4 rounded overflow-auto">
+{JSON.stringify({
+  nodeEnv: typeof process !== 'undefined' ? process.env.NODE_ENV : 'undefined',
+  vitMode: import.meta.env.MODE,
+  isDev: import.meta.env.DEV,
+  isProd: import.meta.env.PROD,
+  isSSR: import.meta.env.SSR,
+  baseUrl: import.meta.env.BASE_URL,
+  timestamp: new Date().toISOString(),
+  userAgent: navigator.userAgent.substring(0, 100) + '...'
+}, null, 2)}
+              </pre>
+            </div>
+
+            {/* Variables Supabase */}
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">🔑 Variables Supabase</h2>
+              <pre className="text-sm bg-gray-700 p-4 rounded overflow-auto">
+{JSON.stringify({
+  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL ? 
+    `${import.meta.env.VITE_SUPABASE_URL.substring(0, 30)}...` : 
+    '❌ NON DÉFINIE',
+  VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 
+    `${import.meta.env.VITE_SUPABASE_ANON_KEY.substring(0, 30)}...` : 
+    '❌ NON DÉFINIE',
+  configState: supabaseConfig
+}, null, 2)}
+              </pre>
+            </div>
+
+            {/* Test de connexion */}
+            <div className="bg-gray-800 rounded-lg p-6 md:col-span-2">
+              <h2 className="text-xl font-semibold mb-4">🧪 Test de connexion Supabase</h2>
+              <button 
+                onClick={async () => {
+                  const testDiv = document.getElementById('test-result');
+                  if (!testDiv) return;
+                  
+                  testDiv.innerHTML = '⏳ Test en cours...';
+                  
+                  try {
+                    console.log('🧪 Test de connexion Supabase depuis Vercel...');
+                    
+                    const { data, error } = await supabase
+                      .from('BDD')
+                      .select('count(*)', { count: 'exact', head: true });
+                    
+                    testDiv.innerHTML = `<pre class="text-green-400">${JSON.stringify({
+                      success: true,
+                      count: data?.length || 0,
+                      error: error || null,
+                      timestamp: new Date().toISOString()
+                    }, null, 2)}</pre>`;
+                  } catch (err) {
+                    testDiv.innerHTML = `<pre class="text-red-400">${JSON.stringify({
+                      success: false,
+                      error: err.message,
+                      stack: err.stack?.substring(0, 200) + '...',
+                      timestamp: new Date().toISOString()
+                    }, null, 2)}</pre>`;
+                  }
+                }}
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded mb-4"
+              >
+                🧪 Tester la connexion Supabase
+              </button>
+              <div id="test-result" className="bg-gray-700 p-4 rounded">
+                Cliquez sur le bouton pour tester
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="bg-yellow-900 border border-yellow-600 rounded-lg p-6 md:col-span-2">
+              <h2 className="text-xl font-semibold mb-4">📋 Instructions</h2>
+              <ol className="list-decimal list-inside space-y-2">
+                <li>Vérifiez que les variables Supabase sont bien définies ci-dessus</li>
+                <li>Testez la connexion avec le bouton</li>
+                <li>Si les variables sont ❌ NON DÉFINIE, vérifiez la configuration Vercel</li>
+                <li>Si la connexion échoue, vérifiez les valeurs des variables</li>
+              </ol>
+              <div className="mt-4 text-sm opacity-75">
+                Pour revenir à l'app: <a href="/" className="text-blue-400 underline">retour accueil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Page principale
   return (
     <div className="flex flex-col min-h-screen">
