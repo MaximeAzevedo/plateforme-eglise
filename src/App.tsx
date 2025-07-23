@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { WorshipPlace, Denomination, EventFilter, CelebrationType } from './types';
 import { filterPlacesByEvents } from './utils/filterUtils';
 import { parseScheduleString } from './utils/scheduleParser';
@@ -14,11 +13,7 @@ import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ContributionHub from './components/ContributionHub';
 import { AdminPage } from './components/admin/AdminPage';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase, supabaseConfig } from './lib/supabase';
 
 // Simple router - vérifie le hash de l'URL
 function getCurrentPage(): string {
@@ -123,6 +118,17 @@ function App() {
   const [mapZoom, setMapZoom] = useState(6);
   const [shouldCenterMap, setShouldCenterMap] = useState(false);
   const [showContributeForm, setShowContributeForm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Vérification de la configuration Supabase
+  useEffect(() => {
+    if (!supabaseConfig.isConfigured) {
+      console.error('⚠️ Configuration Supabase manquante', supabaseConfig);
+      setError('Configuration manquante. Les variables d\'environnement Supabase ne sont pas correctement configurées.');
+      setIsLoading(false);
+      return;
+    }
+  }, []);
 
   // Écouter les changements d'URL
   useEffect(() => {
@@ -138,31 +144,11 @@ function App() {
     const fetchData = async () => {
       try {
         console.log('🔍 Tentative de connexion à Supabase...');
-        console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
-        console.log('Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Présente' : 'Manquante');
+        console.log('Configuration:', supabaseConfig);
         
-        // Test avec fetch direct en cas de problème avec le client Supabase
-        try {
-          const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/BDD?select=*`, {
-            headers: {
-              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('✅ Fetch direct réussi:', data?.length, 'éléments');
-            
-            const transformedData = transformSupabaseData(data);
-            setWorshipPlaces(transformedData);
-            setFilteredPlaces(transformedData);
-            setIsLoading(false);
-            return;
-          }
-        } catch (fetchError) {
-          console.log('❌ Fetch direct échoué, essai avec client Supabase...');
+        // Vérifier la configuration avant d'essayer de charger les données
+        if (!supabaseConfig.isConfigured) {
+          throw new Error('Configuration Supabase manquante');
         }
         
         const { data, error } = await supabase
@@ -265,6 +251,34 @@ function App() {
         <div className="text-center text-white">
           <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-lg font-medium">Chargement de GOD × CONNECT...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Affichage d'erreur de configuration
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-900 via-red-800 to-red-900">
+        <div className="text-center text-white max-w-lg mx-auto p-8">
+          <div className="text-6xl mb-6">⚠️</div>
+          <h1 className="text-2xl font-bold mb-4">Erreur de Configuration</h1>
+          <p className="text-lg mb-6 opacity-90">{error}</p>
+          <div className="bg-white/10 rounded-lg p-4 text-sm text-left">
+            <p className="font-semibold mb-2">Pour les développeurs :</p>
+            <ul className="space-y-1 opacity-90">
+              <li>• Vérifiez les variables d'environnement Vercel</li>
+              <li>• VITE_SUPABASE_URL doit être définie</li>
+              <li>• VITE_SUPABASE_ANON_KEY doit être définie</li>
+              <li>• Redéployez après modification</li>
+            </ul>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-6 px-6 py-3 bg-white text-red-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
+            Recharger la page
+          </button>
         </div>
       </div>
     );
