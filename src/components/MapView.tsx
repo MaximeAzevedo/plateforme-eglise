@@ -421,21 +421,6 @@ const MapView: React.FC<MapViewProps> = ({
           </Marker>
         ))}
       </MapContainer>
-
-      {/* Contrôles supplémentaires en mode plein écran - Seulement géolocalisation */}
-      {isFullScreen && (
-        <div className="absolute top-20 left-4 z-[1000]">
-          <button
-            onClick={handleLocateUser}
-            disabled={isLocating}
-            className={`w-12 h-12 bg-white hover:bg-blue-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105 ${
-              isLocating ? 'animate-pulse' : ''
-            }`}
-          >
-            <Locate className={`w-5 h-5 ${isLocating ? 'text-blue-600' : 'text-gray-700'}`} />
-          </button>
-        </div>
-      )}
     </div>
   );
 };

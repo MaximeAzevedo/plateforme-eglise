@@ -271,22 +271,22 @@ const Search: React.FC<SearchProps> = ({
                   </div>
                 </div>
 
-                {/* Composants de filtres avancés - conditionnels selon l'overlay */}
-                {!isMapOverlay && (
-                  <>
-                    <AdvancedFilters 
-                      eventFilter={eventFilter}
-                      onEventFilter={onEventFilter}
-                    />
-                    
-                    <LocationTimeFilters 
-                      eventFilter={eventFilter}
-                      onEventFilter={onEventFilter}
-                      currentLocation={currentLocation}
-                      onLocationFound={handleLocationFound}
-                    />
-                  </>
-                )}
+                {/* Composants de filtres avancés - toujours affichés */}
+                <AdvancedFilters 
+                  places={places}
+                  eventFilter={eventFilter}
+                  onEventFilterChange={onEventFilter}
+                  isVisible={true}
+                  isMapOverlay={isMapOverlay}
+                />
+                
+                <LocationTimeFilters 
+                  eventFilter={eventFilter}
+                  onEventFilter={onEventFilter}
+                  currentLocation={currentLocation}
+                  onLocationFound={handleLocationFound}
+                  isMapOverlay={isMapOverlay}
+                />
               </div>
             </div>
           </>

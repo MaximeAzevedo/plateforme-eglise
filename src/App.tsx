@@ -500,26 +500,25 @@ function App() {
                 {/* Contenu du popup */}
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
-                        {selectedPlace.name}
-                      </h3>
+                    <div className="flex-1 pr-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="text-lg font-bold text-gray-900 flex-1">
+                          {selectedPlace.name}
+                        </h3>
+                        <div className="ml-2 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+                          {selectedPlace.denomination}
+                        </div>
+                      </div>
                       <p className="text-gray-600 text-sm">
                         {selectedPlace.address}, {selectedPlace.city}
                       </p>
                     </div>
                     <button
                       onClick={() => setShowPlacePopup(false)}
-                      className="p-1.5 hover:bg-gray-100 rounded-full"
+                      className="p-1.5 hover:bg-gray-100 rounded-full ml-2"
                     >
                       ✕
                     </button>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <div className="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
-                      {selectedPlace.denomination}
-                    </div>
                   </div>
                   
                   <div className="text-xs text-gray-600">

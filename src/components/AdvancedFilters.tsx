@@ -44,6 +44,7 @@ interface AdvancedFiltersProps {
   eventFilter: EventFilter;
   onEventFilterChange: (filter: EventFilter) => void;
   isVisible: boolean;
+  isMapOverlay?: boolean;
 }
 
 const celebrationTypes: CelebrationType[] = [
@@ -96,7 +97,8 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   places,
   eventFilter,
   onEventFilterChange,
-  isVisible
+  isVisible,
+  isMapOverlay = false
 }) => {
   const [availableTypes, setAvailableTypes] = useState<CelebrationType[]>([]);
   const [showEventTypes, setShowEventTypes] = useState(true); // Ouvert par défaut
@@ -131,13 +133,13 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header avec bouton effacer */}
       {hasActiveFilters() && (
         <div className="flex justify-end">
           <button
             onClick={clearAllFilters}
-            className="text-xs text-accent hover:text-title transition-colors font-body font-medium"
+            className={`${isMapOverlay ? 'text-xs' : 'text-sm'} text-amber-600 hover:text-amber-700 font-medium`}
           >
             Effacer tout
           </button>
@@ -150,20 +152,23 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           onClick={() => setShowEventTypes(!showEventTypes)}
           className="flex items-center justify-between w-full text-left"
         >
-          <span className="font-body font-medium text-title flex items-center gap-2 text-xs">
-            <Calendar className="h-3 w-3" />
+          <span className={`${isMapOverlay ? 'text-sm' : 'text-base'} font-semibold text-gray-900 flex items-center gap-2`}>
+            <Calendar className={`${isMapOverlay ? 'h-4 w-4' : 'h-5 w-5'} text-amber-500`} />
             Types d'événements
             {eventFilter.types && eventFilter.types.length > 0 && (
-              <span className="bg-accent/20 text-accent text-xs px-2 py-0.5 rounded-full font-body font-medium">
+              <span className={`bg-amber-100 text-amber-800 ${isMapOverlay ? 'text-xs' : 'text-sm'} px-2 py-0.5 rounded-full font-medium`}>
                 {eventFilter.types.length}
               </span>
             )}
           </span>
-          {showEventTypes ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          {showEventTypes ? 
+            <ChevronUp className={`${isMapOverlay ? 'h-4 w-4' : 'h-5 w-5'} text-gray-500`} /> : 
+            <ChevronDown className={`${isMapOverlay ? 'h-4 w-4' : 'h-5 w-5'} text-gray-500`} />
+          }
         </button>
 
         {showEventTypes && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+          <div className={`grid gap-2 ${isMapOverlay ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
             {availableTypes.map(type => {
               const config = eventTypeConfig[type];
               if (!config) {
@@ -172,15 +177,19 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
               }
               const { icon: IconComponent, color } = config;
               return (
-                <label key={type} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-sand-light transition-colors border border-transparent hover:border-border">
+                <label 
+                  key={type} 
+                  className={`flex items-center gap-2 cursor-pointer ${isMapOverlay ? 'p-2' : 'p-3'} rounded-lg hover:bg-gray-50 transition-colors border border-gray-200 hover:border-amber-300`}
+                  style={{ minHeight: isMapOverlay ? '40px' : '48px' }}
+                >
                   <input
                     type="checkbox"
                     checked={eventFilter.types?.includes(type) || false}
                     onChange={() => handleEventTypeToggle(type)}
-                    className="rounded border-border text-accent focus:ring-accent"
+                    className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
                   />
-                  <IconComponent className={`h-3 w-3 text-accent`} />
-                  <span className="text-xs text-text flex-1 font-body font-medium">
+                  <IconComponent className={`${isMapOverlay ? 'h-4 w-4' : 'h-5 w-5'} text-amber-500`} />
+                  <span className={`${isMapOverlay ? 'text-xs' : 'text-sm'} text-gray-700 flex-1 font-medium`}>
                     {celebrationTypeLabels[type]}
                   </span>
                 </label>
@@ -192,12 +201,12 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
 
       {/* Résumé des filtres actifs */}
       {hasActiveFilters() && (
-        <div className="bg-sand-light border border-accent/20 rounded-lg p-2">
-          <h4 className="text-xs font-body font-medium text-accent mb-1">Filtres actifs :</h4>
-          <div className="space-y-1 text-xs text-text">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <h4 className={`${isMapOverlay ? 'text-xs' : 'text-sm'} font-semibold text-amber-800 mb-1`}>Filtres actifs :</h4>
+          <div className={`space-y-1 ${isMapOverlay ? 'text-xs' : 'text-sm'} text-gray-600`}>
             {eventFilter.types && eventFilter.types.length > 0 && (
-              <div className="font-body">
-                <strong className="text-title">Types :</strong> {eventFilter.types.map(t => celebrationTypeLabels[t]).join(', ')}
+              <div>
+                <strong className="text-gray-900">Types :</strong> {eventFilter.types.map(t => celebrationTypeLabels[t]).join(', ')}
               </div>
             )}
           </div>
