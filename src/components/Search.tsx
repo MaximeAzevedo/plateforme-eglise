@@ -177,16 +177,10 @@ const Search: React.FC<SearchProps> = ({
             <div className={`
               fixed z-[70] bg-white shadow-2xl
               ${isMapOverlay 
-                ? 'bottom-0 left-4 right-4 top-1/2 rounded-t-3xl border-t border-gray-200' 
-                : 'bottom-0 left-0 right-0 max-h-[65vh] rounded-t-3xl border-t border-gray-200 lg:static lg:z-auto lg:max-h-none lg:rounded-b-2xl lg:rounded-t-none lg:border-t lg:border-gray-100'
+                ? 'top-0 left-4 right-4 bottom-1/2 rounded-b-3xl border-b border-gray-200' 
+                : 'top-0 left-0 right-0 max-h-[65vh] rounded-b-3xl border-b border-gray-200 lg:static lg:z-auto lg:max-h-none lg:rounded-b-2xl lg:rounded-t-none lg:border-t lg:border-gray-100'
               }
             `}>
-              {/* Poignée de drag */}
-              {isMapOverlay && (
-                <div className="flex justify-center pt-3 pb-2">
-                  <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
-                </div>
-              )}
 
               {/* Header sticky */}
               <div className={`sticky top-0 bg-white z-10 ${isMapOverlay ? 'px-4 py-3' : 'p-6 pb-4'} border-b border-gray-100`}>
@@ -291,6 +285,13 @@ const Search: React.FC<SearchProps> = ({
                   />
                 </div>
               </div>
+
+              {/* Poignée de drag en bas */}
+              {isMapOverlay && (
+                <div className="flex justify-center pt-3 pb-2">
+                  <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+              )}
             </div>
           </>
         )}
