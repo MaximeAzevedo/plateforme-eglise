@@ -307,7 +307,7 @@ const Search: React.FC<SearchProps> = ({
       {/* Overlay mobile pour filtres */}
       {showMobileFilters && (
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 sm:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] sm:hidden"
           onClick={() => {
             setShowAdvancedFilters(false);
             setShowMobileFilters(false);

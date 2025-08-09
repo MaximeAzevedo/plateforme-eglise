@@ -199,101 +199,160 @@ export default function UpcomingCelebrations({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header moderne */}
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
+    <div className="space-y-4 lg:space-y-6">
+      {/* Header moderne - compact sur mobile */}
+      <div className="text-center lg:text-left">
+        <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-1 lg:mb-2">
           Prochaines célébrations
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-xs lg:text-sm text-gray-600">
           Dans votre zone de recherche
         </p>
       </div>
 
-      {/* Liste des célébrations */}
-      <div className="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
+      {/* Liste des célébrations - horizontal sur mobile, vertical sur desktop */}
+      <div className="lg:space-y-4 lg:max-h-[500px] lg:overflow-y-auto lg:custom-scrollbar">
         {celebrations.length > 0 ? (
-          celebrations.map((celebration, index) => (
-            <div
-              key={`${celebration.id}-${celebration.type}-${index}`}
-              className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
-              onClick={() => {
-                if (celebration.position && onPlaceClick) {
-                  onPlaceClick(celebration.position, celebration.placeName);
-                }
-              }}
-            >
-              {/* En-tête avec heure */}
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Clock className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-gray-900">
-                      {celebration.startTime} - {celebration.endTime}
+          <>
+            {/* Mobile: Scroll horizontal */}
+            <div className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {celebrations.map((celebration, index) => (
+                <div
+                  key={`${celebration.id}-${celebration.type}-${index}`}
+                  className="group bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02] flex-shrink-0 w-72"
+                  onClick={() => {
+                    if (celebration.position && onPlaceClick) {
+                      onPlaceClick(celebration.position, celebration.placeName);
+                    }
+                  }}
+                >
+                  {/* Contenu compact pour mobile */}
+                  <div className="space-y-3">
+                    {/* Heure et distance */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                          <Clock className="h-3 w-3 text-white" />
+                        </div>
+                        <div className="text-sm font-bold text-gray-900">
+                          {celebration.startTime} - {celebration.endTime}
+                        </div>
+                      </div>
+                      {celebration.distance && (
+                        <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+                          {formatDistance(celebration.distance)}
+                        </div>
+                      )}
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {celebration.date.toLocaleDateString('fr-FR')}
+
+                    {/* Type */}
+                    <div className="inline-flex items-center space-x-1 bg-gradient-to-r from-blue-50 to-indigo-50 px-2 py-1 rounded-full">
+                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                      <span className="text-xs font-medium text-blue-700">
+                        {celebration.type}
+                      </span>
+                    </div>
+
+                    {/* Lieu */}
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
+                        {celebration.placeName}
+                      </h4>
+                      <div className="flex items-center space-x-1 text-xs text-gray-600 mt-1">
+                        <MapPin className="h-3 w-3" />
+                        <span>{celebration.placeCity}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                {celebration.distance && (
-                  <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
-                    {formatDistance(celebration.distance)}
-                  </div>
-                )}
-              </div>
-
-              {/* Type de célébration */}
-              <div className="mb-3">
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-1 rounded-full">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-blue-700">
-                    {celebration.type}
-                  </span>
-                </div>
-              </div>
-
-              {/* Lieu */}
-              <div className="space-y-2">
-                <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
-                  {celebration.placeName}
-                </h4>
-                <div className="flex items-center space-x-2 text-xs text-gray-600">
-                  <MapPin className="h-3 w-3" />
-                  <span>{celebration.placeCity}</span>
-                </div>
-              </div>
-
-              {/* Indicateur cliquable */}
-              <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-                <div className="text-xs text-gray-500 font-medium">
-                  Cliquez pour localiser
-                </div>
-                <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
-              </div>
+              ))}
             </div>
-          ))
+
+            {/* Desktop: Layout vertical normal */}
+            <div className="hidden lg:block space-y-4">
+              {celebrations.map((celebration, index) => (
+                <div
+                  key={`${celebration.id}-${celebration.type}-${index}`}
+                  className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+                  onClick={() => {
+                    if (celebration.position && onPlaceClick) {
+                      onPlaceClick(celebration.position, celebration.placeName);
+                    }
+                  }}
+                >
+                  {/* En-tête avec heure */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <Clock className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-gray-900">
+                          {celebration.startTime} - {celebration.endTime}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {celebration.date.toLocaleDateString('fr-FR')}
+                        </div>
+                      </div>
+                    </div>
+                    {celebration.distance && (
+                      <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+                        {formatDistance(celebration.distance)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Type de célébration */}
+                  <div className="mb-3">
+                    <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-1 rounded-full">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-blue-700">
+                        {celebration.type}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Lieu */}
+                  <div className="space-y-2">
+                    <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
+                      {celebration.placeName}
+                    </h4>
+                    <div className="flex items-center space-x-2 text-xs text-gray-600">
+                      <MapPin className="h-3 w-3" />
+                      <span>{celebration.placeCity}</span>
+                    </div>
+                  </div>
+
+                  {/* Indicateur cliquable */}
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <div className="text-xs text-gray-500 font-medium">
+                      Cliquez pour localiser
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
-          <div className="text-center py-12 space-y-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl mx-auto flex items-center justify-center">
-              <Clock className="h-8 w-8 text-gray-400" />
+          <div className="text-center py-8 lg:py-12 space-y-4">
+            <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl mx-auto flex items-center justify-center">
+              <Clock className="h-6 w-6 lg:h-8 lg:w-8 text-gray-400" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 mb-2">
+              <h4 className="font-bold text-gray-900 mb-2 text-sm lg:text-base">
                 Aucune célébration trouvée
               </h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Aucun événement prévu dans cette zone. Essayez d'élargir votre recherche ou modifier vos filtres.
+              <p className="text-xs lg:text-sm text-gray-600 leading-relaxed">
+                Aucun événement prévu dans cette zone. Essayez d'élargir votre recherche.
               </p>
             </div>
           </div>
         )}
       </div>
 
-      {/* Note informative */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
+      {/* Note informative - plus compacte sur mobile */}
+      <div className="hidden lg:block mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
         <div className="flex items-start space-x-3">
           <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-white text-xs">💡</span>

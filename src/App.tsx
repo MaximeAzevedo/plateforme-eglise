@@ -486,28 +486,32 @@ function App() {
             </div>
 
             <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-0">
-                {/* Sidebar - Prochaines célébrations */}
-                <div className="lg:col-span-1 bg-gray-50/50 border-r border-gray-100">
-                  <div className="p-6">
-                    <UpcomingCelebrations 
-                      places={filteredPlaces}
-                      mapCenter={mapCenter}
-                      mapBounds={null} // mapBounds was removed from the new_code, so it's null here.
-                      onPlaceClick={handlePlaceClick}
-                      timeFilter={eventFilter.dateTimeFilter}
-                    />
-                  </div>
-                </div>
-                
-                {/* Carte principale */}
-                <div className="lg:col-span-3">
-                  <div className="p-6">
+              <div className="flex flex-col lg:grid lg:grid-cols-4 gap-0">
+                {/* Carte principale - EN PREMIER sur mobile */}
+                <div className="order-1 lg:order-2 lg:col-span-3">
+                  <div className="p-3 sm:p-6">
                     <MapView 
                       places={filteredPlaces} 
                       selectedDenomination={selectedDenomination}
                       onMapMove={handleMapMove}
                       centerOnPosition={shouldCenterMap}
+                    />
+                  </div>
+                </div>
+                
+                {/* Sidebar - Prochaines célébrations - EN SECOND sur mobile */}
+                <div className="order-2 lg:order-1 lg:col-span-1 bg-gray-50/50 border-t lg:border-t-0 lg:border-r border-gray-100">
+                  <div className="p-4 sm:p-6">
+                    <div className="lg:hidden mb-4 text-center">
+                      <h4 className="text-lg font-bold text-gray-900">Prochaines célébrations</h4>
+                      <p className="text-sm text-gray-600">Scroll horizontal pour voir plus</p>
+                    </div>
+                    <UpcomingCelebrations 
+                      places={filteredPlaces}
+                      mapCenter={mapCenter}
+                      mapBounds={null}
+                      onPlaceClick={handlePlaceClick}
+                      timeFilter={eventFilter.dateTimeFilter}
                     />
                   </div>
                 </div>

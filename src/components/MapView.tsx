@@ -221,7 +221,7 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
   };
 
   return (
-    <div className="map-container h-[400px] sm:h-[500px] md:h-[600px] animate-fade-in relative overflow-hidden">
+    <div className="map-container h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] animate-fade-in relative overflow-hidden">
       <MapContainer 
         center={[49.1193, 6.1757]} 
         zoom={12} 
@@ -233,6 +233,7 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
         dragging={true}
         tap={true}
         trackResize={true}
+        style={{ minHeight: '300px' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
