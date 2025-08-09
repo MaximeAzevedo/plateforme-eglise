@@ -413,6 +413,187 @@ body {
   }
 }
 
+/* ===== MOBILE OPTIMIZATIONS ===== */
+/* Animations mobiles fluides */
+.animate-pulse-divine {
+  animation: pulseDivine 3s ease-in-out infinite;
+}
+
+@keyframes pulseDivine {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
+/* Nouvelles animations pour formulaires */
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Interactions tactiles */
+.active\:scale-95:active {
+  transform: scale(0.95);
+}
+
+.active\:scale-98:active {
+  transform: scale(0.98);
+}
+
+/* Safe area pour iOS avec encoche */
+.h-safe-area-inset-bottom {
+  height: env(safe-area-inset-bottom);
+  min-height: 16px; /* Fallback pour les anciens navigateurs */
+}
+
+/* Amélioration du scroll sur mobile */
+@supports (-webkit-overflow-scrolling: touch) {
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Optimisation tactile */
+@media (pointer: coarse) {
+  /* Augmenter la zone de touche pour les interactions tactiles */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* Espacement plus généreux sur tactile */
+  .space-y-2 > * + * {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Effet de focus mobile-friendly */
+@media (max-width: 768px) {
+  *:focus {
+    outline: 3px solid var(--god-primary);
+    outline-offset: 3px;
+  }
+}
+
+/* Menu mobile animations */
+.mobile-menu-container {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease;
+}
+
+/* Popup carte mobile */
+.mobile-popup .leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.mobile-popup .leaflet-popup-tip {
+  border-radius: 4px !important;
+}
+
+/* Marqueurs de carte optimisés mobile */
+.custom-marker-icon:hover {
+  transform: scale(1.1) !important;
+}
+
+.custom-cluster-icon:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Backdrop blur optimisé pour mobile */
+@supports (backdrop-filter: blur(20px)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+/* Fallback pour anciens navigateurs mobile */
+@supports not (backdrop-filter: blur(20px)) {
+  .backdrop-blur-xl {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+  }
+  
+  .backdrop-blur-sm {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+}
+
+/* Optimisation du clavier mobile */
+@media (max-width: 768px) {
+  /* Éviter le zoom automatique sur iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Meilleure gestion du viewport */
+  .modal-mobile {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height pour iOS */
+  }
+}
+
+/* Améliorations des transitions pour mobile */
+@media (prefers-reduced-motion: no-preference) {
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
+  }
+  
+  .hover\:scale-110:hover {
+    transform: scale(1.1);
+  }
+}
+
+/* Désactiver les animations si l'utilisateur préfère */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-in,
+  .animate-scale-in,
+  .animate-pulse-divine {
+    animation: none !important;
+  }
+  
+  .transition-all,
+  .transition-colors,
+  .transition-transform {
+    transition: none !important;
+  }
+}
+
 /* ===== FOCUS ACCESSIBILITY ===== */
 *:focus {
   outline: 2px solid var(--god-primary);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Star, ArrowLeft, Heart, Calendar, MapPin, Tag, Shield, Eye, EyeOff } from 'lucide-react';
+import { X, Star, ArrowLeft, Heart, Shield } from 'lucide-react';
 
 interface TestimonyFormProps {
   isOpen: boolean;
@@ -15,16 +15,9 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     title: '',
     type: 'transformation' as TestimonyType,
     description: '',
-    beforeSituation: '',
-    afterSituation: '',
-    timeframe: '',
-    isAnonymous: false,
-    tags: [] as string[],
-    denomination: '',
-    location: ''
+    firstName: ''
   });
 
-  const [currentTag, setCurrentTag] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,34 +30,7 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     { value: 'other', label: 'Autre', icon: '💫', color: 'from-gray-400 to-gray-500' }
   ];
 
-  const timeframeOptions = [
-    'Immédiat',
-    'Quelques jours',
-    '1 semaine',
-    '2-3 semaines',
-    '1 mois',
-    '2-3 mois',
-    '6 mois',
-    '1 an',
-    'Plus d\'un an'
-  ];
-
-  const addTag = () => {
-    if (currentTag.trim() && !formData.tags.includes(currentTag.trim()) && formData.tags.length < 5) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, currentTag.trim()]
-      }));
-      setCurrentTag('');
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }));
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,10 +39,8 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     // Validation
     const newErrors: string[] = [];
     if (!formData.title.trim()) newErrors.push('Le titre est obligatoire');
-    if (!formData.description.trim()) newErrors.push('La description est obligatoire');
-    if (!formData.beforeSituation.trim()) newErrors.push('La situation avant est obligatoire');
-    if (!formData.afterSituation.trim()) newErrors.push('La situation après est obligatoire');
-    if (!formData.timeframe) newErrors.push('La durée est obligatoire');
+    if (!formData.description.trim()) newErrors.push('Votre histoire est obligatoire');
+    if (!formData.firstName.trim()) newErrors.push('Le prénom est obligatoire');
 
     if (newErrors.length > 0) {
       setErrors(newErrors);
@@ -86,11 +50,19 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
     setIsSubmitting(true);
     try {
       const testimonyData = {
-        user_name: formData.isAnonymous ? 'Anonyme' : formData.firstName || 'Utilisateur',
-        user_email: 'user@example.com', // À remplacer par l'authentification réelle
+        user_name: formData.firstName,
+        user_email: 'user@example.com', // Email générique pour le MVP
         title: formData.title,
-        content: formData.description, // Le champ description devient content
-        location: formData.location || null
+        content: formData.description,
+        type: formData.type || 'transformation',
+        before_situation: null, // Plus utilisé dans le MVP
+        after_situation: null, // Plus utilisé dans le MVP
+        timeframe: null, // Plus utilisé dans le MVP
+        is_anonymous: false, // Plus d'anonyme dans le MVP
+        location: null, // Plus de localisation dans le MVP
+        tags: null, // Plus de tags dans le MVP
+        denomination: null, // Plus de dénomination dans le MVP
+        status: 'pending' // IMPORTANT: Tous les nouveaux témoignages doivent être modérés
       };
 
       console.log('Envoi du témoignage:', testimonyData);
@@ -105,7 +77,7 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
       }
 
       console.log('Témoignage sauvegardé avec succès:', data);
-      alert('Merci ! Votre témoignage a été partagé et sera modéré avant publication.');
+      alert('✅ Merci ! Votre témoignage a été envoyé avec succès.\n\n🔍 Il sera examiné par notre équipe de modération avant publication pour garantir un contenu respectueux et édifiant.\n\n📧 Vous serez notifié une fois qu\'il sera approuvé et visible sur la plateforme.');
       
       // Reset du formulaire
       setFormData({
@@ -237,147 +209,27 @@ const TestimonyForm: React.FC<TestimonyFormProps> = ({ isOpen, onClose, onBack, 
               />
             </div>
 
-            {/* Avant/Après */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Situation avant *
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
-                  placeholder="Comment était votre situation avant..."
-                  value={formData.beforeSituation}
-                  onChange={e => setFormData(f => ({ ...f, beforeSituation: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Situation après *
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
-                  placeholder="Comment votre vie a changé..."
-                  value={formData.afterSituation}
-                  onChange={e => setFormData(f => ({ ...f, afterSituation: e.target.value }))}
-                />
-              </div>
-            </div>
 
-            {/* Durée */}
+
+
+
+
+
+
+
+            {/* Prénom */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Durée de la transformation *
+                Votre prénom *
               </label>
-              <select
+              <input
+                type="text"
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                value={formData.timeframe}
-                onChange={e => setFormData(f => ({ ...f, timeframe: e.target.value }))}
-              >
-                <option value="">Sélectionnez une durée</option>
-                {timeframeOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mots-clés (optionnel)
-              </label>
-              <div className="flex gap-2 mb-3">
-                <input
-                  type="text"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                  placeholder="Ajouter un mot-clé..."
-                  value={currentTag}
-                  onChange={e => setCurrentTag(e.target.value)}
-                  onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                />
-                <button
-                  type="button"
-                  onClick={addTag}
-                  disabled={!currentTag.trim() || formData.tags.length >= 5}
-                  className="px-4 py-3 bg-purple-500 text-white rounded-xl hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Tag className="h-4 w-4" />
-                </button>
-              </div>
-              {formData.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {formData.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm"
-                    >
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => removeTag(tag)}
-                        className="hover:text-purple-900"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Informations optionnelles */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dénomination (optionnel)
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                  placeholder="Ex: Catholique, Protestant..."
-                  value={formData.denomination}
-                  onChange={e => setFormData(f => ({ ...f, denomination: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Localisation (optionnel)
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                  placeholder="Ex: Paris, France"
-                  value={formData.location}
-                  onChange={e => setFormData(f => ({ ...f, location: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            {/* Anonymat */}
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-              <button
-                type="button"
-                onClick={() => setFormData(f => ({ ...f, isAnonymous: !f.isAnonymous }))}
-                className={`p-2 rounded-lg transition-colors ${
-                  formData.isAnonymous 
-                    ? 'bg-purple-500 text-white' 
-                    : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                {formData.isAnonymous ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-              <div>
-                <div className="font-medium text-gray-900">
-                  Publier anonymement
-                </div>
-                <div className="text-sm text-gray-600">
-                  Votre témoignage sera publié sans révéler votre identité
-                </div>
-              </div>
+                placeholder="Ex: Marie, Jean..."
+                value={formData.firstName}
+                onChange={e => setFormData(f => ({ ...f, firstName: e.target.value }))}
+              />
             </div>
 
             {/* Note de modération */}

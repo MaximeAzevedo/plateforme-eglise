@@ -42,7 +42,7 @@ export const PrayerWall: React.FC<PrayerWallProps> = () => {
         .from('prayer_requests')
         .select('*')
         .eq('status', 'approved')
-        .order('date_requested', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Erreur lors du chargement des prières:', error);

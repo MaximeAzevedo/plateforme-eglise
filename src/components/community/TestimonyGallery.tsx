@@ -41,7 +41,7 @@ export const TestimonyGallery: React.FC<TestimonyGalleryProps> = () => {
         .from('testimonies')
         .select('*')
         .eq('status', 'approved')
-        .order('date_shared', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Erreur lors du chargement des témoignages:', error);

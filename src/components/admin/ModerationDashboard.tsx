@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, CheckCircle, XCircle, Clock, AlertTriangle, User, Calendar, MapPin } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Clock, AlertTriangle, User, Calendar, MapPin, Church, Globe } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 interface TestimonyItem {
@@ -25,11 +25,30 @@ interface PrayerItem {
   status: 'pending' | 'approved' | 'rejected';
 }
 
+interface ChurchItem {
+  id: string;
+  Nom: string;
+  Denomination: string;
+  Adresse: string;
+  Ville: string;
+  Code_postal: string;
+  Site_web?: string;
+  Instagram?: string;
+  YouTube?: string;
+  Horaires: string;
+  Accessible: boolean;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  Latitude?: number;
+  Longitude?: number;
+}
+
 export const ModerationDashboard: React.FC = () => {
   const [pendingTestimonies, setPendingTestimonies] = useState<TestimonyItem[]>([]);
   const [pendingPrayers, setPendingPrayers] = useState<PrayerItem[]>([]);
+  const [pendingChurches, setPendingChurches] = useState<ChurchItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'testimonies' | 'prayers'>('testimonies');
+  const [activeTab, setActiveTab] = useState<'testimonies' | 'prayers' | 'churches'>('testimonies');
 
   useEffect(() => {
     loadPendingContent();
@@ -60,11 +79,24 @@ export const ModerationDashboard: React.FC = () => {
       console.log('✨ Prières récupérées:', prayers);
       console.log('❌ Erreur prières:', prayersError);
 
+      // Récupérer les lieux de culte en attente
+      console.log('🏛️ Récupération des lieux de culte...');
+      const { data: churches, error: churchesError } = await supabase
+        .from('BDD')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      console.log('✨ Lieux de culte récupérés:', churches);
+      console.log('❌ Erreur lieux de culte:', churchesError);
+
       setPendingTestimonies(testimonies || []);
       setPendingPrayers(prayers || []);
+      setPendingChurches(churches || []);
 
       console.log('📈 État final - Témoignages:', testimonies?.length || 0);
       console.log('📈 État final - Prières:', prayers?.length || 0);
+      console.log('📈 État final - Lieux de culte:', churches?.length || 0);
     } catch (error) {
       console.error('💥 Erreur lors du chargement:', error);
     } finally {
@@ -108,6 +140,33 @@ export const ModerationDashboard: React.FC = () => {
       }
     } catch (error) {
       console.error('Erreur lors de la modération:', error);
+    }
+  };
+
+  const moderateChurch = async (id: string, action: 'approved' | 'rejected', reason?: string, coordinates?: { lat: number, lng: number }) => {
+    try {
+      const updateData: any = {
+        status: action,
+        moderated_at: new Date().toISOString(),
+        rejection_reason: reason
+      };
+
+      // Si approuvé et que des coordonnées sont fournies, les ajouter
+      if (action === 'approved' && coordinates) {
+        updateData.Latitude = coordinates.lat;
+        updateData.Longitude = coordinates.lng;
+      }
+
+      const { error } = await supabase
+        .from('BDD')
+        .update(updateData)
+        .eq('id', id);
+
+      if (!error) {
+        setPendingChurches(prev => prev.filter(item => item.id !== id));
+      }
+    } catch (error) {
+      console.error('Erreur lors de la modération du lieu:', error);
     }
   };
 
@@ -160,7 +219,11 @@ export const ModerationDashboard: React.FC = () => {
               </span>
               <span className="flex items-center gap-1">
                 <Calendar size={14} />
-                {new Date(type === 'testimony' ? item.date_shared : (item as PrayerItem).date_requested).toLocaleDateString('fr-FR')}
+                {new Date(
+                  type === 'testimony'
+                    ? (item as TestimonyItem).date_shared
+                    : (item as PrayerItem).date_requested
+                ).toLocaleDateString('fr-FR')}
               </span>
               {type === 'testimony' && (item as TestimonyItem).location && (
                 <span className="flex items-center gap-1">
@@ -233,6 +296,221 @@ export const ModerationDashboard: React.FC = () => {
     );
   };
 
+  const ChurchModerationCard: React.FC<{
+    item: ChurchItem;
+  }> = ({ item }) => {
+    const [showRejectForm, setShowRejectForm] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
+    const [showGeolocation, setShowGeolocation] = useState(false);
+    const [coordinates, setCoordinates] = useState<{ lat: number, lng: number } | null>(null);
+    const [geolocating, setGeolocating] = useState(false);
+
+    const geocodeAddress = async () => {
+      setGeolocating(true);
+      try {
+        // Utiliser l'API Nominatim pour géocoder l'adresse
+        const fullAddress = `${item.Adresse}, ${item.Ville}, France`;
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          const { lat, lon } = data[0];
+          setCoordinates({ lat: parseFloat(lat), lng: parseFloat(lon) });
+        } else {
+          alert('Impossible de géolocaliser cette adresse. Veuillez vérifier l\'adresse ou géolocaliser manuellement.');
+        }
+      } catch (error) {
+        console.error('Erreur de géolocalisation:', error);
+        alert('Erreur lors de la géolocalisation');
+      } finally {
+        setGeolocating(false);
+      }
+    };
+
+    const handleApprove = () => {
+      if (coordinates) {
+        moderateChurch(item.id, 'approved', undefined, coordinates);
+      } else {
+        // Approuver sans coordonnées (peuvent être ajoutées plus tard)
+        moderateChurch(item.id, 'approved');
+      }
+    };
+
+    const handleReject = () => {
+      if (rejectionReason.trim()) {
+        moderateChurch(item.id, 'rejected', rejectionReason);
+        setShowRejectForm(false);
+        setRejectionReason('');
+      }
+    };
+
+    // Parser les horaires JSON si possible
+    let parsedSchedule = '';
+    try {
+      const schedule = JSON.parse(item.Horaires);
+      parsedSchedule = `${schedule.type} - ${schedule.day} ${schedule.startTime}-${schedule.endTime}`;
+    } catch {
+      parsedSchedule = item.Horaires;
+    }
+
+    return (
+      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-orange-500/20 p-3 rounded-full">
+              <Church className="text-orange-400" size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white">{item.Nom}</h3>
+              <p className="text-white/70 text-sm">{item.Denomination}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center gap-2 text-white/70 text-sm mb-1">
+              <Calendar size={14} />
+              {new Date(item.created_at).toLocaleDateString('fr-FR')}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-white/70 text-sm mb-1">
+                <MapPin size={14} />
+                Adresse
+              </div>
+              <p className="text-white font-medium">{item.Adresse}</p>
+              <p className="text-white/80 text-sm">{item.Ville} {item.Code_postal}</p>
+            </div>
+            
+            <div>
+              <div className="flex items-center gap-2 text-white/70 text-sm mb-1">
+                <Clock size={14} />
+                Horaires
+              </div>
+              <p className="text-white font-medium">{parsedSchedule}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <div className="text-white/70 text-sm mb-1">Accessibilité</div>
+              <p className="text-white font-medium">{item.Accessible ? '♿ Accessible' : '❌ Non accessible'}</p>
+            </div>
+            
+            {item.Site_web && (
+              <div>
+                <div className="flex items-center gap-2 text-white/70 text-sm mb-1">
+                  <Globe size={14} />
+                  Site web
+                </div>
+                <a href={item.Site_web} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 text-sm truncate block">
+                  {item.Site_web}
+                </a>
+              </div>
+            )}
+
+            {(item.Instagram || item.YouTube) && (
+              <div>
+                <div className="text-white/70 text-sm mb-1">Réseaux sociaux</div>
+                <div className="space-y-1">
+                  {item.Instagram && (
+                    <a href={item.Instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400 hover:text-pink-300 text-sm block">
+                      📱 Instagram
+                    </a>
+                  )}
+                  {item.YouTube && (
+                    <a href={item.YouTube} target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-300 text-sm block">
+                      📺 YouTube
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section géolocalisation */}
+        <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-blue-300 font-medium">Géolocalisation</h4>
+            <button
+              onClick={geocodeAddress}
+              disabled={geolocating}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors"
+            >
+              {geolocating ? '🔄 Recherche...' : '📍 Auto-géolocaliser'}
+            </button>
+          </div>
+          
+          {coordinates ? (
+            <div className="text-green-300 text-sm">
+              ✅ Coordonnées trouvées: {coordinates.lat.toFixed(6)}, {coordinates.lng.toFixed(6)}
+            </div>
+          ) : (
+            <div className="text-orange-300 text-sm">
+              ⚠️ Pas de coordonnées - Cliquez sur "Auto-géolocaliser" ou approuvez sans coordonnées
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleApprove}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
+          >
+            <CheckCircle size={16} />
+            Approuver
+            {coordinates && ' avec géoloc'}
+          </button>
+          <button
+            onClick={() => setShowRejectForm(!showRejectForm)}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
+          >
+            <XCircle size={16} />
+            Rejeter
+          </button>
+        </div>
+
+        {/* Formulaire de rejet */}
+        {showRejectForm && (
+          <div className="mt-4 p-4 bg-red-500/10 border border-red-400/20 rounded-lg">
+            <label className="block text-red-300 text-sm font-medium mb-2">
+              Raison du rejet :
+            </label>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 resize-none"
+              rows={3}
+              placeholder="Expliquez pourquoi ce lieu de culte est rejeté..."
+            />
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={handleReject}
+                disabled={!rejectionReason.trim()}
+                className="bg-red-600 hover:bg-red-700 disabled:bg-gray-500 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Confirmer le rejet
+              </button>
+              <button
+                onClick={() => {
+                  setShowRejectForm(false);
+                  setRejectionReason('');
+                }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
@@ -253,12 +531,12 @@ export const ModerationDashboard: React.FC = () => {
             <h1 className="text-3xl font-bold text-white">Modération GOD × CONNECT</h1>
           </div>
           <p className="text-white/70">
-            Gérez les témoignages et demandes de prière soumis par la communauté
+            Gérez les témoignages, demandes de prière et lieux de culte soumis par la communauté
           </p>
         </div>
 
         {/* Statistiques */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
             <div className="flex items-center gap-3">
               <div className="bg-yellow-500/20 p-3 rounded-full">
@@ -279,6 +557,18 @@ export const ModerationDashboard: React.FC = () => {
               <div>
                 <h3 className="text-lg font-semibold text-white">Prières en attente</h3>
                 <p className="text-2xl font-bold text-blue-400">{pendingPrayers.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+            <div className="flex items-center gap-3">
+              <div className="bg-orange-500/20 p-3 rounded-full">
+                <Church className="text-orange-400" size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Lieux de culte en attente</h3>
+                <p className="text-2xl font-bold text-orange-400">{pendingChurches.length}</p>
               </div>
             </div>
           </div>
@@ -306,11 +596,21 @@ export const ModerationDashboard: React.FC = () => {
           >
             Demandes de prière ({pendingPrayers.length})
           </button>
+          <button
+            onClick={() => setActiveTab('churches')}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              activeTab === 'churches'
+                ? 'bg-purple-600 text-white'
+                : 'bg-white/10 text-white/70 hover:bg-white/20'
+            }`}
+          >
+            Lieux de culte ({pendingChurches.length})
+          </button>
         </div>
 
         {/* Contenu */}
         <div className="space-y-6">
-          {activeTab === 'testimonies' ? (
+          {activeTab === 'testimonies' && (
             pendingTestimonies.length > 0 ? (
               pendingTestimonies.map((testimony) => (
                 <ModerationCard
@@ -330,7 +630,9 @@ export const ModerationDashboard: React.FC = () => {
                 </p>
               </div>
             )
-          ) : (
+          )}
+
+          {activeTab === 'prayers' && (
             pendingPrayers.length > 0 ? (
               pendingPrayers.map((prayer) => (
                 <ModerationCard
@@ -347,6 +649,27 @@ export const ModerationDashboard: React.FC = () => {
                 </h3>
                 <p className="text-white/70">
                   Toutes les demandes ont été modérées !
+                </p>
+              </div>
+            )
+          )}
+
+          {activeTab === 'churches' && (
+            pendingChurches.length > 0 ? (
+              pendingChurches.map((church) => (
+                <ChurchModerationCard
+                  key={church.id}
+                  item={church}
+                />
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <CheckCircle className="mx-auto mb-4 text-green-400" size={48} />
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  Aucun lieu de culte en attente
+                </h3>
+                <p className="text-white/70">
+                  Tous les lieux de culte ont été modérés !
                 </p>
               </div>
             )

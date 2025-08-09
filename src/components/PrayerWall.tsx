@@ -99,14 +99,14 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose, supabase }) =>
         id: item.id,
         userId: item.user_name || 'Utilisateur',
         title: item.title,
-        category: item.category || 'spiritual-growth',
+        category: item.category || 'general',
         description: item.content || '', // content -> description
         isAnonymous: item.is_anonymous || false,
         isUrgent: item.is_urgent || false,
-        isAnswered: false, // valeur par défaut
+        isAnswered: false, // à implémenter plus tard
         prayerCount: item.prayer_count || 0,
-        prayedByMe: false, // valeur par défaut
-        supportMessages: [], // valeur par défaut
+        prayedByMe: false, // à implémenter avec authentification
+        supportMessages: [], // à implémenter plus tard
         createdAt: new Date(item.created_at), // Convertir string en Date
         updatedAt: new Date(item.updated_at || item.created_at)
       }));

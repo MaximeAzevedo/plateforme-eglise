@@ -146,22 +146,22 @@ const TestimonyGallery: React.FC<TestimonyGalleryProps> = ({ isOpen, onClose, su
         id: item.id,
         title: item.title,
         description: item.content || '', // content -> description
-        type: 'transformation', // valeur par défaut
-        beforeSituation: 'Situation difficile', // valeur par défaut
-        afterSituation: 'Transformation divine', // valeur par défaut
-        timeframe: '1 mois', // valeur par défaut
+        type: item.type || 'transformation', // utiliser les vraies données
+        beforeSituation: item.before_situation || 'Non spécifié', // utiliser les vraies données
+        afterSituation: item.after_situation || 'Non spécifié', // utiliser les vraies données
+        timeframe: item.timeframe || 'Non spécifié', // utiliser les vraies données
         location: item.location || '',
-        denomination: '',
-        tags: [],
-        likes: item.likes_count || 0,
-        shares: 0,
+        denomination: item.denomination || '',
+        tags: item.tags || [],
+        likes: item.likes || item.likes_count || 0,
+        shares: item.shares || 0,
         comments: [],
         createdAt: new Date(item.created_at), // Convertir string en Date
-        updatedAt: new Date(item.updated_at),
+        updatedAt: new Date(item.updated_at || item.created_at),
         userId: item.user_name || 'Utilisateur',
-        isVerified: false,
-        verifiedBy: null,
-        isAnonymous: false
+        isVerified: item.is_verified || false,
+        verifiedBy: item.verified_by || null,
+        isAnonymous: item.is_anonymous || false
       }));
       
       setTestimonies(transformedTestimonies);
