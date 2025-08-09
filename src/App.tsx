@@ -490,27 +490,18 @@ function App() {
             />
           </div>
 
-          {/* Compteur de résultats en bas à gauche */}
-          <div className="absolute bottom-20 left-4 z-50">
-            <div className="bg-white rounded-full px-4 py-2 shadow-lg border border-gray-200">
-              <span className="text-sm font-medium text-gray-700">
-                🏛️ {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''}
-              </span>
-            </div>
-          </div>
-
           {/* Popup en bas quand un lieu est sélectionné */}
           {showPlacePopup && selectedPlace && (
             <div className="absolute bottom-0 left-0 right-0 z-50">
-              <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200 p-6 transform transition-transform duration-300 ease-out">
+              <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200 p-4 transform transition-transform duration-300 ease-out">
                 {/* Poignée de drag */}
-                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
+                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3"></div>
                 
                 {/* Contenu du popup */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-1">
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">
                         {selectedPlace.name}
                       </h3>
                       <p className="text-gray-600 text-sm">
@@ -519,27 +510,27 @@ function App() {
                     </div>
                     <button
                       onClick={() => setShowPlacePopup(false)}
-                      className="p-2 hover:bg-gray-100 rounded-full"
+                      className="p-1.5 hover:bg-gray-100 rounded-full"
                     >
                       ✕
                     </button>
                   </div>
                   
                   <div className="flex items-center space-x-3">
-                    <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                    <div className="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
                       {selectedPlace.denomination}
                     </div>
                   </div>
                   
-                  <div className="text-sm text-gray-600">
+                  <div className="text-xs text-gray-600">
                     <p><strong>Horaires :</strong> {selectedPlace.serviceTimes}</p>
                   </div>
                   
-                  <div className="flex space-x-3 pt-2">
-                    <button className="flex-1 bg-amber-500 text-white py-3 rounded-xl font-medium hover:bg-amber-600 transition-colors">
+                  <div className="flex space-x-3 pt-1">
+                    <button className="flex-1 bg-amber-500 text-white py-2.5 rounded-xl font-medium hover:bg-amber-600 transition-colors">
                       📍 Itinéraire
                     </button>
-                    <button className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                    <button className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition-colors">
                       📞 Contacter
                     </button>
                   </div>

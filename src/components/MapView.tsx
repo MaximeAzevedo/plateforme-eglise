@@ -422,36 +422,9 @@ const MapView: React.FC<MapViewProps> = ({
         ))}
       </MapContainer>
 
-      {/* Contrôles de zoom personnalisés - adaptés selon le mode */}
-      <div className={`absolute ${isFullScreen ? 'top-20 right-4' : 'top-4 right-4'} z-[1000] flex flex-col space-y-2`}>
-        <button
-          onClick={() => {
-            const mapInstance = (window as any).mapInstance;
-            if (mapInstance) {
-              mapInstance.zoomIn();
-            }
-          }}
-          className="w-10 h-10 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
-        >
-          <Plus className="w-5 h-5 text-gray-700" />
-        </button>
-        
-        <button
-          onClick={() => {
-            const mapInstance = (window as any).mapInstance;
-            if (mapInstance) {
-              mapInstance.zoomOut();
-            }
-          }}
-          className="w-10 h-10 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
-        >
-          <Minus className="w-5 h-5 text-gray-700" />
-        </button>
-      </div>
-
-      {/* Contrôles supplémentaires en mode plein écran */}
+      {/* Contrôles supplémentaires en mode plein écran - Seulement géolocalisation */}
       {isFullScreen && (
-        <div className="absolute top-20 left-4 z-[1000] flex flex-col space-y-2">
+        <div className="absolute top-20 left-4 z-[1000]">
           <button
             onClick={handleLocateUser}
             disabled={isLocating}
@@ -461,22 +434,6 @@ const MapView: React.FC<MapViewProps> = ({
           >
             <Locate className={`w-5 h-5 ${isLocating ? 'text-blue-600' : 'text-gray-700'}`} />
           </button>
-          
-          <button
-            onClick={handleResetView}
-            className="w-12 h-12 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
-          >
-            <RotateCcw className="w-5 h-5 text-gray-700" />
-          </button>
-        </div>
-      )}
-
-      {/* Indicateur de zoom mobile */}
-      {isFullScreen && (
-        <div className="absolute bottom-4 right-4 z-[1000]">
-          <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
-            Zoom pour explorer
-          </div>
         </div>
       )}
     </div>

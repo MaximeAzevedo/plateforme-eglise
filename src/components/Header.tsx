@@ -120,31 +120,31 @@ const Header: React.FC<HeaderProps> = ({
           ${isMobile && currentView === 'map' ? 'bg-white/95 backdrop-blur-md shadow-lg' : ''}
         `}
       >
-        <div className="container mx-auto px-4 py-3">
+        <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             
             {/* Logo et navigation gauche */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               {/* Bouton retour sur mobile dans la vue carte */}
               {isMobile && currentView === 'map' && onViewChange && (
                 <button
                   onClick={() => onViewChange('home')}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <ArrowLeft className="w-5 h-5 text-gray-700" />
+                  <ArrowLeft className="w-4 h-4 text-gray-700" />
                 </button>
               )}
 
               {/* Logo */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Crown className="w-6 h-6 text-white" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                    <Crown className="w-5 h-5 text-white" />
                   </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                 </div>
                 <div className="hidden sm:block">
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                     {isMobile ? getViewTitle() : 'GOD × CONNECT'}
                   </h1>
                   {!isMobile && (
@@ -188,7 +188,7 @@ const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center space-x-2">
                 {/* Compteur de lieux sur mobile dans la vue carte */}
                 {currentView === 'map' && (
-                  <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-medium">
                     {placesCount} lieux
                   </div>
                 )}
@@ -196,12 +196,12 @@ const Header: React.FC<HeaderProps> = ({
                 {/* Menu burger */}
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors relative"
+                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors relative"
                 >
                   {isMobileMenuOpen ? (
-                    <X className="w-6 h-6 text-gray-700" />
+                    <X className="w-5 h-5 text-gray-700" />
                   ) : (
-                    <Menu className="w-6 h-6 text-gray-700" />
+                    <Menu className="w-5 h-5 text-gray-700" />
                   )}
                 </button>
               </div>
