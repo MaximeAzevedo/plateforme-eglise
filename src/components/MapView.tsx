@@ -196,6 +196,18 @@ const createCustomIcon = (denomination: Denomination) => {
 const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMove, centerOnPosition }) => {
   const [isLocating, setIsLocating] = React.useState(false);
 
+  // 🔍 DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
+  React.useEffect(() => {
+    console.log('🗺️ MapView DEBUG:');
+    console.log('📊 Nombre de places reçues:', places?.length || 0);
+    console.log('📍 Places:', places);
+    console.log('🎯 Première place:', places?.[0]);
+    if (places?.length > 0) {
+      console.log('📐 Coordinates première place:', places[0].position);
+      console.log('🏷️ Nom première place:', places[0].name);
+    }
+  }, [places]);
+
   const handleLocateUser = () => {
     setIsLocating(true);
     if (navigator.geolocation) {

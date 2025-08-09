@@ -48,21 +48,31 @@ function isValidCoordinate(coord: any): boolean {
 }
 
 function transformSupabaseData(data: any[]): WorshipPlace[] {
-  console.log('🔧 Transformation des données, éléments reçus:', data?.length);
+  console.log('🔧 === DÉBUT TRANSFORMATION DONNÉES ===');
+  console.log('🔧 Éléments reçus depuis Supabase:', data?.length || 0);
+  console.log('🔧 Premier élément brut:', data?.[0]);
   
-  return data
-    .filter(place => {
-      // Filter out places with invalid coordinates
-      const hasValidCoordinates = isValidCoordinate(place.Latitude) && isValidCoordinate(place.Longitude);
-      if (!hasValidCoordinates) {
-        console.warn(`Place with ID ${place.id} skipped due to invalid coordinates:`, {
-          latitude: place.Latitude,
-          longitude: place.Longitude
-        });
-      }
-      return hasValidCoordinates;
-    })
-    .map(place => {
+  if (!data || data.length === 0) {
+    console.error('❌ AUCUNE DONNÉE REÇUE DEPUIS SUPABASE !');
+    return [];
+  }
+  
+  const filteredPlaces = data.filter(place => {
+    // Filter out places with invalid coordinates
+    const hasValidCoordinates = isValidCoordinate(place.Latitude) && isValidCoordinate(place.Longitude);
+    if (!hasValidCoordinates) {
+      console.warn(`⚠️ Lieu rejeté (coordonnées invalides):`, {
+        nom: place.Nom,
+        latitude: place.Latitude,
+        longitude: place.Longitude
+      });
+    }
+    return hasValidCoordinates;
+  });
+
+  console.log('✅ Lieux avec coordonnées valides:', filteredPlaces.length);
+  
+  const transformedPlaces = filteredPlaces.map(place => {
       // Traitement des horaires JSON
       let serviceTimes = 'Horaires non disponibles';
       try {
@@ -103,6 +113,10 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
       console.log(`✅ Lieu transformé: ${transformedPlace.name} (${transformedPlace.city})`);
       return transformedPlace;
     });
+
+  console.log('🔧 === FIN TRANSFORMATION DONNÉES ===');
+  console.log('🔧 Nombre final de lieux transformés:', transformedPlaces.length);
+  return transformedPlaces;
 }
 
 function App() {
