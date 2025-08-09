@@ -148,30 +148,48 @@ const createCustomIcon = (denomination: Denomination) => {
   const iconSvg = confessionIcons[denomination] || confessionIcons.Other;
   const color = getMarkerColor(denomination);
   
-  // Marqueur plus grand pour mobile
+  // Marqueur ultra-moderne avec effets visuels
   const html = `
     <div style="
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, ${color} 60%, ${color}CC 100%);
-      border: 3px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, ${color} 0%, ${color}CC 50%, ${color}88 100%);
+      border: 3px solid #ffffff;
+      box-shadow: 
+        0 8px 25px rgba(0,0,0,0.15),
+        0 4px 12px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(255,255,255,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      backdrop-filter: blur(10px);
-      transition: transform 0.2s ease;
-    ">
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      transform: perspective(1000px) rotateX(0deg);
+    " 
+    class="marker-hover-effect">
+      <div style="
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, ${color}40 0%, transparent 70%);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      "></div>
       ${iconSvg}
     </div>
   `;
   return divIcon({
     html,
-    className: 'custom-marker-icon',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20]
+    className: 'custom-marker-icon animate-marker-appear',
+    iconSize: [44, 44],
+    iconAnchor: [22, 22]
   });
 };
 
@@ -221,23 +239,24 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
   };
 
   return (
-    <div className="map-container h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] animate-fade-in relative overflow-hidden">
+    <div className="map-container h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] w-full relative overflow-hidden rounded-2xl shadow-xl border border-gray-100">
       <MapContainer 
         center={[49.1193, 6.1757]} 
         zoom={12} 
         scrollWheelZoom={true} 
-        className="h-full rounded-2xl overflow-hidden"
+        className="h-full w-full rounded-2xl overflow-hidden"
         zoomControl={false}
         touchZoom={true}
         doubleClickZoom={true}
         dragging={true}
         tap={true}
         trackResize={true}
-        style={{ minHeight: '300px' }}
+        style={{ minHeight: '350px', borderRadius: '1rem' }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          maxZoom={20}
         />
         
         <MapEventHandler onMapMove={onMapMove} />
@@ -248,34 +267,62 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
           chunkedLoading
           animate={true}
           spiderfyOnMaxZoom={true}
-          maxClusterRadius={50} // Plus grand pour mobile
+          maxClusterRadius={50}
           showCoverageOnHover={false}
           iconCreateFunction={(cluster: any) => {
             const count = cluster.getChildCount();
-            const size = count < 10 ? 50 : count < 100 ? 60 : 70; // Taille dynamique pour mobile
+            const size = count < 10 ? 52 : count < 100 ? 62 : 72;
+            
+            // Couleurs dégradées basées sur la taille du cluster
+            const getClusterGradient = (count: number) => {
+              if (count < 5) return 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'; // Bleu
+              if (count < 15) return 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'; // Orange
+              if (count < 30) return 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'; // Rouge
+              return 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'; // Violet
+            };
+            
             return divIcon({
               html: `
                 <div style="
                   width: ${size}px;
                   height: ${size}px;
                   border-radius: 50%;
-                  background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-                  border: 4px solid #fff;
-                  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4), 0 0 0 1px rgba(0,0,0,0.1);
+                  background: ${getClusterGradient(count)};
+                  border: 4px solid #ffffff;
+                  box-shadow: 
+                    0 10px 30px rgba(0,0,0,0.2),
+                    0 5px 15px rgba(0,0,0,0.1),
+                    0 0 0 1px rgba(255,255,255,0.3),
+                    inset 0 2px 0 rgba(255,255,255,0.4);
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  font-weight: bold;
-                  color: #fff;
-                  font-size: ${count < 10 ? '1.2rem' : count < 100 ? '1.1rem' : '1rem'};
+                  font-weight: 800;
+                  color: #ffffff;
+                  font-size: ${count < 10 ? '1.3rem' : count < 100 ? '1.2rem' : '1.1rem'};
                   position: relative;
-                  backdrop-filter: blur(10px);
-                  transition: transform 0.2s ease;
-                ">
-                  ${count}
+                  backdrop-filter: blur(15px);
+                  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+                  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+                " 
+                class="cluster-modern-effect">
+                  <div style="
+                    position: absolute;
+                    top: -3px;
+                    left: -3px;
+                    right: -3px;
+                    bottom: -3px;
+                    border-radius: 50%;
+                    background: ${getClusterGradient(count).replace('135deg', '315deg')};
+                    opacity: 0;
+                    z-index: -1;
+                    transition: opacity 0.3s ease;
+                    filter: blur(8px);
+                  "></div>
+                  <span style="position: relative; z-index: 1;">${count}</span>
                 </div>
               `,
-              className: 'custom-cluster-icon',
+              className: 'custom-cluster-icon animate-marker-appear',
               iconSize: [size, size],
               iconAnchor: [size/2, size/2]
             });

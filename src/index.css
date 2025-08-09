@@ -662,3 +662,130 @@ header {
 .toast {
   z-index: 9998 !important;
 }
+
+/* ===== ANIMATIONS CARTE MODERNE ===== */
+
+/* Animation d'entrée de la carte */
+@keyframes map-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.map-container {
+  animation: map-fade-in 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Animation d'apparition des marqueurs */
+@keyframes marker-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(20px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-marker-appear {
+  animation: marker-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Effets hover pour les marqueurs */
+.custom-marker-icon:hover .marker-hover-effect {
+  transform: perspective(1000px) rotateX(-10deg) scale(1.1) !important;
+  box-shadow: 
+    0 12px 35px rgba(0,0,0,0.2),
+    0 6px 15px rgba(0,0,0,0.15),
+    0 0 0 1px rgba(255,255,255,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.6) !important;
+}
+
+.custom-marker-icon:hover .marker-hover-effect > div:first-child {
+  opacity: 1 !important;
+}
+
+/* Animation pulse pour marqueurs actifs */
+@keyframes marker-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.marker-active {
+  animation: marker-pulse 2s ease-in-out infinite;
+}
+
+/* Amélioration des clusters */
+.custom-cluster-icon {
+  border-radius: 50% !important;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+}
+
+.custom-cluster-icon:hover {
+  transform: scale(1.15) rotate(5deg) !important;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25) !important;
+}
+
+.custom-cluster-icon:hover .cluster-modern-effect > div:first-child {
+  opacity: 0.8 !important;
+}
+
+/* Animation pour les clusters */
+@keyframes cluster-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.cluster-active {
+  animation: cluster-pulse 2s ease-in-out infinite;
+}
+
+/* Popups modernes */
+.leaflet-popup-content-wrapper {
+  border-radius: 1rem !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 8px 25px rgba(0,0,0,0.1) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255,255,255,0.95) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* Contrôles de carte modernes */
+.map-container button {
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+}
+
+.map-container button:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15) !important;
+}
+
+.map-container button:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* ===== FIN ANIMATIONS CARTE ===== */
