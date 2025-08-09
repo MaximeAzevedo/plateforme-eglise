@@ -167,45 +167,45 @@ const Search: React.FC<SearchProps> = ({
         {/* Section des filtres */}
         {showFilters && (
           <>
-            {/* Overlay pour fermer les filtres sur mobile */}
-            {!isMapOverlay && (
-              <div 
-                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] lg:hidden"
-                onClick={() => setShowFilters(false)}
-              />
-            )}
+            {/* Overlay pour fermer les filtres */}
+            <div 
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[60]"
+              onClick={() => setShowFilters(false)}
+            />
             
-            {/* Contenu des filtres */}
+            {/* Popup des filtres - Style moderne */}
             <div className={`
-              relative z-[70] bg-white border-t border-gray-100
-              ${isMapOverlay ? 'rounded-b-xl' : 'rounded-b-2xl'}
-              ${!isMapOverlay ? 'lg:static lg:z-auto' : ''}
+              fixed z-[70] bg-white shadow-2xl
+              ${isMapOverlay 
+                ? 'bottom-0 left-4 right-4 top-24 rounded-t-3xl border-t border-gray-200' 
+                : 'bottom-0 left-0 right-0 max-h-[80vh] rounded-t-3xl border-t border-gray-200 lg:static lg:z-auto lg:max-h-none lg:rounded-b-2xl lg:rounded-t-none lg:border-t lg:border-gray-100'
+              }
             `}>
-              <div className={`${isMapOverlay ? 'p-3' : 'p-6 pt-4'} space-y-4`}>
-                
-                {/* En-tête des filtres avec compteur */}
+              {/* Poignée de drag */}
+              {isMapOverlay && (
+                <div className="flex justify-center pt-3 pb-2">
+                  <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+              )}
+
+              {/* Header sticky */}
+              <div className={`sticky top-0 bg-white z-10 ${isMapOverlay ? 'px-4 py-3' : 'p-6 pb-4'} border-b border-gray-100`}>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2">
-                      <Filter className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'} text-amber-600`} />
-                      <h3 className={`${isMapOverlay ? 'text-sm' : 'text-lg'} font-bold text-gray-900`}>
-                        Filtres avancés
-                      </h3>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <Filter className={`${isMapOverlay ? 'w-5 h-5' : 'w-6 h-6'} text-amber-600`} />
+                    <h3 className={`${isMapOverlay ? 'text-lg' : 'text-xl'} font-bold text-gray-900`}>
+                      Filtres
+                    </h3>
                     <div className={`px-3 py-1 bg-amber-100 text-amber-800 rounded-full ${isMapOverlay ? 'text-xs' : 'text-sm'} font-medium`}>
-                      {places.length} résultat{places.length > 1 ? 's' : ''}
+                      {places.length}
                     </div>
                   </div>
                   
-                  {/* Bouton fermer les filtres */}
                   <button
                     onClick={() => setShowFilters(false)}
-                    className={`
-                      text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors
-                      ${isMapOverlay ? 'p-1 w-6 h-6' : 'p-2 w-8 h-8'}
-                    `}
+                    className={`p-2 hover:bg-gray-100 rounded-full transition-colors`}
                   >
-                    <X className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                    <X className={`${isMapOverlay ? 'w-5 h-5' : 'w-6 h-6'} text-gray-500`} />
                   </button>
                 </div>
 
@@ -217,76 +217,79 @@ const Search: React.FC<SearchProps> = ({
                     onDenominationFilter(null);
                     onEventFilter({ enabled: false, types: [] });
                   }}
-                  className={`
-                    text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors
-                    ${isMapOverlay ? 'text-xs px-2 py-1' : 'text-sm px-3 py-2'} font-medium
-                  `}
+                  className={`mt-3 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors ${isMapOverlay ? 'text-sm px-3 py-1.5' : 'text-sm px-3 py-2'} font-medium`}
                 >
                   ↻ Réinitialiser tous les filtres
                 </button>
+              </div>
 
-                {/* Filtres par confession */}
-                <div className="space-y-3">
-                  <h4 className={`${isMapOverlay ? 'text-sm' : 'text-base'} font-semibold text-gray-900 flex items-center`}>
-                    <Sparkles className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'} text-amber-500 mr-2`} />
-                    Confessions religieuses
-                  </h4>
+              {/* Contenu scrollable */}
+              <div className={`overflow-y-auto ${isMapOverlay ? 'max-h-[calc(100vh-200px)] px-4 pb-4' : 'max-h-[60vh] px-6 pb-6'}`}>
+                <div className="space-y-6">
                   
-                  <div className={`grid gap-2 ${isMapOverlay ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
-                    {denominations.map((denomination) => (
-                      <label
-                        key={denomination}
-                        className={`
-                          relative flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200
-                          ${selectedDenominations?.includes(denomination)
-                            ? 'border-amber-400 bg-amber-50 text-amber-900'
-                            : 'border-gray-200 bg-white hover:border-amber-200 hover:bg-amber-50/50'
-                          }
-                          ${isMapOverlay ? 'p-2' : 'p-3'}
-                        `}
-                        style={{ minHeight: isMapOverlay ? '40px' : '48px' }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedDenominations?.includes(denomination) || false}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              const newSelection = selectedDenominations ? [...selectedDenominations, denomination] : [denomination];
-                              onDenominationFilter(newSelection);
-                            } else {
-                              const newSelection = selectedDenominations?.filter(d => d !== denomination) || [];
-                              onDenominationFilter(newSelection.length > 0 ? newSelection : null);
+                  {/* Filtres par confession */}
+                  <div className="space-y-3">
+                    <h4 className={`${isMapOverlay ? 'text-base' : 'text-lg'} font-semibold text-gray-900 flex items-center`}>
+                      <Sparkles className={`${isMapOverlay ? 'w-5 h-5' : 'w-6 h-6'} text-amber-500 mr-2`} />
+                      Confessions religieuses
+                    </h4>
+                    
+                    <div className={`grid gap-3 ${isMapOverlay ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+                      {denominations.map((denomination) => (
+                        <label
+                          key={denomination}
+                          className={`
+                            relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
+                            ${selectedDenominations?.includes(denomination)
+                              ? 'border-amber-400 bg-amber-50 text-amber-900 shadow-md scale-105'
+                              : 'border-gray-200 bg-white hover:border-amber-200 hover:bg-amber-50/50 hover:scale-102'
                             }
-                          }}
-                          className="sr-only"
-                        />
-                        <div className={`${isMapOverlay ? 'text-xs' : 'text-sm'} font-medium text-center w-full`}>
-                          {denominationLabels[denomination]}
-                        </div>
-                        {selectedDenominations?.includes(denomination) && (
-                          <div className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full"></div>
-                        )}
-                      </label>
-                    ))}
+                          `}
+                          style={{ minHeight: isMapOverlay ? '50px' : '60px' }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedDenominations?.includes(denomination) || false}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                const newSelection = selectedDenominations ? [...selectedDenominations, denomination] : [denomination];
+                                onDenominationFilter(newSelection);
+                              } else {
+                                const newSelection = selectedDenominations?.filter(d => d !== denomination) || [];
+                                onDenominationFilter(newSelection.length > 0 ? newSelection : null);
+                              }
+                            }}
+                            className="sr-only"
+                          />
+                          <div className={`${isMapOverlay ? 'text-sm' : 'text-base'} font-medium`}>
+                            {denominationLabels[denomination]}
+                          </div>
+                          {selectedDenominations?.includes(denomination) && (
+                            <div className="absolute top-2 right-2 w-3 h-3 bg-amber-500 rounded-full flex items-center justify-center">
+                              <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                            </div>
+                          )}
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Composants de filtres avancés - toujours affichés */}
-                <AdvancedFilters 
-                  places={places}
-                  eventFilter={eventFilter}
-                  onEventFilterChange={onEventFilter}
-                  isVisible={true}
-                  isMapOverlay={isMapOverlay}
-                />
-                
-                <LocationTimeFilters 
-                  eventFilter={eventFilter}
-                  onEventFilter={onEventFilter}
-                  currentLocation={currentLocation}
-                  onLocationFound={handleLocationFound}
-                  isMapOverlay={isMapOverlay}
-                />
+                  {/* Composants de filtres avancés */}
+                  <AdvancedFilters 
+                    places={places}
+                    eventFilter={eventFilter}
+                    onEventFilterChange={onEventFilter}
+                    isVisible={true}
+                    isMapOverlay={isMapOverlay}
+                  />
+                  
+                  <LocationTimeFilters 
+                    places={places}
+                    eventFilter={eventFilter}
+                    onEventFilterChange={onEventFilter}
+                    currentLocation={currentLocation}
+                  />
+                </div>
               </div>
             </div>
           </>

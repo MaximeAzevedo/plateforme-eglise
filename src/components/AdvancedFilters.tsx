@@ -168,7 +168,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
         </button>
 
         {showEventTypes && (
-          <div className={`grid gap-2 ${isMapOverlay ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
+          <div className={`grid gap-3 ${isMapOverlay ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2'}`}>
             {availableTypes.map(type => {
               const config = eventTypeConfig[type];
               if (!config) {
@@ -179,19 +179,46 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
               return (
                 <label 
                   key={type} 
-                  className={`flex items-center gap-2 cursor-pointer ${isMapOverlay ? 'p-2' : 'p-3'} rounded-lg hover:bg-gray-50 transition-colors border border-gray-200 hover:border-amber-300`}
-                  style={{ minHeight: isMapOverlay ? '40px' : '48px' }}
+                  className={`
+                    relative flex items-center gap-3 cursor-pointer rounded-xl border-2 transition-all duration-200
+                    ${eventFilter.types?.includes(type) 
+                      ? 'border-amber-400 bg-amber-50 text-amber-900 shadow-md scale-105' 
+                      : 'border-gray-200 bg-white hover:border-amber-300 hover:bg-amber-50/50 hover:scale-102'
+                    }
+                    ${isMapOverlay ? 'p-3' : 'p-4'}
+                  `}
+                  style={{ minHeight: isMapOverlay ? '50px' : '60px' }}
                 >
                   <input
                     type="checkbox"
                     checked={eventFilter.types?.includes(type) || false}
                     onChange={() => handleEventTypeToggle(type)}
-                    className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                    className="sr-only"
                   />
-                  <IconComponent className={`${isMapOverlay ? 'h-4 w-4' : 'h-5 w-5'} text-amber-500`} />
-                  <span className={`${isMapOverlay ? 'text-xs' : 'text-sm'} text-gray-700 flex-1 font-medium`}>
+                  
+                  {/* Icône avec fond coloré */}
+                  <div className={`
+                    flex-shrink-0 rounded-lg flex items-center justify-center
+                    ${eventFilter.types?.includes(type) 
+                      ? 'bg-amber-500 text-white' 
+                      : 'bg-gray-100 text-gray-600'
+                    }
+                    ${isMapOverlay ? 'w-8 h-8' : 'w-10 h-10'}
+                  `}>
+                    <IconComponent className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                  </div>
+                  
+                  {/* Texte */}
+                  <span className={`${isMapOverlay ? 'text-xs' : 'text-sm'} text-gray-700 flex-1 font-medium leading-tight`}>
                     {celebrationTypeLabels[type]}
                   </span>
+                  
+                  {/* Indicateur de sélection */}
+                  {eventFilter.types?.includes(type) && (
+                    <div className="absolute top-2 right-2 w-3 h-3 bg-amber-500 rounded-full flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                    </div>
+                  )}
                 </label>
               );
             })}
