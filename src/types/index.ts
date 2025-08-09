@@ -64,6 +64,7 @@ export type TimeSlot =
 // Nouveaux types pour les filtres temporels
 export type DateFilter = 
   | 'today'
+  | 'tonight'
   | 'weekend'
   | 'week'
   | 'custom';

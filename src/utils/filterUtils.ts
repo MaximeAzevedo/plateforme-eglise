@@ -84,9 +84,10 @@ export const weekDayLabels: Record<WeekDay, string> = {
 // Labels pour les filtres temporels
 export const dateFilterLabels: Record<DateFilter, string> = {
   'today': 'Aujourd\'hui',
+  'tonight': 'Ce soir',
   'weekend': 'Ce week-end',
   'week': 'Cette semaine',
-  'custom': 'Date personnalisée'
+  'custom': 'Date spécifique'
 };
 
 // Labels pour les rayons de localisation
