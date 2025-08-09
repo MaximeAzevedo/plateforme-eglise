@@ -30,10 +30,9 @@ const Search: React.FC<SearchProps> = ({
   currentLocation
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -144,8 +143,7 @@ const Search: React.FC<SearchProps> = ({
               {/* Bouton filtres mobile */}
               <button
                 onClick={() => {
-                  setShowAdvancedFilters(!showAdvancedFilters);
-                  setShowMobileFilters(!showMobileFilters);
+                  setShowFilters(!showFilters);
                 }}
                 className={`group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
                   hasActiveEventFilters() || !isAllSelected
@@ -163,7 +161,7 @@ const Search: React.FC<SearchProps> = ({
                     </span>
                   )}
                 </span>
-                {showAdvancedFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </button>
             </div>
           </div>
@@ -192,7 +190,7 @@ const Search: React.FC<SearchProps> = ({
         </div>
 
         {/* Section des filtres avancés mobile-optimisée */}
-        {showAdvancedFilters && (
+        {showFilters && (
           <div className="border-t border-gray-200/50 bg-gradient-to-b from-gray-50/80 to-white/80 backdrop-blur-sm">
             <div className="p-4 sm:p-6 lg:p-8 space-y-6">
               {/* Filtres par confession - Layout mobile */}
@@ -290,8 +288,7 @@ const Search: React.FC<SearchProps> = ({
               <div className="sm:hidden pt-4 border-t border-gray-200/50">
                 <button
                   onClick={() => {
-                    setShowAdvancedFilters(false);
-                    setShowMobileFilters(false);
+                    setShowFilters(false);
                   }}
                   className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-2xl font-semibold shadow-lg transition-all duration-300 active:scale-95"
                 >
@@ -305,12 +302,11 @@ const Search: React.FC<SearchProps> = ({
       </div>
 
       {/* Overlay mobile pour filtres */}
-      {showMobileFilters && (
+      {showFilters && (
         <div 
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] sm:hidden"
           onClick={() => {
-            setShowAdvancedFilters(false);
-            setShowMobileFilters(false);
+            setShowFilters(false);
           }}
         />
       )}
