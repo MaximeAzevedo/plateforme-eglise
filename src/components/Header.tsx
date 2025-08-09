@@ -8,7 +8,8 @@ import {
   X,
   Plus,
   Shield,
-  ChevronDown
+  ChevronDown,
+  ArrowLeft
 } from 'lucide-react';
 import TestimonyGallery from './TestimonyGallery';
 import PrayerWall from './PrayerWall';
@@ -19,6 +20,9 @@ interface HeaderProps {
   onTestimonyClick?: () => void;
   onPrayerWallClick?: () => void;
   supabase: any;
+  currentView?: 'home' | 'map' | 'list' | 'celebrations';
+  onViewChange?: (view: 'home' | 'map' | 'list' | 'celebrations') => void;
+  isMobile?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -26,7 +30,10 @@ const Header: React.FC<HeaderProps> = ({
   onContributeClick,
   onTestimonyClick,
   onPrayerWallClick,
-  supabase
+  supabase,
+  currentView = 'home',
+  onViewChange,
+  isMobile = false
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showTestimonyGallery, setShowTestimonyGallery] = useState(false);
@@ -50,267 +57,236 @@ const Header: React.FC<HeaderProps> = ({
       }
     };
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Gérer le scroll du body quand le menu mobile est ouvert
+  useEffect(() => {
     if (isMobileMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
-      // Empêcher le scroll du body quand le menu est ouvert
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-
+    
     return () => {
-      document.removeEventListener('click', handleClickOutside);
       document.body.style.overflow = 'unset';
     };
   }, [isMobileMenuOpen]);
 
-  const handleTestimonyClick = () => {
-    setShowTestimonyGallery(true);
-    onTestimonyClick?.();
-  };
-
-  const handlePrayerWallClick = () => {
-    setShowPrayerWall(true);
-    onPrayerWallClick?.();
-  };
-
-  const scrollToSearch = () => {
-    const searchSection = document.getElementById('search-section');
-    if (searchSection) {
-      searchSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const menuItems = [
-    {
-      icon: MapPin,
-      label: 'Trouver ma communauté',
-      action: scrollToSearch,
-      description: 'Découvrez les lieux de culte près de vous',
-      color: 'from-blue-500 to-indigo-600'
+    { 
+      name: 'Témoignages', 
+      icon: Heart, 
+      action: () => setShowTestimonyGallery(true),
+      description: 'Découvrez des histoires inspirantes'
     },
-    {
-      icon: Star,
-      label: 'Témoignages',
-      action: handleTestimonyClick,
-      description: 'Partagez et lisez des témoignages inspirants',
-      color: 'from-purple-500 to-pink-600'
+    { 
+      name: 'Mur de prières', 
+      icon: Star, 
+      action: () => setShowPrayerWall(true),
+      description: 'Partagez vos intentions de prière'
     },
-    {
-      icon: Heart,
-      label: 'Mur de prières',
-      action: handlePrayerWallClick,
-      description: 'Demandes de prières et intercession',
-      color: 'from-red-500 to-rose-600'
+    { 
+      name: 'Ajouter un lieu', 
+      icon: Plus, 
+      action: onContributeClick,
+      description: 'Enrichissez notre communauté'
     },
-    {
-      icon: Shield,
-      label: 'Administration',
-      action: () => window.location.href = '#admin',
-      description: 'Gestion et modération',
-      color: 'from-gray-500 to-gray-600'
+    { 
+      name: 'Administration', 
+      icon: Shield, 
+      action: () => window.location.hash = '#admin',
+      description: 'Gestion et modération'
     }
   ];
 
+  // Titre dynamique selon la vue sur mobile
+  const getViewTitle = () => {
+    switch (currentView) {
+      case 'map': return 'Carte interactive';
+      case 'celebrations': return 'Prières';
+      case 'list': return 'Liste des lieux';
+      default: return 'GOD × CONNECT';
+    }
+  };
+
   return (
     <>
-      {/* Header flottant optimisé mobile */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-white/98 backdrop-blur-xl border-b border-gray-200/70 shadow-xl' 
-          : 'bg-transparent'
-      }`}>
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Logo optimisé mobile */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg animate-pulse-divine">
-                <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-              </div>
-              <div>
-                <h1 className={`text-lg sm:text-xl font-bold transition-colors ${
-                  isScrolled 
-                    ? 'text-gray-900' 
-                    : 'text-white drop-shadow-lg'
-                }`}>
-                  <span className="bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-300 bg-clip-text text-transparent">
-                    GOD
-                  </span>
-                  <span className={isScrolled ? 'text-gray-400' : 'text-white/80'}> × </span>
-                  <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
-                    CONNECT
-                  </span>
-                </h1>
-                {/* Compteur de lieux pour mobile */}
-                <div className={`text-xs sm:hidden ${isScrolled ? 'text-gray-500' : 'text-white/70'}`}>
-                  {placesCount.toLocaleString()} lieux
+      <header 
+        className={`
+          fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out
+          ${isScrolled || isMobileMenuOpen ? 'bg-white shadow-xl border-b border-gray-100' : 'bg-white/95 backdrop-blur-md'}
+          ${isMobile && currentView === 'map' ? 'bg-white/95 backdrop-blur-md shadow-lg' : ''}
+        `}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            
+            {/* Logo et navigation gauche */}
+            <div className="flex items-center space-x-4">
+              {/* Bouton retour sur mobile dans la vue carte */}
+              {isMobile && currentView === 'map' && onViewChange && (
+                <button
+                  onClick={() => onViewChange('home')}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5 text-gray-700" />
+                </button>
+              )}
+
+              {/* Logo */}
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Crown className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div className="hidden sm:block">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                    {isMobile ? getViewTitle() : 'GOD × CONNECT'}
+                  </h1>
+                  {!isMobile && (
+                    <p className="text-xs text-gray-500 leading-tight">
+                      <span className="font-semibold text-amber-600">{placesCount}</span> lieux
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Navigation desktop inchangée */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <button
-                onClick={scrollToSearch}
-                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
-                  isScrolled
-                    ? 'text-gray-700 hover:text-gray-900'
-                    : 'text-white/90 hover:text-white'
-                }`}
-              >
-                <MapPin className="h-4 w-4" />
-                <span>Trouver ma communauté</span>
-              </button>
+            {/* Navigation desktop */}
+            {!isMobile && (
+              <nav className="hidden md:flex items-center space-x-6">
+                <button
+                  onClick={() => setShowTestimonyGallery(true)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                >
+                  <Heart className="w-4 h-4" />
+                  <span>Témoignages</span>
+                </button>
+                <button
+                  onClick={() => setShowPrayerWall(true)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                >
+                  <Star className="w-4 h-4" />
+                  <span>Prières</span>
+                </button>
+                <button
+                  onClick={onContributeClick}
+                  className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+                >
+                  <Plus className="w-4 h-4 inline mr-2" />
+                  Contribuer
+                </button>
+              </nav>
+            )}
 
-              <button
-                onClick={handleTestimonyClick}
-                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
-                  isScrolled
-                    ? 'text-gray-700 hover:text-gray-900'
-                    : 'text-white/90 hover:text-white'
-                }`}
-              >
-                <Star className="h-4 w-4" />
-                <span>Témoignages</span>
-              </button>
-
-              <button
-                onClick={handlePrayerWallClick}
-                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
-                  isScrolled
-                    ? 'text-gray-700 hover:text-gray-900'
-                    : 'text-white/90 hover:text-white'
-                }`}
-              >
-                <Heart className="h-4 w-4" />
-                <span>Mur de prières</span>
-              </button>
-
-              <a
-                href="#admin"
-                className={`font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
-                  isScrolled
-                    ? 'text-gray-700 hover:text-gray-900'
-                    : 'text-white/90 hover:text-white'
-                }`}
-              >
-                <Shield className="h-4 w-4" />
-                <span>Admin</span>
-              </a>
-
-              <button
-                onClick={onContributeClick}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Contribuer</span>
-              </button>
-            </nav>
-
-            {/* Boutons mobile optimisés */}
-            <div className="md:hidden flex items-center space-x-2">
-              {/* Bouton Contribuer mobile */}
-              <button
-                onClick={onContributeClick}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
-                style={{ minWidth: '44px', minHeight: '44px' }}
-              >
-                <Plus className="h-5 w-5" />
-              </button>
-
-              {/* Bouton menu mobile */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  isScrolled
-                    ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                    : 'text-white/90 hover:text-white hover:bg-white/10'
-                }`}
-                style={{ minWidth: '44px', minHeight: '44px' }}
-              >
-                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
+            {/* Navigation mobile */}
+            {isMobile && (
+              <div className="flex items-center space-x-2">
+                {/* Compteur de lieux sur mobile dans la vue carte */}
+                {currentView === 'map' && (
+                  <div className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                    {placesCount} lieux
+                  </div>
+                )}
+                
+                {/* Menu burger */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors relative"
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="w-6 h-6 text-gray-700" />
+                  ) : (
+                    <Menu className="w-6 h-6 text-gray-700" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Menu mobile overlay */}
+        {isMobile && isMobileMenuOpen && (
+          <>
+            {/* Overlay sombre */}
+            <div 
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Bottom sheet moderne */}
+            <div className="mobile-menu-container fixed bottom-0 left-0 right-0 z-50 transform transition-transform duration-300 ease-out">
+              <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200 max-h-[80vh] overflow-y-auto">
+                {/* Poignée de drag */}
+                <div className="flex justify-center pt-4 pb-2">
+                  <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+
+                {/* Header du menu */}
+                <div className="px-6 py-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">Navigation</h3>
+                      <p className="text-gray-600 text-sm">Explorez GOD × CONNECT</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <Crown className="w-4 h-4 text-amber-600" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation items */}
+                <div className="px-6 py-4 space-y-3">
+                  {menuItems.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        item.action();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group"
+                      style={{ 
+                        minHeight: '64px',
+                        minWidth: '64px'
+                      }}
+                    >
+                      <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <item.icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-semibold text-gray-900 text-lg">{item.name}</p>
+                        <p className="text-gray-600 text-sm">{item.description}</p>
+                      </div>
+                      <ChevronDown className="w-5 h-5 text-gray-400 transform -rotate-90" />
+                    </button>
+                  ))}
+                </div>
+
+                {/* Footer du menu */}
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-3xl">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="text-gray-600">
+                      <span className="font-semibold text-amber-600">{placesCount.toLocaleString()}</span> lieux de culte
+                    </div>
+                    <div className="text-gray-500">
+                      v1.0 • Made with ❤️ for God
+                    </div>
+                  </div>
+                </div>
+
+                {/* Safe area pour iPhone avec encoche */}
+                <div className="h-safe-area-inset-bottom bg-gray-50"></div>
+              </div>
+            </div>
+          </>
+        )}
       </header>
-
-      {/* Overlay pour le menu mobile */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Menu mobile moderne en bottom sheet */}
-      <div className={`mobile-menu-container fixed bottom-0 left-0 right-0 z-50 md:hidden transition-all duration-500 transform ${
-        isMobileMenuOpen 
-          ? 'translate-y-0 opacity-100' 
-          : 'translate-y-full opacity-0 pointer-events-none'
-      }`}>
-        <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200">
-          {/* Handle pour indiquer qu'on peut swiper */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-12 h-1.5 bg-gray-300 rounded-full"></div>
-          </div>
-          
-          {/* Header du menu */}
-          <div className="px-6 py-4 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">Navigation</h3>
-                <p className="text-sm text-gray-500">Explorez GOD × CONNECT</p>
-              </div>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-              >
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation items */}
-          <div className="px-4 py-4 space-y-2 max-h-96 overflow-y-auto">
-            {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  item.action();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 flex items-center space-x-4 group active:scale-98"
-                style={{ minHeight: '72px' }}
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${item.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
-                  <item.icon className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="font-semibold text-gray-900 text-base">{item.label}</div>
-                  <div className="text-sm text-gray-500 mt-0.5">{item.description}</div>
-                </div>
-                <ChevronDown className="h-5 w-5 text-gray-400 transform -rotate-90" />
-              </button>
-            ))}
-          </div>
-
-          {/* Footer du menu avec stats */}
-          <div className="px-6 py-4 bg-gray-50 rounded-t-2xl border-t border-gray-100">
-            <div className="flex items-center justify-between text-sm">
-              <div className="text-gray-600">
-                <span className="font-semibold text-amber-600">{placesCount.toLocaleString()}</span> lieux de culte
-              </div>
-              <div className="text-gray-500">
-                v1.0 • Made with ❤️ for God
-              </div>
-            </div>
-          </div>
-
-          {/* Safe area pour iPhone avec encoche */}
-          <div className="h-safe-area-inset-bottom bg-gray-50"></div>
-        </div>
-      </div>
 
       {/* Modales inchangées */}
       {showTestimonyGallery && (

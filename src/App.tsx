@@ -113,6 +113,22 @@ function App() {
   const [shouldCenterMap, setShouldCenterMap] = useState(false);
   const [showContributeForm, setShowContributeForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // 🎯 NOUVEAUX ÉTATS POUR LA VUE MOBILE
+  const [viewMode, setViewMode] = useState<'home' | 'map' | 'list' | 'celebrations'>('home');
+  const [showPlacePopup, setShowPlacePopup] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Détection mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Vérification de la configuration Supabase (non-bloquante)
   useEffect(() => {
@@ -429,32 +445,22 @@ function App() {
   // Page principale
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Header - toujours visible mais adapté selon le mode */}
       <Header 
         placesCount={worshipPlaces.length}
         onContributeClick={() => setShowContributeForm(true)}
         supabase={supabase}
+        currentView={viewMode}
+        onViewChange={setViewMode}
+        isMobile={isMobile}
       />
       
-      <main className="flex-grow">
-        <Hero />
-        
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            {/* Section de recherche moderne avec ID pour le scroll */}
-            <section id="search-section" className="space-y-8">
-              {/* Titre de section moderne */}
-              <div className="text-center space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                  Découvrez votre communauté spirituelle
-                </h2>
-                <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
-                <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-                  Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
-                </p>
-              </div>
-
-            {/* Zone de recherche épurée */}
-            <div className="max-w-5xl mx-auto">
+      {/* EXPÉRIENCE MOBILE - CARTE PLEIN ÉCRAN */}
+      {isMobile && viewMode === 'map' && (
+        <div className="fixed inset-0 top-14 z-40 bg-white">
+          {/* Overlay de recherche en haut */}
+          <div className="absolute top-4 left-4 right-4 z-50">
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-100">
               <Search 
                 places={worshipPlaces}
                 onSearch={handleSearch} 
@@ -463,66 +469,242 @@ function App() {
                 selectedDenominations={selectedDenomination}
                 eventFilter={eventFilter}
                 onLocationFound={handleLocationFound}
-                currentLocation={null} // currentLocation was removed from the new_code, so it's null here.
+                currentLocation={null}
+                isMapOverlay={true}
               />
             </div>
-          </section>
-          
-          {/* Section carte et résultats moderne */}
-          <section className="space-y-8">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Explorez la carte interactive
-              </h3>
-              <p className="text-gray-600">
-                {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
-              </p>
-            </div>
+          </div>
 
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="flex flex-col lg:grid lg:grid-cols-4 gap-0">
-                {/* Carte principale - EN PREMIER sur mobile */}
-                <div className="order-1 lg:order-2 lg:col-span-3">
-                  <div className="p-3 sm:p-6">
-                    <MapView 
-                      places={filteredPlaces} 
-                      selectedDenomination={selectedDenomination}
-                      onMapMove={handleMapMove}
-                      centerOnPosition={shouldCenterMap}
-                    />
-                  </div>
-                </div>
+          {/* Carte plein écran */}
+          <div className="h-full w-full">
+            <MapView 
+              places={filteredPlaces} 
+              selectedDenomination={selectedDenomination}
+              onMapMove={handleMapMove}
+              centerOnPosition={shouldCenterMap}
+              onPlaceClick={(place) => {
+                setSelectedPlace(place);
+                setShowPlacePopup(true);
+              }}
+              isFullScreen={true}
+            />
+          </div>
+
+          {/* Compteur de résultats en bas à gauche */}
+          <div className="absolute bottom-20 left-4 z-50">
+            <div className="bg-white rounded-full px-4 py-2 shadow-lg border border-gray-200">
+              <span className="text-sm font-medium text-gray-700">
+                🏛️ {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''}
+              </span>
+            </div>
+          </div>
+
+          {/* Popup en bas quand un lieu est sélectionné */}
+          {showPlacePopup && selectedPlace && (
+            <div className="absolute bottom-0 left-0 right-0 z-50">
+              <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200 p-6 transform transition-transform duration-300 ease-out">
+                {/* Poignée de drag */}
+                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
                 
-                {/* Sidebar - Prochaines célébrations - EN SECOND sur mobile */}
-                <div className="order-2 lg:order-1 lg:col-span-1 bg-gray-50/50 border-t lg:border-t-0 lg:border-r border-gray-100">
-                  <div className="p-4 sm:p-6">
-                    <div className="lg:hidden mb-4 text-center">
-                      <h4 className="text-lg font-bold text-gray-900">Prochaines célébrations</h4>
-                      <p className="text-sm text-gray-600">Scroll horizontal pour voir plus</p>
+                {/* Contenu du popup */}
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-900 mb-1">
+                        {selectedPlace.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm">
+                        {selectedPlace.address}, {selectedPlace.city}
+                      </p>
                     </div>
-                    <UpcomingCelebrations 
-                      places={filteredPlaces}
-                      mapCenter={mapCenter}
-                      mapBounds={null}
-                      onPlaceClick={handlePlaceClick}
-                      timeFilter={eventFilter.dateTimeFilter}
-                    />
+                    <button
+                      onClick={() => setShowPlacePopup(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                      {selectedPlace.denomination}
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600">
+                    <p><strong>Horaires :</strong> {selectedPlace.serviceTimes}</p>
+                  </div>
+                  
+                  <div className="flex space-x-3 pt-2">
+                    <button className="flex-1 bg-amber-500 text-white py-3 rounded-xl font-medium hover:bg-amber-600 transition-colors">
+                      📍 Itinéraire
+                    </button>
+                    <button className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                      📞 Contacter
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* EXPÉRIENCE DESKTOP OU VUE HOME */}
+      {(!isMobile || viewMode === 'home') && (
+        <main className="flex-grow">
+          <Hero />
+          
+          <section className="py-16 bg-white">
+            <div className="container mx-auto px-4">
+              {/* Section de recherche moderne avec ID pour le scroll */}
+              <section id="search-section" className="space-y-8">
+                {/* Titre de section moderne */}
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    Découvrez votre communauté spirituelle
+                  </h2>
+                  <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
+                  <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                    Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
+                  </p>
+                </div>
+
+              {/* Zone de recherche épurée */}
+              <div className="max-w-5xl mx-auto">
+                <Search 
+                  places={worshipPlaces}
+                  onSearch={handleSearch} 
+                  onDenominationFilter={handleDenominationFilter}
+                  onEventFilter={handleEventFilter}
+                  selectedDenominations={selectedDenomination}
+                  eventFilter={eventFilter}
+                  onLocationFound={handleLocationFound}
+                  currentLocation={null}
+                  isMapOverlay={false}
+                />
+              </div>
+
+              {/* Bouton pour passer en vue carte sur mobile */}
+              {isMobile && (
+                <div className="text-center mt-8">
+                  <button
+                    onClick={() => setViewMode('map')}
+                    className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    🗺️ Voir la carte interactive
+                  </button>
+                </div>
+              )}
             </section>
+            
+            {/* Section carte et résultats moderne - SEULEMENT SUR DESKTOP */}
+            {!isMobile && (
+              <section className="space-y-8">
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    Explorez la carte interactive
+                  </h3>
+                  <p className="text-gray-600">
+                    {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+                  <div className="flex flex-col lg:grid lg:grid-cols-4 gap-0">
+                    {/* Carte principale - EN PREMIER sur mobile */}
+                    <div className="order-1 lg:order-2 lg:col-span-3">
+                      <div className="p-3 sm:p-6">
+                        <MapView 
+                          places={filteredPlaces} 
+                          selectedDenomination={selectedDenomination}
+                          onMapMove={handleMapMove}
+                          centerOnPosition={shouldCenterMap}
+                          onPlaceClick={(place) => {
+                            setSelectedPlace(place);
+                          }}
+                          isFullScreen={false}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Sidebar - Prochaines célébrations - EN SECOND sur mobile */}
+                    <div className="order-2 lg:order-1 lg:col-span-1 bg-gray-50/50 border-t lg:border-t-0 lg:border-r border-gray-100">
+                      <div className="p-4 sm:p-6">
+                        <div className="lg:hidden mb-4 text-center">
+                          <h4 className="text-lg font-bold text-gray-900">Prochaines célébrations</h4>
+                          <p className="text-sm text-gray-600">Scroll horizontal pour voir plus</p>
+                        </div>
+                        <UpcomingCelebrations 
+                          places={filteredPlaces}
+                          mapCenter={mapCenter}
+                          mapBounds={null}
+                          onPlaceClick={handlePlaceClick}
+                          timeFilter={eventFilter.dateTimeFilter}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+            </div>
+          </section>
+          
+          <WhoWeAreFor />
+          
+          <OurCommitment />
+          
+          <Contribution onAddPlace={() => setShowContributeForm(true)} />
+        </main>
+      )}
+
+      {/* Navigation mobile en bas */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30">
+          <div className="flex items-center justify-around py-2 px-4 safe-area-inset-bottom">
+            <button
+              onClick={() => setViewMode('home')}
+              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
+                viewMode === 'home' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
+              }`}
+            >
+              <div className="text-xl mb-1">🏠</div>
+              <span className="text-xs font-medium">Accueil</span>
+            </button>
+            
+            <button
+              onClick={() => setViewMode('map')}
+              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
+                viewMode === 'map' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
+              }`}
+            >
+              <div className="text-xl mb-1">🗺️</div>
+              <span className="text-xs font-medium">Carte</span>
+            </button>
+            
+            <button
+              onClick={() => setViewMode('celebrations')}
+              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
+                viewMode === 'celebrations' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
+              }`}
+            >
+              <div className="text-xl mb-1">🕊️</div>
+              <span className="text-xs font-medium">Prières</span>
+            </button>
+            
+            <button
+              onClick={() => setShowContributeForm(true)}
+              className="flex flex-col items-center py-2 px-3 rounded-lg text-gray-500"
+            >
+              <div className="text-xl mb-1">➕</div>
+              <span className="text-xs font-medium">Ajouter</span>
+            </button>
           </div>
-        </section>
-        
-        <WhoWeAreFor />
-        
-        <OurCommitment />
-        
-        <Contribution onAddPlace={() => setShowContributeForm(true)} />
-      </main>
+        </div>
+      )}
       
-      <Footer />
+      {!isMobile && <Footer />}
       
       {/* Modal de contribution */}
       <ContributionHub 

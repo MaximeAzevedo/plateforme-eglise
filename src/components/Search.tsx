@@ -15,6 +15,7 @@ interface SearchProps {
   eventFilter: EventFilter;
   onLocationFound?: (position: [number, number]) => void;
   currentLocation?: [number, number];
+  isMapOverlay?: boolean;
 }
 
 const denominations: Denomination[] = ['Catholic', 'Protestant', 'Orthodox', 'Evangelical', 'Neo-Apostolic', 'Pentecostal', 'Baptist', 'Other'];
@@ -27,7 +28,8 @@ const Search: React.FC<SearchProps> = ({
   selectedDenominations,
   eventFilter,
   onLocationFound,
-  currentLocation
+  currentLocation,
+  isMapOverlay = false
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
@@ -102,215 +104,195 @@ const Search: React.FC<SearchProps> = ({
   const isAllSelected = !selectedDenominations || selectedDenominations.length === 0;
 
   return (
-    <>
-      {/* Interface de recherche mobile-first */}
-      <div className="bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-3xl shadow-2xl overflow-hidden">
-        {/* Section de recherche principale optimisée mobile */}
-        <div className="p-4 sm:p-6 lg:p-8">
-          {/* Barre de recherche mobile-first */}
-          <div className="space-y-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Ville, adresse, code postal..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                className={`w-full px-5 py-4 sm:px-6 pr-14 rounded-2xl border-2 border-gray-200 bg-white/80 backdrop-blur-sm text-gray-800 font-medium placeholder:text-gray-500 transition-all duration-300 focus:border-amber-400 focus:ring-4 focus:ring-amber-100/50 focus:bg-white text-base ${
-                  isSearchFocused ? 'scale-[1.01] shadow-xl' : 'hover:border-gray-300'
-                }`}
-                style={{ fontSize: '16px' }} // Évite le zoom sur iOS
-              />
-              <SearchIcon className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={22} />
-            </div>
+    <div className={`space-y-4 ${isMapOverlay ? 'w-full' : ''}`}>
+      {/* Message de localisation */}
+      {locationMessage && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800 text-sm animate-slide-in">
+          {locationMessage}
+        </div>
+      )}
 
-            {/* Boutons d'action mobile optimisés */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Bouton géolocalisation */}
-              <button
-                type="button"
-                onClick={handleQuickLocation}
-                className="group flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
-                style={{ minHeight: '56px' }}
-              >
-                <MapPin className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                <span className="text-base sm:text-sm">Près de moi</span>
-                <div className="hidden sm:block w-1 h-1 bg-white/30 rounded-full"></div>
-                <span className="hidden sm:inline text-sm opacity-80">GPS</span>
-              </button>
-              
-              {/* Bouton filtres mobile */}
-              <button
-                onClick={() => {
-                  setShowFilters(!showFilters);
-                }}
-                className={`group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  hasActiveEventFilters() || !isAllSelected
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
-                    : 'bg-white/90 border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
+      {/* Conteneur de recherche principal */}
+      <div className={`relative ${isMapOverlay ? 'rounded-xl' : 'bg-white rounded-2xl shadow-lg border border-gray-100'} transition-all duration-300 ${
+        isSearchFocused ? 'ring-2 ring-amber-500/20 shadow-xl' : ''
+      }`}>
+        
+        {/* Barre de recherche */}
+        <div className={`${isMapOverlay ? 'p-3' : 'p-6'}`}>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <SearchIcon className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder={isMapOverlay ? "Rechercher..." : "Rechercher par nom, ville ou adresse..."}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+              className={`
+                w-full pl-12 pr-20 py-3 text-gray-900 placeholder-gray-500 border border-gray-200 rounded-xl
+                focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500
+                transition-all duration-200 bg-gray-50 hover:bg-white
+                ${isMapOverlay ? 'text-sm' : 'text-base'}
+              `}
+              style={{ fontSize: '16px' }}
+            />
+            
+            {/* Actions à droite */}
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 space-x-1">
+              {/* Bouton Géolocalisation */}
+              <GeolocationButton 
+                onLocationFound={handleLocationFound}
+                className={`p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors ${
+                  isMapOverlay ? 'w-8 h-8' : 'w-10 h-10'
                 }`}
-                style={{ minHeight: '56px' }}
+              />
+              
+              {/* Bouton Filtres */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`
+                  p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors
+                  ${showFilters ? 'text-amber-600 bg-amber-50' : ''}
+                  ${isMapOverlay ? 'w-8 h-8' : 'w-10 h-10'}
+                `}
               >
-                <SlidersHorizontal className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                <span className="text-base sm:text-sm">
-                  Filtres
-                  {getActiveFiltersCount() > 0 && (
-                    <span className="ml-2 inline-flex items-center justify-center w-6 h-6 bg-white/30 rounded-full text-xs font-bold">
-                      {getActiveFiltersCount()}
-                    </span>
-                  )}
-                </span>
-                {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                <SlidersHorizontal className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
               </button>
             </div>
           </div>
-
-          {/* Message de géolocalisation mobile-friendly */}
-          {locationMessage && (
-            <div className={`mt-4 p-4 rounded-2xl border-2 transition-all duration-300 ${
-              locationMessage.includes('trouvée') 
-                ? 'bg-green-50 border-green-200 text-green-800'
-                : locationMessage.includes('Recherche')
-                ? 'bg-blue-50 border-blue-200 text-blue-800'
-                : 'bg-amber-50 border-amber-200 text-amber-800'
-            }`}>
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  {locationMessage.includes('Recherche') ? (
-                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <MapPin size={20} />
-                  )}
-                </div>
-                <span className="font-medium text-sm leading-relaxed">{locationMessage}</span>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Section des filtres avancés mobile-optimisée */}
+        {/* Section des filtres */}
         {showFilters && (
-          <div className="border-t border-gray-200/50 bg-gradient-to-b from-gray-50/80 to-white/80 backdrop-blur-sm">
-            <div className="p-4 sm:p-6 lg:p-8 space-y-6">
-              {/* Filtres par confession - Layout mobile */}
-              <div className="space-y-4">
-                <h4 className="text-lg font-bold text-gray-900 flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Sparkles className="h-4 w-4 text-white" />
-                  </div>
-                  <span>Confessions</span>
-                  {/* Bouton réinitialiser sur mobile */}
-                  {!isAllSelected && (
-                    <button
-                      onClick={handleSelectAll}
-                      className="ml-auto text-sm text-amber-600 hover:text-amber-700 font-medium underline"
-                    >
-                      Réinitialiser
-                    </button>
-                  )}
-                </h4>
+          <>
+            {/* Overlay pour fermer les filtres sur mobile */}
+            {!isMapOverlay && (
+              <div 
+                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] lg:hidden"
+                onClick={() => setShowFilters(false)}
+              />
+            )}
+            
+            {/* Contenu des filtres */}
+            <div className={`
+              relative z-[70] bg-white border-t border-gray-100
+              ${isMapOverlay ? 'rounded-b-xl' : 'rounded-b-2xl'}
+              ${!isMapOverlay ? 'lg:static lg:z-auto' : ''}
+            `}>
+              <div className={`${isMapOverlay ? 'p-3' : 'p-6 pt-4'} space-y-4`}>
                 
-                {/* Grid responsive pour les confessions */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {/* En-tête des filtres avec compteur */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
+                      <Filter className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'} text-amber-600`} />
+                      <h3 className={`${isMapOverlay ? 'text-sm' : 'text-lg'} font-bold text-gray-900`}>
+                        Filtres avancés
+                      </h3>
+                    </div>
+                    <div className={`px-3 py-1 bg-amber-100 text-amber-800 rounded-full ${isMapOverlay ? 'text-xs' : 'text-sm'} font-medium`}>
+                      {places.length} résultat{places.length > 1 ? 's' : ''}
+                    </div>
+                  </div>
+                  
+                  {/* Bouton fermer les filtres */}
                   <button
-                    onClick={handleSelectAll}
-                    className={`col-span-2 sm:col-span-1 p-3 rounded-xl font-medium transition-all duration-300 text-sm ${
-                      isAllSelected
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                        : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
-                    }`}
-                    style={{ minHeight: '52px' }}
+                    onClick={() => setShowFilters(false)}
+                    className={`
+                      text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors
+                      ${isMapOverlay ? 'p-1 w-6 h-6' : 'p-2 w-8 h-8'}
+                    `}
                   >
-                    Toutes
+                    <X className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
                   </button>
-                  {denominations.map(denomination => (
-                    <button
-                      key={denomination}
-                      onClick={() => handleDenominationToggle(denomination)}
-                      className={`p-3 rounded-xl font-medium transition-all duration-300 text-xs sm:text-sm hover:scale-105 active:scale-95 ${
-                        selectedDenominations?.includes(denomination)
-                          ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                          : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50'
-                      }`}
-                      style={{ minHeight: '52px' }}
-                    >
-                      <div className="flex flex-col items-center space-y-1">
-                        <span className="font-semibold leading-tight text-center">
-                          {denominationLabels[denomination].replace('Confession : ', '')}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Filtres avancés - Stack mobile */}
-              <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
-                {/* Filtres par type d'événement */}
-                <div className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-2xl p-5 shadow-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <Sparkles className="h-4 w-4 text-white" />
-                    </div>
-                    <h4 className="text-base font-bold text-gray-900">
-                      Types d'événements
-                    </h4>
-                  </div>
-                  <AdvancedFilters
-                    places={places}
-                    eventFilter={eventFilter}
-                    onEventFilterChange={onEventFilter}
-                    isVisible={true}
-                  />
                 </div>
 
-                {/* Filtres par localisation et heure */}
-                <div className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-2xl p-5 shadow-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <MapPin className="h-4 w-4 text-white" />
-                    </div>
-                    <h4 className="text-base font-bold text-gray-900">
-                      Localisation & Horaires
-                    </h4>
-                  </div>
-                  <LocationTimeFilters
-                    places={places}
-                    eventFilter={eventFilter}
-                    onEventFilterChange={onEventFilter}
-                    currentLocation={currentLocation}
-                  />
-                </div>
-              </div>
-
-              {/* Bouton fermer filtres sur mobile */}
-              <div className="sm:hidden pt-4 border-t border-gray-200/50">
+                {/* Bouton de réinitialisation */}
                 <button
                   onClick={() => {
-                    setShowFilters(false);
+                    setSearchQuery('');
+                    onSearch('');
+                    onDenominationFilter(null);
+                    onEventFilter({ enabled: false, types: [] });
                   }}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-2xl font-semibold shadow-lg transition-all duration-300 active:scale-95"
+                  className={`
+                    text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors
+                    ${isMapOverlay ? 'text-xs px-2 py-1' : 'text-sm px-3 py-2'} font-medium
+                  `}
                 >
-                  <X className="h-5 w-5" />
-                  <span>Fermer les filtres</span>
+                  ↻ Réinitialiser tous les filtres
                 </button>
+
+                {/* Filtres par confession */}
+                <div className="space-y-3">
+                  <h4 className={`${isMapOverlay ? 'text-sm' : 'text-base'} font-semibold text-gray-900 flex items-center`}>
+                    <Sparkles className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'} text-amber-500 mr-2`} />
+                    Confessions religieuses
+                  </h4>
+                  
+                  <div className={`grid gap-2 ${isMapOverlay ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+                    {denominations.map((denomination) => (
+                      <label
+                        key={denomination}
+                        className={`
+                          relative flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200
+                          ${selectedDenominations?.includes(denomination)
+                            ? 'border-amber-400 bg-amber-50 text-amber-900'
+                            : 'border-gray-200 bg-white hover:border-amber-200 hover:bg-amber-50/50'
+                          }
+                          ${isMapOverlay ? 'p-2' : 'p-3'}
+                        `}
+                        style={{ minHeight: isMapOverlay ? '40px' : '48px' }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedDenominations?.includes(denomination) || false}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              const newSelection = selectedDenominations ? [...selectedDenominations, denomination] : [denomination];
+                              onDenominationFilter(newSelection);
+                            } else {
+                              const newSelection = selectedDenominations?.filter(d => d !== denomination) || [];
+                              onDenominationFilter(newSelection.length > 0 ? newSelection : null);
+                            }
+                          }}
+                          className="sr-only"
+                        />
+                        <div className={`${isMapOverlay ? 'text-xs' : 'text-sm'} font-medium text-center w-full`}>
+                          {denominationLabels[denomination]}
+                        </div>
+                        {selectedDenominations?.includes(denomination) && (
+                          <div className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full"></div>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Composants de filtres avancés - conditionnels selon l'overlay */}
+                {!isMapOverlay && (
+                  <>
+                    <AdvancedFilters 
+                      eventFilter={eventFilter}
+                      onEventFilter={onEventFilter}
+                    />
+                    
+                    <LocationTimeFilters 
+                      eventFilter={eventFilter}
+                      onEventFilter={onEventFilter}
+                      currentLocation={currentLocation}
+                      onLocationFound={handleLocationFound}
+                    />
+                  </>
+                )}
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
-
-      {/* Overlay mobile pour filtres */}
-      {showFilters && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] sm:hidden"
-          onClick={() => {
-            setShowFilters(false);
-          }}
-        />
-      )}
-    </>
+    </div>
   );
 };
 

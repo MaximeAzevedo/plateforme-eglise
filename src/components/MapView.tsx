@@ -10,6 +10,8 @@ interface MapViewProps {
   selectedDenomination: Denomination | null;
   onMapMove?: (center: [number, number], bounds: [[number, number], [number, number]]) => void;
   centerOnPosition?: [number, number] | null;
+  onPlaceClick?: (place: WorshipPlace) => void;
+  isFullScreen?: boolean;
 }
 
 const MapEventHandler = ({ onMapMove }: { onMapMove?: (center: [number, number], bounds: [[number, number], [number, number]]) => void }) => {
@@ -193,7 +195,14 @@ const createCustomIcon = (denomination: Denomination) => {
   });
 };
 
-const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMove, centerOnPosition }) => {
+const MapView: React.FC<MapViewProps> = ({ 
+  places, 
+  selectedDenomination, 
+  onMapMove, 
+  centerOnPosition,
+  onPlaceClick,
+  isFullScreen = false
+}) => {
   const [isLocating, setIsLocating] = React.useState(false);
 
   // 🔍 DIAGNOSTIC CIBLÉ
@@ -215,162 +224,261 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
     }
   }, [places]);
 
-  const handleLocateUser = () => {
-    setIsLocating(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const map = (window as any).mapInstance;
-          if (map) {
-            map.setView([position.coords.latitude, position.coords.longitude], 15, {
-              animate: true
-            });
-          }
-          setIsLocating(false);
-        },
-        (error) => {
-          console.error('Erreur géolocalisation:', error);
-          setIsLocating(false);
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    } else {
-      setIsLocating(false);
-    }
+  // Configuration des icônes de confession
+  const confessionIcons = {
+    Catholic: '⛪',
+    Protestant: '✝️', 
+    Orthodox: '☦️',
+    Evangelical: '📖',
+    'Neo-Apostolic': '🕊️',
+    Pentecostal: '🔥',
+    Baptist: '💧',
+    Other: '🙏'
   };
 
+  // Fonction pour créer une icône personnalisée moderne
+  const createCustomIcon = (denomination: Denomination, isFullScreen: boolean = false) => {
+    const baseSize = isFullScreen ? 44 : 40;
+    const iconEmoji = confessionIcons[denomination] || '🙏';
+    
+    return divIcon({
+      html: `
+        <div class="custom-marker-icon animate-marker-appear" style="
+          width: ${baseSize}px;
+          height: ${baseSize}px;
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${isFullScreen ? '18px' : '16px'};
+          border: 3px solid white;
+          box-shadow: 
+            0 4px 20px rgba(245, 158, 11, 0.4),
+            0 8px 32px rgba(245, 158, 11, 0.2),
+            inset 0 2px 4px rgba(255, 255, 255, 0.3);
+          backdrop-filter: blur(12px);
+          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          transform: perspective(1000px) rotateX(0deg);
+          cursor: pointer;
+        ">
+          <div style="
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+          ">
+            ${iconEmoji}
+          </div>
+        </div>
+      `,
+      className: '',
+      iconSize: [baseSize, baseSize],
+      iconAnchor: [baseSize / 2, baseSize],
+      popupAnchor: [0, -baseSize]
+    });
+  };
+
+  // Gestionnaire de géolocalisation
+  const handleLocateUser = () => {
+    if (!navigator.geolocation) {
+      alert('La géolocalisation n\'est pas supportée par votre navigateur');
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // Déclencher le recentrage via le composant parent
+        if (onMapMove) {
+          onMapMove([latitude, longitude], [
+            [latitude - 0.1, longitude - 0.1],
+            [latitude + 0.1, longitude + 0.1]
+          ]);
+        }
+        setIsLocating(false);
+      },
+      (error) => {
+        console.error('Erreur de géolocalisation:', error);
+        alert('Impossible d\'obtenir votre position');
+        setIsLocating(false);
+      },
+      { timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
+  // Gestionnaire de réinitialisation de vue
   const handleResetView = () => {
-    const map = (window as any).mapInstance;
-    if (map && places.length > 0) {
-      const latitudes = places.map(p => p.position[0]);
-      const longitudes = places.map(p => p.position[1]);
-      
-      const minLat = Math.min(...latitudes);
-      const maxLat = Math.max(...latitudes);
-      const minLng = Math.min(...longitudes);
-      const maxLng = Math.max(...longitudes);
-      
-      map.fitBounds([
-        [minLat, minLng],
-        [maxLat, maxLng]
-      ], { padding: [20, 20], animate: true });
+    if (onMapMove) {
+      onMapMove([46.2276, 2.2137], [
+        [41.0, -5.0],
+        [51.0, 10.0]
+      ]);
     }
   };
 
   return (
-    <div className="map-container h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] w-full relative overflow-hidden rounded-2xl shadow-xl border border-gray-100">
-      <MapContainer 
-        center={[49.1193, 6.1757]} 
-        zoom={12} 
-        scrollWheelZoom={true} 
-        className="h-full w-full rounded-2xl overflow-hidden"
-        zoomControl={false}
+    <div className={`relative ${isFullScreen ? 'h-full w-full' : 'h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] w-full rounded-2xl shadow-xl border border-gray-200'} overflow-hidden`}>
+      <MapContainer
+        center={[46.2276, 2.2137]}
+        zoom={6}
+        scrollWheelZoom={true}
         touchZoom={true}
         doubleClickZoom={true}
         dragging={true}
-        tap={true}
-        trackResize={true}
-        style={{ minHeight: '350px', borderRadius: '1rem' }}
+        zoomControl={false}
+        className={`map-container h-full w-full z-10 ${isFullScreen ? '' : 'rounded-2xl'}`}
+        style={{ 
+          minHeight: isFullScreen ? '100vh' : '350px',
+          borderRadius: isFullScreen ? '0' : '1rem'
+        }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           maxZoom={20}
         />
-        
+
         <MapEventHandler onMapMove={onMapMove} />
-        <CenterMapOnClick center={centerOnPosition} />
-        <MapControlHandler />
-        
-        {/* 🔍 TEST: Marqueurs simples SANS clustering */}
-        {places.map((place, index) => {
-          console.log(`🔍 Rendu marqueur ${index}:`, {
-            nom: place.name,
-            position: place.position,
-            denomination: place.denomination
-          });
-          return (
-            <Marker 
-              key={`test-${place.id}`} 
-              position={place.position}
-              icon={createCustomIcon(place.denomination)}
-            >
-              <Popup>
-                <div>
-                  <h3>{place.name}</h3>
-                  <p>{place.city}</p>
+        <ChangeMapView places={places} />
+
+        {/* Marqueurs directs sans clustering pour le debug */}
+        {places.map((place, index) => (
+          <Marker
+            key={`${place.id}-${index}`}
+            position={place.position}
+            icon={createCustomIcon(place.denomination, isFullScreen)}
+            eventHandlers={{
+              click: () => {
+                if (onPlaceClick) {
+                  onPlaceClick(place);
+                } else {
+                  // Comportement par défaut pour desktop
+                  console.log('Lieu cliqué:', place.name);
+                }
+              }
+            }}
+          >
+            {/* Popup seulement sur desktop */}
+            {!isFullScreen && (
+              <Popup 
+                className="custom-popup"
+                maxWidth={300}
+                minWidth={280}
+              >
+                <div className="p-2 space-y-3 max-w-xs">
+                  {/* En-tête avec nom et confession */}
+                  <div className="border-b border-gray-100 pb-2">
+                    <h3 className="font-bold text-gray-900 text-lg leading-tight mb-1">
+                      {place.name}
+                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        {place.denomination}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Informations */}
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700 leading-relaxed">
+                        {place.address}<br />
+                        {place.postalCode} {place.city}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-start space-x-2">
+                      <Clock className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700 text-xs leading-relaxed">
+                        {place.serviceTimes}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.position[0]},${place.position[1]}`;
+                        window.open(googleMapsUrl, '_blank');
+                      }}
+                      className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
+                    >
+                      <Navigation className="w-4 h-4" />
+                      <span>Itinéraire</span>
+                    </button>
+                  </div>
                 </div>
               </Popup>
-            </Marker>
-          );
-        })}
-        
-        <ChangeMapView places={places} />
+            )}
+          </Marker>
+        ))}
       </MapContainer>
-      
-      {/* Contrôles de carte mobile-optimisés */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-        {/* Bouton localisation */}
-        <button 
-          className={`w-12 h-12 sm:w-14 sm:h-14 bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95 ${
-            isLocating ? 'bg-blue-50 border-blue-300' : 'hover:bg-white'
-          }`}
-          onClick={handleLocateUser}
-          disabled={isLocating}
-          style={{ minWidth: '48px', minHeight: '48px' }}
-        >
-          {isLocating ? (
-            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          ) : (
-            <Locate className="h-5 w-5 text-gray-700" />
-          )}
-        </button>
 
-        {/* Bouton zoom + */}
-        <button 
-          className="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95 hover:bg-white"
+      {/* Contrôles de zoom personnalisés - adaptés selon le mode */}
+      <div className={`absolute ${isFullScreen ? 'top-20 right-4' : 'top-4 right-4'} z-[1000] flex flex-col space-y-2`}>
+        <button
           onClick={() => {
-            const map = (window as any).mapInstance;
-            if (map) map.zoomIn();
+            const mapInstance = (window as any).mapInstance;
+            if (mapInstance) {
+              mapInstance.zoomIn();
+            }
           }}
-          style={{ minWidth: '48px', minHeight: '48px' }}
+          className="w-10 h-10 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
         >
-          <Plus className="h-6 w-6 text-gray-700" />
+          <Plus className="w-5 h-5 text-gray-700" />
         </button>
         
-        {/* Bouton zoom - */}
-        <button 
-          className="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95 hover:bg-white"
+        <button
           onClick={() => {
-            const map = (window as any).mapInstance;
-            if (map) map.zoomOut();
+            const mapInstance = (window as any).mapInstance;
+            if (mapInstance) {
+              mapInstance.zoomOut();
+            }
           }}
-          style={{ minWidth: '48px', minHeight: '48px' }}
+          className="w-10 h-10 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
         >
-          <Minus className="h-6 w-6 text-gray-700" />
-        </button>
-
-        {/* Bouton reset vue */}
-        <button 
-          className="w-12 h-12 sm:w-14 sm:h-14 bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95 hover:bg-white"
-          onClick={handleResetView}
-          style={{ minWidth: '48px', minHeight: '48px' }}
-        >
-          <RotateCcw className="h-5 w-5 text-gray-700" />
+          <Minus className="w-5 h-5 text-gray-700" />
         </button>
       </div>
+
+      {/* Contrôles supplémentaires en mode plein écran */}
+      {isFullScreen && (
+        <div className="absolute top-20 left-4 z-[1000] flex flex-col space-y-2">
+          <button
+            onClick={handleLocateUser}
+            disabled={isLocating}
+            className={`w-12 h-12 bg-white hover:bg-blue-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105 ${
+              isLocating ? 'animate-pulse' : ''
+            }`}
+          >
+            <Locate className={`w-5 h-5 ${isLocating ? 'text-blue-600' : 'text-gray-700'}`} />
+          </button>
+          
+          <button
+            onClick={handleResetView}
+            className="w-12 h-12 bg-white hover:bg-gray-50 rounded-xl shadow-lg border border-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
+          >
+            <RotateCcw className="w-5 h-5 text-gray-700" />
+          </button>
+        </div>
+      )}
 
       {/* Indicateur de zoom mobile */}
-      <div className="absolute bottom-4 left-4 z-20 sm:hidden">
-        <div className="bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-xl px-3 py-2 shadow-lg">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-            <span className="text-xs font-medium text-gray-700">
-              {places.length} lieu{places.length > 1 ? 'x' : ''}
-            </span>
+      {isFullScreen && (
+        <div className="absolute bottom-4 right-4 z-[1000]">
+          <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
+            Zoom pour explorer
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
