@@ -12,6 +12,8 @@ import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ContributionHub from './components/ContributionHub';
+import TestimonyGallery from './components/TestimonyGallery';
+import PrayerWall from './components/PrayerWall';
 import { AdminPage } from './components/admin/AdminPage';
 import { supabase, supabaseConfig } from './lib/supabase';
 
@@ -119,6 +121,8 @@ function App() {
   const [showPlacePopup, setShowPlacePopup] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentPlaceIndex, setCurrentPlaceIndex] = useState(0);
+  const [showTestimonyGallery, setShowTestimonyGallery] = useState(false);
+  const [showPrayerWall, setShowPrayerWall] = useState(false);
 
   // Détection mobile
   useEffect(() => {
@@ -270,7 +274,7 @@ function App() {
         console.log('🎉 === CHARGEMENT RÉUSSI ===');
       } catch (err) {
         console.error('💥 === ERREUR COMPLÈTE ===');
-        console.error('💥 Type:', typeof err);
+        console.error('�� Type:', typeof err);
         console.error('💥 Message:', err.message);
         console.error('💥 Stack:', err.stack);
         console.error('💥 Objet complet:', err);
@@ -498,6 +502,8 @@ function App() {
       <Header 
         placesCount={worshipPlaces.length}
         onContributeClick={() => setShowContributeForm(true)}
+        onTestimonyClick={() => setShowTestimonyGallery(true)}
+        onPrayerWallClick={() => setShowPrayerWall(true)}
         supabase={supabase}
         currentView={viewMode}
         onViewChange={setViewMode}
@@ -635,7 +641,30 @@ function App() {
       {/* EXPÉRIENCE DESKTOP OU VUE HOME */}
       {(!isMobile || viewMode === 'home') && (
         <main className="flex-grow">
-          <Hero />
+          <Hero 
+            onExploreClick={() => {
+              const searchSection = document.getElementById('search-section');
+              if (searchSection) {
+                searchSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            onMapClick={() => {
+              if (isMobile) {
+                setViewMode('map');
+              } else {
+                const searchSection = document.getElementById('search-section');
+                if (searchSection) {
+                  searchSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            }}
+            onTestimonyClick={() => {
+              setShowTestimonyGallery(true);
+            }}
+            onPrayerClick={() => {
+              setShowPrayerWall(true);
+            }}
+          />
           
           <section className="py-16 bg-white">
             <div className="container mx-auto px-4">
@@ -792,6 +821,20 @@ function App() {
       <ContributionHub 
         isOpen={showContributeForm}
         onClose={() => setShowContributeForm(false)}
+        supabase={supabase}
+      />
+
+      {/* Modal de témoignages */}
+      <TestimonyGallery 
+        isOpen={showTestimonyGallery}
+        onClose={() => setShowTestimonyGallery(false)}
+        supabase={supabase}
+      />
+
+      {/* Mur des prières */}
+      <PrayerWall 
+        isOpen={showPrayerWall}
+        onClose={() => setShowPrayerWall(false)}
         supabase={supabase}
       />
     </div>
