@@ -28,20 +28,38 @@ export const denominationLabels: Record<Denomination, string> = {
 
 // Labels enrichis pour les types de célébrations
 export const celebrationTypeLabels: Record<CelebrationType, string> = {
-  // Nouveaux types principaux
-  'Célébration': 'Célébration',
-  'Prière': 'Prière',
-  'Confession': 'Confession',
+  // Types principaux de la base de données
   'Adoration': 'Adoration eucharistique',
+  'Bible study': 'Étude biblique',
   'Catéchisme': 'Catéchisme',
-  'Groupe de prière': 'Groupe de prière',
+  'Célébration': 'Célébration',
+  'Célébration en semaine': 'Célébration en semaine',
+  'Confession': 'Confession',
+  'Culte': 'Culte',
+  'Culte de louange': 'Culte de louange',
+  'Culte principal': 'Culte principal',
+  'École du dimanche': 'École du dimanche',
   'Évangélisation': 'Évangélisation',
+  'Groupe de prière': 'Groupe de prière',
+  'Jeûne et prière': 'Jeûne et prière',
+  'Jeunes adultes': 'Jeunes adultes',
+  'Liturgie divine': 'Liturgie divine',
+  'Messe': 'Messe',
+  'Messe/Culte principal': 'Messe/Culte principal',
+  'Partage spirituel': 'Partage spirituel',
+  'Prière': 'Prière',
+  'Prière de guérison': 'Prière de guérison',
+  'Prière du matin': 'Prière du matin',
+  'Prière du soir': 'Prière du soir',
   'Service communautaire': 'Service communautaire',
-  'Autre': 'Autre',
-  // Types existants pour compatibilité
+  'Service divin': 'Service divin',
+  'Service pour les jeunes': 'Service pour les jeunes',
+  'Silence et méditation': 'Silence et méditation',
+  'Vêpres': 'Vêpres',
+  
+  // Types legacy pour compatibilité
   'Messe en semaine': 'Célébration en semaine',
   'Jeûne': 'Jeûne/Retraite spirituelle',
-  'Vêpres': 'Vêpres',
   'Laudes': 'Laudes',
   'Groupe de jeunes': 'Groupe de jeunes',
   'Prière du chapelet': 'Prière du chapelet',
@@ -49,7 +67,8 @@ export const celebrationTypeLabels: Record<CelebrationType, string> = {
   'Baptême': 'Baptême',
   'Mariage': 'Mariage',
   'Concert chrétien': 'Concert chrétien',
-  'Conférence': 'Conférence'
+  'Conférence': 'Conférence',
+  'Autre': 'Autre'
 };
 
 export const weekDayLabels: Record<WeekDay, string> = {

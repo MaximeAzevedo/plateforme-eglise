@@ -177,8 +177,8 @@ const Search: React.FC<SearchProps> = ({
             <div className={`
               fixed z-[70] bg-white shadow-2xl
               ${isMapOverlay 
-                ? 'bottom-0 left-4 right-4 top-24 rounded-t-3xl border-t border-gray-200' 
-                : 'bottom-0 left-0 right-0 max-h-[80vh] rounded-t-3xl border-t border-gray-200 lg:static lg:z-auto lg:max-h-none lg:rounded-b-2xl lg:rounded-t-none lg:border-t lg:border-gray-100'
+                ? 'bottom-0 left-4 right-4 top-1/2 rounded-t-3xl border-t border-gray-200' 
+                : 'bottom-0 left-0 right-0 max-h-[65vh] rounded-t-3xl border-t border-gray-200 lg:static lg:z-auto lg:max-h-none lg:rounded-b-2xl lg:rounded-t-none lg:border-t lg:border-gray-100'
               }
             `}>
               {/* Poignée de drag */}

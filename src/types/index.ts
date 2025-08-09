@@ -11,19 +11,38 @@ export type Denomination =
 
 // Types d'événements étendus pour correspondre aux données réelles
 export type CelebrationType = 
-  | 'Célébration'
-  | 'Prière'
-  | 'Confession'
+  // Types principaux de la base de données
   | 'Adoration'
+  | 'Bible study'
   | 'Catéchisme'
-  | 'Groupe de prière'
+  | 'Célébration'
+  | 'Célébration en semaine'
+  | 'Confession'
+  | 'Culte'
+  | 'Culte de louange'
+  | 'Culte principal'
+  | 'École du dimanche'
   | 'Évangélisation'
+  | 'Groupe de prière'
+  | 'Jeûne et prière'
+  | 'Jeunes adultes'
+  | 'Liturgie divine'
+  | 'Messe'
+  | 'Messe/Culte principal'
+  | 'Partage spirituel'
+  | 'Prière'
+  | 'Prière de guérison'
+  | 'Prière du matin'
+  | 'Prière du soir'
   | 'Service communautaire'
-  | 'Autre'
-  // Types existants pour compatibilité avec les données actuelles
+  | 'Service divin'
+  | 'Service pour les jeunes'
+  | 'Silence et méditation'
+  | 'Vêpres'
+  
+  // Types legacy pour compatibilité
   | 'Messe en semaine'
   | 'Jeûne'
-  | 'Vêpres'
   | 'Laudes'
   | 'Groupe de jeunes'
   | 'Prière du chapelet'
@@ -31,7 +50,8 @@ export type CelebrationType =
   | 'Baptême'
   | 'Mariage'
   | 'Concert chrétien'
-  | 'Conférence';
+  | 'Conférence'
+  | 'Autre';
 
 export type WeekDay = 'Lundi' | 'Mardi' | 'Mercredi' | 'Jeudi' | 'Vendredi' | 'Samedi' | 'Dimanche';
 

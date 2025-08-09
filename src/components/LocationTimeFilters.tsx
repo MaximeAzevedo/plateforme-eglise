@@ -17,7 +17,6 @@ interface LocationTimeFiltersProps {
 }
 
 const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
-  places,
   eventFilter,
   onEventFilterChange,
   currentLocation
@@ -32,13 +31,13 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
     });
   };
 
-  const handleCustomDateChange = (date: string) => {
+  const handleCustomDateChange = (customDate: string) => {
     onEventFilterChange({
       ...eventFilter,
       dateTimeFilter: {
         ...eventFilter.dateTimeFilter,
-        dateFilter: 'custom',
-        customDate: date
+        customDate: customDate,
+        dateFilter: customDate ? 'custom' : undefined
       }
     });
   };
@@ -47,48 +46,65 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Filtres temporels */}
-      <div className="space-y-2">
-        <h4 className="text-xs font-body font-medium text-title flex items-center gap-2">
-          <Calendar className="h-3 w-3" />
+      {/* Section Quand ? */}
+      <div className="space-y-3">
+        <h4 className="text-base font-semibold text-gray-900 flex items-center">
+          <Calendar className="w-5 h-5 text-amber-500 mr-2" />
           Quand ?
         </h4>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-          {(Object.keys(dateFilterLabels) as DateFilter[]).filter(filter => filter !== 'custom').map(filter => (
+
+        {/* Filtres de date - Style moderne */}
+        <div className="grid grid-cols-2 gap-3">
+          {(['today', 'weekend', 'week'] as DateFilter[]).map((filter) => (
             <button
               key={filter}
               onClick={() => handleDateFilterChange(filter)}
-              className={`px-2 py-1 rounded-lg text-xs transition-colors font-body font-medium ${
-                eventFilter.dateTimeFilter?.dateFilter === filter
-                  ? 'bg-accent text-white'
-                  : 'bg-sand-light text-text hover:bg-sand'
-              }`}
+              className={`
+                relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
+                ${eventFilter.dateTimeFilter?.dateFilter === filter
+                  ? 'border-amber-400 bg-amber-50 text-amber-900 shadow-md scale-105'
+                  : 'border-gray-200 bg-white hover:border-amber-200 hover:bg-amber-50/50 hover:scale-102'
+                }
+              `}
+              style={{ minHeight: '50px' }}
             >
-              {dateFilterLabels[filter]}
+              <span className="text-sm font-medium">
+                {dateFilterLabels[filter]}
+              </span>
+              {eventFilter.dateTimeFilter?.dateFilter === filter && (
+                <div className="absolute top-2 right-2 w-3 h-3 bg-amber-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              )}
             </button>
           ))}
         </div>
 
         {/* Sélecteur de date personnalisée */}
-        <div className="flex items-center gap-2">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">Date spécifique</label>
           <input
             type="date"
             min={today}
             value={eventFilter.dateTimeFilter?.customDate || ''}
             onChange={(e) => handleCustomDateChange(e.target.value)}
-            className="px-2 py-1 border border-border rounded-lg text-xs focus:ring-2 focus:ring-accent focus:border-accent font-body"
+            className={`
+              w-full p-3 rounded-xl border-2 transition-all duration-200
+              ${eventFilter.dateTimeFilter?.customDate
+                ? 'border-amber-400 bg-amber-50 text-amber-900'
+                : 'border-gray-200 bg-white hover:border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100'
+              }
+            `}
           />
-          <span className="text-xs text-text font-body">Date spécifique</span>
         </div>
       </div>
 
       {/* Résumé des filtres actifs */}
       {eventFilter.dateTimeFilter?.dateFilter && (
-        <div className="bg-sand-light border border-accent/20 rounded-lg p-2">
-          <h5 className="text-xs font-body font-medium text-accent mb-1">Filtre actif :</h5>
-          <div className="text-xs text-text font-body">
-            <strong className="text-title">Période :</strong> {dateFilterLabels[eventFilter.dateTimeFilter.dateFilter]}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+          <h5 className="text-sm font-medium text-amber-800 mb-1">Filtre actif :</h5>
+          <div className="text-sm text-amber-700">
+            <strong>Période :</strong> {dateFilterLabels[eventFilter.dateTimeFilter.dateFilter]}
             {eventFilter.dateTimeFilter.customDate && ` (${eventFilter.dateTimeFilter.customDate})`}
           </div>
         </div>
