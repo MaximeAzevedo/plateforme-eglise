@@ -48,31 +48,17 @@ function isValidCoordinate(coord: any): boolean {
 }
 
 function transformSupabaseData(data: any[]): WorshipPlace[] {
-  console.log('🔧 === DÉBUT TRANSFORMATION DONNÉES ===');
-  console.log('🔧 Éléments reçus depuis Supabase:', data?.length || 0);
-  console.log('🔧 Premier élément brut:', data?.[0]);
-  
   if (!data || data.length === 0) {
-    console.error('❌ AUCUNE DONNÉE REÇUE DEPUIS SUPABASE !');
     return [];
   }
   
-  const filteredPlaces = data.filter(place => {
-    // Filter out places with invalid coordinates
-    const hasValidCoordinates = isValidCoordinate(place.Latitude) && isValidCoordinate(place.Longitude);
-    if (!hasValidCoordinates) {
-      console.warn(`⚠️ Lieu rejeté (coordonnées invalides):`, {
-        nom: place.Nom,
-        latitude: place.Latitude,
-        longitude: place.Longitude
-      });
-    }
-    return hasValidCoordinates;
-  });
-
-  console.log('✅ Lieux avec coordonnées valides:', filteredPlaces.length);
-  
-  const transformedPlaces = filteredPlaces.map(place => {
+  return data
+    .filter(place => {
+      // Filter out places with invalid coordinates
+      const hasValidCoordinates = isValidCoordinate(place.Latitude) && isValidCoordinate(place.Longitude);
+      return hasValidCoordinates;
+    })
+    .map(place => {
       // Traitement des horaires JSON
       let serviceTimes = 'Horaires non disponibles';
       try {
@@ -85,7 +71,6 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
             serviceTimes = schedules.map(schedule => 
               `${schedule.type} - ${schedule.day} ${schedule.startTime}-${schedule.endTime}`
             ).join('; ');
-            console.log(`✅ Horaires parsés pour ${place.Nom}:`, schedules);
           } else {
             console.warn(`⚠️ Horaires vides pour ${place.Nom}`);
           }
@@ -110,13 +95,8 @@ function transformSupabaseData(data: any[]): WorshipPlace[] {
         position: [parseFloat(place.Latitude), parseFloat(place.Longitude)] as [number, number]
       };
       
-      console.log(`✅ Lieu transformé: ${transformedPlace.name} (${transformedPlace.city})`);
       return transformedPlace;
     });
-
-  console.log('🔧 === FIN TRANSFORMATION DONNÉES ===');
-  console.log('🔧 Nombre final de lieux transformés:', transformedPlaces.length);
-  return transformedPlaces;
 }
 
 function App() {

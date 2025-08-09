@@ -196,15 +196,22 @@ const createCustomIcon = (denomination: Denomination) => {
 const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMove, centerOnPosition }) => {
   const [isLocating, setIsLocating] = React.useState(false);
 
-  // 🔍 DEBUG TEMPORAIRE - À SUPPRIMER APRÈS
+  // 🔍 DIAGNOSTIC CIBLÉ
   React.useEffect(() => {
-    console.log('🗺️ MapView DEBUG:');
-    console.log('📊 Nombre de places reçues:', places?.length || 0);
-    console.log('📍 Places:', places);
-    console.log('🎯 Première place:', places?.[0]);
+    console.log('🔍 DIAGNOSTIC CARTE:');
+    console.log('📊 Places reçues:', places?.length);
     if (places?.length > 0) {
-      console.log('📐 Coordinates première place:', places[0].position);
-      console.log('🏷️ Nom première place:', places[0].name);
+      console.log('🎯 Première place:', {
+        nom: places[0].name,
+        position: places[0].position,
+        lat: places[0].position[0],
+        lng: places[0].position[1]
+      });
+      console.log('📐 Toutes les positions:', places.map(p => ({
+        nom: p.name,
+        lat: p.position[0], 
+        lng: p.position[1]
+      })));
     }
   }, [places]);
 
@@ -275,6 +282,30 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
         <CenterMapOnClick center={centerOnPosition} />
         <MapControlHandler />
         
+        {/* 🔍 TEST: Marqueurs SANS clustering d'abord */}
+        {places.map((place, index) => {
+          console.log(`🔍 Rendu marqueur ${index}:`, {
+            nom: place.name,
+            position: place.position,
+            denomination: place.denomination
+          });
+          return (
+            <Marker 
+              key={`test-${place.id}`} 
+              position={place.position}
+              icon={createCustomIcon(place.denomination)}
+            >
+              <Popup>
+                <div>
+                  <h3>{place.name}</h3>
+                  <p>{place.city}</p>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
+        
+        {/* CLUSTERING DÉSACTIVÉ TEMPORAIREMENT
         <MarkerClusterGroup
           chunkedLoading
           animate={true}
@@ -340,102 +371,109 @@ const MapView: React.FC<MapViewProps> = ({ places, selectedDenomination, onMapMo
             });
           }}
         >
-          {places.map((place) => (
-            <Marker 
-              key={place.id} 
-              position={place.position}
-              icon={createCustomIcon(place.denomination)}
-            >
-              <Popup 
-                className="map-popup mobile-popup" 
-                closeButton={false} 
-                maxWidth={350}
-                minWidth={300}
-                offset={[0, -10]}
+          {places.map((place, index) => {
+            console.log(`🔍 Rendu marqueur ${index}:`, {
+              nom: place.name,
+              position: place.position,
+              denomination: place.denomination
+            });
+            return (
+              <Marker 
+                key={place.id} 
+                position={place.position}
+                icon={createCustomIcon(place.denomination)}
               >
-                <div className="bg-white/98 backdrop-blur-xl border border-gray-200/60 rounded-2xl p-5 sm:p-6 min-w-[280px] max-w-[350px] shadow-2xl">
-                  {/* Header mobile-optimisé */}
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="font-bold text-gray-900 text-lg sm:text-xl leading-tight pr-2 flex-1">
-                      {place.name}
-                    </h3>
-                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <Star className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-
-                  {/* Confession badge */}
-                  <div className="mb-4">
-                    <div className="inline-flex items-center bg-gradient-to-r from-gray-100 to-gray-200 px-4 py-2 rounded-full shadow-sm">
-                      <span className="text-gray-800 font-bold text-sm">
-                        {denominationLabels[place.denomination].replace('Confession : ', '')}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Informations avec icônes modernisées mobile */}
-                  <div className="space-y-4 text-sm">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <MapPin className="h-5 w-5 text-white" />
+                <Popup 
+                  className="map-popup mobile-popup" 
+                  closeButton={false} 
+                  maxWidth={350}
+                  minWidth={300}
+                  offset={[0, -10]}
+                >
+                  <div className="bg-white/98 backdrop-blur-xl border border-gray-200/60 rounded-2xl p-5 sm:p-6 min-w-[280px] max-w-[350px] shadow-2xl">
+                    {/* Header mobile-optimisé */}
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="font-bold text-gray-900 text-lg sm:text-xl leading-tight pr-2 flex-1">
+                        {place.name}
+                      </h3>
+                      <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <Star className="h-5 w-5 text-white" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-gray-700 leading-relaxed font-medium block">
-                          {place.address}
-                        </span>
-                        <span className="text-gray-600 text-sm">
-                          {place.city}
+                    </div>
+
+                    {/* Confession badge */}
+                    <div className="mb-4">
+                      <div className="inline-flex items-center bg-gradient-to-r from-gray-100 to-gray-200 px-4 py-2 rounded-full shadow-sm">
+                        <span className="text-gray-800 font-bold text-sm">
+                          {denominationLabels[place.denomination].replace('Confession : ', '')}
                         </span>
                       </div>
                     </div>
 
-                    {place.serviceTimes && (
+                    {/* Informations avec icônes modernisées mobile */}
+                    <div className="space-y-4 text-sm">
                       <div className="flex items-start space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                          <Clock className="h-5 w-5 text-white" />
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                          <MapPin className="h-5 w-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="text-gray-700 leading-relaxed font-medium text-sm block">
-                            {place.serviceTimes}
+                          <span className="text-gray-700 leading-relaxed font-medium block">
+                            {place.address}
+                          </span>
+                          <span className="text-gray-600 text-sm">
+                            {place.city}
                           </span>
                         </div>
                       </div>
-                    )}
-                  </div>
 
-                  {/* Actions mobile-optimisées */}
-                  <div className="mt-6 space-y-3">
-                    {place.website && (
-                      <a
-                        href={place.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center space-x-3 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
-                        style={{ minHeight: '52px' }}
+                      {place.serviceTimes && (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <Clock className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-gray-700 leading-relaxed font-medium text-sm block">
+                              {place.serviceTimes}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions mobile-optimisées */}
+                    <div className="mt-6 space-y-3">
+                      {place.website && (
+                        <a
+                          href={place.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center space-x-3 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+                          style={{ minHeight: '52px' }}
+                        >
+                          <Globe className="h-5 w-5" />
+                          <span>Voir le site web</span>
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                      
+                      {/* Bouton directions mobile */}
+                      <button
+                        onClick={() => {
+                          const url = `https://www.google.com/maps/dir/?api=1&destination=${place.position[0]},${place.position[1]}`;
+                          window.open(url, '_blank');
+                        }}
+                        className="flex items-center justify-center space-x-3 w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
                       >
-                        <Globe className="h-5 w-5" />
-                        <span>Voir le site web</span>
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    )}
-                    
-                    {/* Bouton directions mobile */}
-                    <button
-                      onClick={() => {
-                        const url = `https://www.google.com/maps/dir/?api=1&destination=${place.position[0]},${place.position[1]}`;
-                        window.open(url, '_blank');
-                      }}
-                      className="flex items-center justify-center space-x-3 w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
-                    >
-                      <Navigation className="h-5 w-5" />
-                      <span>Itinéraire</span>
-                    </button>
+                        <Navigation className="h-5 w-5" />
+                        <span>Itinéraire</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MarkerClusterGroup>
+                </Popup>
+              </Marker>
+            );
+          })}
+        {/* </MarkerClusterGroup> */}
         
         <ChangeMapView places={places} />
       </MapContainer>
