@@ -309,12 +309,12 @@ const MapView: React.FC<MapViewProps> = ({
   return (
     <div className="relative w-full h-full overflow-hidden rounded-xl">
       
-      {/* Bouton de géolocalisation Culteo */}
+      {/* Bouton de géolocalisation Culteo - déplacé en bas à droite */}
       <button
         onClick={getUserLocation}
         disabled={isLocating}
         className={`
-          absolute top-4 right-4 z-[1000] p-3 bg-culteo-blanc-pur border border-gray-200 rounded-culteo
+          absolute bottom-4 right-4 z-[1000] p-3 bg-culteo-blanc-pur border border-gray-200 rounded-culteo
           shadow-culteo-medium hover:shadow-culteo-float transition-all duration-300
           ${isLocating ? 'animate-pulse' : 'hover:scale-105'}
         `}

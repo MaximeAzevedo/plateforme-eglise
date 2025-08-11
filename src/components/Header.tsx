@@ -114,29 +114,37 @@ const Header: React.FC<HeaderProps> = ({
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             
-            {/* Logo Culteo à gauche */}
-            <div className="flex items-center">
-              <img 
-                src="/Logo Culteo.png" 
-                alt="Culteo" 
-                className="h-8 w-auto"
-              />
+            {/* Menu hamburger à gauche + Logo Culteo */}
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMenuOpen(!isMenuOpen);
+                }}
+                className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200"
+              >
+                <Menu 
+                  className="w-6 h-6 text-culteo-vert-esperance" 
+                  strokeWidth={1.5}
+                  style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                />
+              </button>
+              
+              {/* Logo + Texte Culteo */}
+              <div className="flex items-center space-x-2">
+                <img 
+                  src="/Logo Culteo.png" 
+                  alt="Culteo" 
+                  className="h-8 w-auto"
+                />
+                <span className="font-poppins font-bold text-culteo-gris-basalte text-lg">
+                  Culteo
+                </span>
+              </div>
             </div>
 
-            {/* Menu hamburger à droite */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMenuOpen(!isMenuOpen);
-              }}
-              className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200"
-            >
-              <Menu 
-                className="w-6 h-6 text-culteo-vert-esperance" 
-                strokeWidth={1.5}
-                style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-              />
-            </button>
+            {/* Espace pour équilibrer la disposition */}
+            <div className="w-10"></div>
           </div>
         </div>
       </header>
@@ -149,7 +157,7 @@ const Header: React.FC<HeaderProps> = ({
           
           {/* Menu panel épuré */}
           <div 
-            className="absolute top-20 right-6 w-80 bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden"
+            className="absolute top-20 left-6 w-80 bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header du menu */}

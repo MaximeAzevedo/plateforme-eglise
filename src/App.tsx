@@ -802,6 +802,9 @@ function App() {
           isOpen={showPlaceBottomSheet}
           onClose={() => setShowPlaceBottomSheet(false)}
           place={selectedPlace}
+          currentIndex={selectedPlace ? filteredPlaces.findIndex(place => place.id === selectedPlace.id) : 0}
+          totalPlaces={filteredPlaces.length}
+          onNavigate={navigateToPlace}
         />
 
 
