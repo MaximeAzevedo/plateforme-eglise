@@ -136,8 +136,8 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
             </div>
             
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                Contribuer à GOD × CONNECT
+              <span className="text-culteo-gris-basalte">
+                Contribuer à Culteo
               </span>
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">

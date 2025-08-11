@@ -146,52 +146,57 @@ const confessionIcons: Record<Denomination, string> = {
   Other: `<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7v7c0 5 4 9 10 9s10-4 10-9V7z'/></svg>`
 };
 
-const createCustomIcon = (denomination: Denomination) => {
+// Pin personnalisé Culteo en forme de goutte
+const createCulteoPinIcon = (denomination: Denomination, isSelected = false) => {
   const iconSvg = confessionIcons[denomination] || confessionIcons.Other;
-  const color = getMarkerColor(denomination);
   
-  // Marqueur ultra-moderne avec effets visuels
+  // Couleurs selon specs Culteo
+  const backgroundColor = isSelected ? '#FFC107' : '#0A6847'; // Jaune Lumière ou Vert Espérance
+  const iconColor = isSelected ? '#3D3D3D' : '#FFFFFF'; // Gris Basalte ou Blanc
+  const scale = isSelected ? 1.2 : 1;
+  
+  // Pin en forme de goutte/repère géolocalisation
   const html = `
     <div style="
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, ${color} 0%, ${color}CC 50%, ${color}88 100%);
-      border: 3px solid #ffffff;
-      box-shadow: 
-        0 8px 25px rgba(0,0,0,0.15),
-        0 4px 12px rgba(0,0,0,0.1),
-        0 0 0 1px rgba(255,255,255,0.3),
-        inset 0 1px 0 rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: ${36 * scale}px;
+      height: ${36 * scale}px;
       position: relative;
-      backdrop-filter: blur(12px);
-      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-      transform: perspective(1000px) rotateX(0deg);
-    " 
-    class="marker-hover-effect">
+      transform: scale(${scale});
+      transition: all 0.3s ease;
+    ">
+      <!-- Forme de goutte -->
       <div style="
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, ${color}40 0%, transparent 70%);
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      "></div>
-      ${iconSvg}
+        width: 36px;
+        height: 36px;
+        background: ${backgroundColor};
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        border: 2px solid #FFFFFF;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      ">
+        <!-- Icône centrée -->
+        <div style="
+          transform: rotate(45deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: ${iconColor};
+        ">
+          ${iconSvg.replace(/currentColor|#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g, iconColor)}
+        </div>
+      </div>
     </div>
   `;
+  
   return divIcon({
     html,
-    className: 'custom-marker-icon animate-marker-appear',
-    iconSize: [44, 44],
-    iconAnchor: [22, 22]
+    className: 'culteo-pin-icon',
+    iconSize: [36 * scale, 36 * scale],
+    iconAnchor: [18 * scale, 36 * scale] // Point de la goutte
   });
 };
 
@@ -204,222 +209,221 @@ const MapView: React.FC<MapViewProps> = ({
   isFullScreen = false
 }) => {
   const [isLocating, setIsLocating] = React.useState(false);
+  const [selectedPlaceId, setSelectedPlaceId] = React.useState<string | null>(null);
 
   // 🔍 DIAGNOSTIC CIBLÉ
   React.useEffect(() => {
     console.log('🔍 DIAGNOSTIC CARTE:');
-    console.log('📊 Places reçues:', places?.length);
-    if (places?.length > 0) {
-      console.log('🎯 Première place:', {
+    console.log('📍 Nombre de lieux:', places.length);
+    console.log('🎯 Filtre dénomination:', selectedDenomination);
+    console.log('📐 Mode plein écran:', isFullScreen);
+    
+    if (places.length > 0) {
+      console.log('📋 Premier lieu exemple:', {
         nom: places[0].name,
         position: places[0].position,
-        lat: places[0].position[0],
-        lng: places[0].position[1]
+        dénomination: places[0].denomination
       });
-      console.log('📐 Toutes les positions:', places.map(p => ({
-        nom: p.name,
-        lat: p.position[0], 
-        lng: p.position[1]
-      })));
     }
-  }, [places]);
+  }, [places, selectedDenomination, isFullScreen]);
 
-  // Configuration des icônes de confession
-  const confessionIcons = {
-    Catholic: '⛪',
-    Protestant: '✝️', 
-    Orthodox: '☦️',
-    Evangelical: '📖',
-    'Neo-Apostolic': '🕊️',
-    Pentecostal: '🔥',
-    Baptist: '💧',
-    Other: '🙏'
-  };
-
-  // Fonction pour créer une icône personnalisée moderne
-  const createCustomIcon = (denomination: Denomination, isFullScreen: boolean = false) => {
-    const baseSize = isFullScreen ? 44 : 40;
-    const iconEmoji = confessionIcons[denomination] || '🙏';
-    
-    return divIcon({
-      html: `
-        <div class="custom-marker-icon animate-marker-appear" style="
-          width: ${baseSize}px;
-          height: ${baseSize}px;
-          background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: ${isFullScreen ? '18px' : '16px'};
-          border: 3px solid white;
-          box-shadow: 
-            0 4px 20px rgba(245, 158, 11, 0.4),
-            0 8px 32px rgba(245, 158, 11, 0.2),
-            inset 0 2px 4px rgba(255, 255, 255, 0.3);
-          backdrop-filter: blur(12px);
-          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-          transform: perspective(1000px) rotateX(0deg);
-          cursor: pointer;
-        ">
-          <div style="
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-          ">
-            ${iconEmoji}
-          </div>
-        </div>
-      `,
-      className: '',
-      iconSize: [baseSize, baseSize],
-      iconAnchor: [baseSize / 2, baseSize],
-      popupAnchor: [0, -baseSize]
-    });
-  };
-
-  // Gestionnaire de géolocalisation
-  const handleLocateUser = () => {
+  // Géolocalisation améliorée
+  const getUserLocation = () => {
     if (!navigator.geolocation) {
       alert('La géolocalisation n\'est pas supportée par votre navigateur');
       return;
     }
 
     setIsLocating(true);
+    
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
-        // Déclencher le recentrage via le composant parent
-        if (onMapMove) {
-          onMapMove([latitude, longitude], [
-            [latitude - 0.1, longitude - 0.1],
-            [latitude + 0.1, longitude + 0.1]
-          ]);
+        const userPos: [number, number] = [position.coords.latitude, position.coords.longitude];
+        console.log('📍 Position utilisateur:', userPos);
+        
+        // Centrer la carte sur la position de l'utilisateur
+        const mapInstance = (window as any).mapInstance;
+        if (mapInstance) {
+          mapInstance.setView(userPos, 15, { animate: true });
         }
+        
         setIsLocating(false);
       },
       (error) => {
-        console.error('Erreur de géolocalisation:', error);
-        alert('Impossible d\'obtenir votre position');
+        console.error('❌ Erreur géolocalisation:', error);
         setIsLocating(false);
+        
+        let message = 'Impossible d\'obtenir votre position.';
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            message = 'Vous avez refusé l\'accès à votre position.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            message = 'Votre position n\'est pas disponible.';
+            break;
+          case error.TIMEOUT:
+            message = 'La demande de géolocalisation a expiré.';
+            break;
+        }
+        alert(message);
       },
-      { timeout: 10000, maximumAge: 60000 }
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000 // 5 minutes
+      }
     );
   };
 
-  // Gestionnaire de réinitialisation de vue
-  const handleResetView = () => {
-    if (onMapMove) {
-      onMapMove([46.2276, 2.2137], [
-        [41.0, -5.0],
-        [51.0, 10.0]
-      ]);
-    }
+  // Custom cluster icon selon specs Culteo
+  const createClusterCustomIcon = (cluster: any) => {
+    const count = cluster.getChildCount();
+    const html = `
+      <div style="
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #0A6847;
+        border: 3px solid #FFFFFF;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        color: #F9F9F9;
+      ">
+        ${count}
+      </div>
+    `;
+    
+    return divIcon({
+      html,
+      className: 'culteo-cluster-icon',
+      iconSize: [50, 50],
+      iconAnchor: [25, 25]
+    });
   };
 
   return (
-    <div className={`relative ${isFullScreen ? 'h-full w-full' : 'h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px] w-full rounded-2xl shadow-xl border border-gray-200'} overflow-hidden`}>
+    <div className="relative w-full h-full overflow-hidden rounded-xl">
+      
+      {/* Bouton de géolocalisation Culteo */}
+      <button
+        onClick={getUserLocation}
+        disabled={isLocating}
+        className={`
+          absolute top-4 right-4 z-[1000] p-3 bg-culteo-blanc-pur border border-gray-200 rounded-culteo
+          shadow-culteo-medium hover:shadow-culteo-float transition-all duration-300
+          ${isLocating ? 'animate-pulse' : 'hover:scale-105'}
+        `}
+        title="Me localiser"
+      >
+        <Locate 
+          className={`w-5 h-5 text-culteo-vert-esperance ${isLocating ? 'animate-spin' : ''}`}
+          strokeWidth={1.5}
+        />
+      </button>
+
       <MapContainer
         center={[46.2276, 2.2137]}
         zoom={6}
         scrollWheelZoom={true}
-        touchZoom={true}
-        doubleClickZoom={true}
-        dragging={true}
-        zoomControl={false}
-        className={`map-container h-full w-full z-10 ${isFullScreen ? '' : 'rounded-2xl'}`}
+        className="w-full h-full"
         style={{ 
           minHeight: isFullScreen ? '100vh' : '350px',
           borderRadius: isFullScreen ? '0' : '1rem'
         }}
       >
+        {/* Style de carte minimaliste selon specs */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           maxZoom={20}
         />
 
         <MapEventHandler onMapMove={onMapMove} />
         <ChangeMapView places={places} />
+        <CenterMapOnClick center={centerOnPosition} />
+        <MapControlHandler />
 
-        {/* Marqueurs directs sans clustering pour le debug */}
-        {places.map((place, index) => (
-          <Marker
-            key={`${place.id}-${index}`}
-            position={place.position}
-            icon={createCustomIcon(place.denomination, isFullScreen)}
-            eventHandlers={{
-              click: () => {
-                if (onPlaceClick) {
-                  onPlaceClick(place);
-                } else {
-                  // Comportement par défaut pour desktop
-                  console.log('Lieu cliqué:', place.name);
+        {/* Clustering avec style Culteo */}
+        <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={createClusterCustomIcon}
+          maxClusterRadius={40}
+          spiderfyOnMaxZoom={true}
+          showCoverageOnHover={false}
+          zoomToBoundsOnClick={true}
+        >
+          {places.map((place, index) => (
+            <Marker
+              key={`${place.id}-${index}`}
+              position={place.position}
+              icon={createCulteoPinIcon(place.denomination, selectedPlaceId === place.id)}
+              eventHandlers={{
+                click: () => {
+                  setSelectedPlaceId(place.id);
+                  if (onPlaceClick) {
+                    onPlaceClick(place);
+                  } else {
+                    console.log('Lieu cliqué:', place.name);
+                  }
                 }
-              }
-            }}
-          >
-            {/* Popup seulement sur desktop */}
-            {!isFullScreen && (
-              <Popup 
-                className="custom-popup"
-                maxWidth={300}
-                minWidth={280}
-              >
-                <div className="p-2 space-y-3 max-w-xs">
-                  {/* En-tête avec nom et confession */}
-                  <div className="border-b border-gray-100 pb-2">
-                    <h3 className="font-bold text-gray-900 text-lg leading-tight mb-1">
-                      {place.name}
-                    </h3>
-                    <div className="flex items-center space-x-2">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                        {place.denomination}
-                      </span>
+              }}
+            >
+              {/* Popup seulement sur desktop */}
+              {!isFullScreen && (
+                <Popup 
+                  className="culteo-popup"
+                  maxWidth={300}
+                  minWidth={280}
+                >
+                  <div className="p-4 space-y-3">
+                    {/* En-tête avec nom et confession */}
+                    <div className="border-b border-gray-100 pb-3">
+                      <h3 className="font-poppins font-bold text-culteo-gris-basalte text-lg leading-tight">
+                        {place.name}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-poppins font-semibold bg-culteo-vert-esperance/15 text-culteo-vert-esperance">
+                          {denominationLabels[place.denomination]}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Informations */}
-                  <div className="space-y-2 text-sm">
+                    {/* Adresse */}
                     <div className="flex items-start space-x-2">
-                      <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 leading-relaxed">
-                        {place.address}<br />
-                        {place.postalCode} {place.city}
+                      <MapPin className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                      <span className="font-lato text-culteo-gris-basalte text-sm">
+                        {place.address}, {place.city}
                       </span>
                     </div>
-                    
-                    <div className="flex items-start space-x-2">
-                      <Clock className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 text-xs leading-relaxed">
-                        {place.serviceTimes}
-                      </span>
-                    </div>
-                  </div>
 
-                  {/* Actions */}
-                  <div className="pt-2 border-t border-gray-100">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.position[0]},${place.position[1]}`;
-                        window.open(googleMapsUrl, '_blank');
-                      }}
-                      className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <Navigation className="w-4 h-4" />
-                      <span>Itinéraire</span>
-                    </button>
+                    {/* Horaires */}
+                    <div className="flex items-start space-x-2">
+                      <Clock className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                      <span className="font-lato text-culteo-gris-basalte text-sm">
+                        {place.serviceTimes || 'Horaires non disponibles'}
+                      </span>
+                    </div>
+
+                    {/* Boutons d'action */}
+                    <div className="flex gap-2 pt-2">
+                      <button className="flex-1 bg-culteo-blanc-coquille text-culteo-gris-basalte px-3 py-2 rounded-culteo text-sm font-poppins font-medium hover:bg-gray-100 transition-colors">
+                        Itinéraire
+                      </button>
+                      <button className="flex-1 bg-culteo-vert-esperance text-white px-3 py-2 rounded-culteo text-sm font-poppins font-medium hover:bg-primary-600 transition-colors">
+                        Voir la fiche
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </Popup>
-            )}
-          </Marker>
-        ))}
+                </Popup>
+              )}
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );

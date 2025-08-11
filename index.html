@@ -2,42 +2,42 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/Logo Culteo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
     
     <!-- Méta-tags PWA -->
-    <meta name="theme-color" content="#f59e0b" />
-    <meta name="background-color" content="#1e293b" />
+    <meta name="theme-color" content="#0A6847" />
+    <meta name="background-color" content="#F9F9F9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="GOD × CONNECT" />
+    <meta name="apple-mobile-web-app-title" content="Culteo" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="msapplication-TileColor" content="#f59e0b" />
+    <meta name="msapplication-TileColor" content="#0A6847" />
     <meta name="msapplication-tap-highlight" content="no" />
     
     <!-- Safe Area pour iPhone X+ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
     <!-- SEO et réseaux sociaux -->
-    <meta name="description" content="Trouvez votre communauté spirituelle, partagez vos prières et témoignages avec une communauté bienveillante. Plus de 1500 lieux de culte référencés." />
-    <meta name="keywords" content="église, culte, prière, témoignage, communauté, spiritualité, foi, Dieu, religion" />
-    <meta name="author" content="GOD × CONNECT" />
+    <meta name="description" content="Votre lieu de culte, simplement. Trouvez toutes les communautés chrétiennes facilement." />
+    <meta name="keywords" content="église, culte, prière, communauté, spiritualité, foi, Dieu, religion, culteo" />
+    <meta name="author" content="Culteo" />
     
     <!-- Open Graph -->
-    <meta property="og:title" content="GOD × CONNECT - Trouvez votre communauté spirituelle" />
-    <meta property="og:description" content="Découvrez les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi." />
+    <meta property="og:title" content="Culteo - Votre lieu de culte, simplement" />
+    <meta property="og:description" content="Le guide de toutes les communautés chrétiennes. Trouvez votre place facilement." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://godconnect.app" />
+    <meta property="og:url" content="https://culteo.app" />
     <meta property="og:image" content="/og-image.png" />
     <meta property="og:locale" content="fr_FR" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GOD × CONNECT - Communauté Spirituelle" />
-    <meta name="twitter:description" content="Trouvez votre communauté spirituelle et partagez votre foi." />
+    <meta name="twitter:title" content="Culteo - Votre lieu de culte, simplement" />
+    <meta name="twitter:description" content="Le guide de toutes les communautés chrétiennes." />
     <meta name="twitter:image" content="/twitter-image.png" />
     
     <!-- Icônes Apple -->
@@ -62,6 +62,10 @@
     <!-- Optimisations de performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Polices Culteo -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+    
     <link rel="dns-prefetch" href="//tile.openstreetmap.org" />
     
     <!-- 🗺️ CSS LEAFLET ESSENTIEL -->
@@ -75,7 +79,7 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     
-    <title>GOD × CONNECT - Trouvez votre communauté spirituelle</title>
+    <title>Culteo - Votre lieu de culte, simplement</title>
   </head>
   <body>
     <div id="root"></div>
@@ -108,7 +112,7 @@
         // Afficher un bouton d'installation personnalisé
         const installButton = document.createElement('button');
         installButton.innerText = '📱 Installer l\'app';
-        installButton.className = 'fixed bottom-4 right-4 z-50 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2';
+        installButton.className = 'fixed bottom-4 right-4 z-50 bg-culteo-vert-esperance text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2';
         installButton.style.fontSize = '14px';
         
         installButton.addEventListener('click', () => {

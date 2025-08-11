@@ -14,7 +14,7 @@ const WhoWeAreFor: React.FC = () => {
         <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full mb-4"></div>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
           Que vous soyez en quête spirituelle, en voyage, ou désireux de partager votre foi, 
-          <span className="text-amber-600 font-semibold"> GOD × CONNECT vous accompagne</span>.
+                        <span className="text-culteo-vert-esperance font-semibold"> Culteo vous accompagne</span>.
         </p>
       </div>
 

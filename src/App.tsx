@@ -11,8 +11,11 @@ import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ContributionHub from './components/ContributionHub';
+import PlacesList from './components/PlacesList';
 import TestimonyGallery from './components/TestimonyGallery';
 import PrayerWall from './components/PrayerWall';
+import PlaceBottomSheet from './components/PlaceBottomSheet';
+
 import { AdminPage } from './components/admin/AdminPage';
 import { supabase, supabaseConfig } from './lib/supabase';
 
@@ -116,12 +119,14 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   
   // 🎯 NOUVEAUX ÉTATS POUR LA VUE MOBILE
-  const [viewMode, setViewMode] = useState<'home' | 'map' | 'list' | 'celebrations'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'map' | 'list' | 'celebrations'>('home');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
   const [showPlacePopup, setShowPlacePopup] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentPlaceIndex, setCurrentPlaceIndex] = useState(0);
   const [showTestimonyGallery, setShowTestimonyGallery] = useState(false);
   const [showPrayerWall, setShowPrayerWall] = useState(false);
+  const [showPlaceBottomSheet, setShowPlaceBottomSheet] = useState(false);
 
   // Détection mobile
   useEffect(() => {
@@ -351,10 +356,10 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-center text-white">
-          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg font-medium">Chargement de GOD × CONNECT...</p>
+      <div className="flex items-center justify-center min-h-screen bg-culteo-blanc-coquille">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-culteo-vert-esperance border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg font-lato text-culteo-gris-basalte">Chargement de Culteo...</p>
         </div>
       </div>
     );
@@ -504,13 +509,13 @@ function App() {
         onTestimonyClick={() => setShowTestimonyGallery(true)}
         onPrayerWallClick={() => setShowPrayerWall(true)}
         supabase={supabase}
-        currentView={viewMode}
-        onViewChange={setViewMode}
+        currentView={currentView}
+        onViewChange={setCurrentView}
         isMobile={isMobile}
       />
       
       {/* EXPÉRIENCE MOBILE - CARTE PLEIN ÉCRAN */}
-      {isMobile && viewMode === 'map' && (
+      {isMobile && currentView === 'map' && (
         <div className="fixed inset-0 top-14 z-40 bg-white">
           {/* Overlay de recherche en haut */}
           <div className="absolute top-4 left-4 right-4 z-50">
@@ -638,7 +643,7 @@ function App() {
       )}
 
       {/* EXPÉRIENCE DESKTOP OU VUE HOME */}
-      {(!isMobile || viewMode === 'home') && (
+                {(!isMobile || currentView === 'home') && (
         <main className="flex-grow">
           <Hero 
             onExploreClick={() => {
@@ -649,7 +654,7 @@ function App() {
             }}
             onMapClick={() => {
               if (isMobile) {
-                setViewMode('map');
+                setCurrentView('map');
               } else {
                 const searchSection = document.getElementById('search-section');
                 if (searchSection) {
@@ -660,9 +665,10 @@ function App() {
             onTestimonyClick={() => {
               setShowTestimonyGallery(true);
             }}
-            onPrayerClick={() => {
-              setShowPrayerWall(true);
-            }}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onLocationFound={handleLocationFound}
+            onSearch={handleSearch}
           />
           
           <section className="py-16 bg-white">
@@ -698,54 +704,65 @@ function App() {
                 </section>
               )}
             
-            {/* Section carte et résultats moderne - SEULEMENT SUR DESKTOP */}
+            {/* Section carte/liste moderne avec toggle - SEULEMENT SUR DESKTOP */}
             {!isMobile && (
               <section className="space-y-8">
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    Explorez la carte interactive
+                  <h3 className="text-2xl font-poppins font-bold text-culteo-gris-basalte mb-2">
+                    {viewMode === 'map' ? 'Explorez la carte interactive' : 'Liste des lieux de culte'}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="font-lato text-culteo-gris-basalte">
                     {filteredPlaces.length} lieu{filteredPlaces.length > 1 ? 'x' : ''} de culte trouvé{filteredPlaces.length > 1 ? 's' : ''}
                   </p>
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-                  <div className="flex flex-col lg:grid lg:grid-cols-4 gap-0">
-                    {/* Carte principale - EN PREMIER sur mobile */}
-                    <div className="order-1 lg:order-2 lg:col-span-3">
-                      <div className="p-3 sm:p-6">
-                        <MapView 
-                          places={filteredPlaces} 
-                          selectedDenomination={selectedDenomination}
-                          onMapMove={handleMapMove}
-                          centerOnPosition={shouldCenterMap}
-                          onPlaceClick={(place) => {
-                            setSelectedPlace(place);
-                          }}
-                          isFullScreen={false}
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Sidebar - Prochaines célébrations - EN SECOND sur mobile */}
-                    <div className="order-2 lg:order-1 lg:col-span-1 bg-gray-50/50 border-t lg:border-t-0 lg:border-r border-gray-100">
-                      <div className="p-4 sm:p-6">
-                        <div className="lg:hidden mb-4 text-center">
-                          <h4 className="text-lg font-bold text-gray-900">Prochaines célébrations</h4>
-                          <p className="text-sm text-gray-600">Scroll horizontal pour voir plus</p>
+                {viewMode === 'map' ? (
+                  // Vue Carte
+                  <div className="bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden">
+                    <div className="flex flex-col lg:grid lg:grid-cols-4 gap-0">
+                      {/* Carte principale */}
+                      <div className="order-1 lg:order-2 lg:col-span-3">
+                        <div className="p-3 sm:p-6">
+                                              <MapView
+                      places={filteredPlaces}
+                      selectedDenomination={selectedDenomination}
+                      onMapMove={handleMapMove}
+                      centerOnPosition={shouldCenterMap}
+                      onPlaceClick={(place) => {
+                        setSelectedPlace(place);
+                        if (isMobile) {
+                          setShowPlaceBottomSheet(true);
+                        }
+                      }}
+                      isFullScreen={false}
+                    />
                         </div>
-                        <UpcomingCelebrations 
-                          places={filteredPlaces}
-                          mapCenter={mapCenter}
-                          mapBounds={null}
-                          onPlaceClick={handlePlaceClick}
-                          timeFilter={eventFilter.dateTimeFilter}
-                        />
+                      </div>
+                      
+                      {/* Sidebar - Prochaines célébrations */}
+                      <div className="order-2 lg:order-1 lg:col-span-1 bg-culteo-blanc-coquille border-t lg:border-t-0 lg:border-r border-gray-100">
+                        <div className="p-4 sm:p-6">
+                          <div className="lg:hidden mb-4 text-center">
+                            <h4 className="text-lg font-poppins font-bold text-culteo-gris-basalte">Prochaines célébrations</h4>
+                            <p className="text-sm font-lato text-culteo-gris-basalte">Scroll horizontal pour voir plus</p>
+                          </div>
+                          <UpcomingCelebrations 
+                            places={filteredPlaces}
+                            mapCenter={mapCenter}
+                            mapBounds={null}
+                            onPlaceClick={handlePlaceClick}
+                            timeFilter={eventFilter.dateTimeFilter}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  // Vue Liste
+                  <div className="bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 p-6">
+                    <PlacesList places={filteredPlaces} />
+                  </div>
+                )}
               </section>
             )}
             </div>
@@ -779,6 +796,15 @@ function App() {
         onClose={() => setShowPrayerWall(false)}
         supabase={supabase}
       />
+
+              {/* Bottom Sheet pour le lieu sélectionné */}
+        <PlaceBottomSheet 
+          isOpen={showPlaceBottomSheet}
+          onClose={() => setShowPlaceBottomSheet(false)}
+          place={selectedPlace}
+        />
+
+
     </div>
   );
 }

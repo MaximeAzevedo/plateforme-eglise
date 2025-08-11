@@ -1,10 +1,63 @@
 // Configuration de l'application
 export const APP_CONFIG = {
-  name: 'GOD × CONNECT',
+  name: 'Culteo',
+  slogan: 'Votre lieu de culte, simplement',
+  description: 'Le guide de toutes les communautés chrétiennes',
+  author: 'Équipe Culteo',
   version: '1.0.0',
-  description: 'Plateforme spirituelle communautaire',
-  author: 'GOD × CONNECT Team'
-} as const;
+  website: 'https://culteo.app',
+  contact: 'contact@culteo.app'
+};
+
+export const META_CONFIG = {
+  title: 'Culteo - Votre lieu de culte, simplement',
+  description: 'Trouvez toutes les communautés chrétiennes facilement avec Culteo.',
+  keywords: 'église, culte, prière, communauté, spiritualité, foi, Dieu, religion, culteo',
+  ogImage: '/og-image-culteo.png',
+  twitterImage: '/twitter-image-culteo.png'
+};
+
+export const DENOMINATION_LABELS = {
+  Catholic: 'Catholique',
+  Protestant: 'Protestant',
+  Orthodox: 'Orthodoxe',
+  Evangelical: 'Évangélique',
+  Pentecostal: 'Pentecôtiste',
+  Baptist: 'Baptiste',
+  'Neo-Apostolic': 'Néo-apostolique',
+  Other: 'Autre'
+};
+
+export const SERVICE_TYPES = {
+  'Messe': 'Messe',
+  'Culte': 'Culte',
+  'Service': 'Service',
+  'Prière': 'Prière',
+  'Étude biblique': 'Étude biblique',
+  'Adoration': 'Adoration'
+};
+
+export const WEEKDAYS = {
+  'monday': 'Lundi',
+  'tuesday': 'Mardi',
+  'wednesday': 'Mercredi',
+  'thursday': 'Jeudi',
+  'friday': 'Vendredi',
+  'saturday': 'Samedi',
+  'sunday': 'Dimanche'
+};
+
+export const UI_CONFIG = {
+  primaryColor: '#0A6847', // Vert Espérance
+  secondaryColor: '#FFC107', // Jaune Lumière
+  backgroundColor: '#F9F9F9', // Blanc Coquille
+  textColor: '#3D3D3D', // Gris Basalte
+  whiteColor: '#FFFFFF' // Blanc Pur
+};
+
+export const ADMIN_CONFIG = {
+  adminPassword: 'culteo-admin-2024' // À changer en production !
+};
 
 // URLs et endpoints
 export const URLS = {

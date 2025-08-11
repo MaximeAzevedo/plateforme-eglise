@@ -528,7 +528,7 @@ export const ModerationDashboard: React.FC = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="text-purple-400" size={32} />
-            <h1 className="text-3xl font-bold text-white">Modération GOD × CONNECT</h1>
+            <h1 className="text-3xl font-bold text-white">Modération Culteo</h1>
           </div>
           <p className="text-white/70">
             Gérez les témoignages, demandes de prière et lieux de culte soumis par la communauté

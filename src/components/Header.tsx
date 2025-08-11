@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  Menu,
+  X,
+  Home,
+  Map,
+  Plus,
+  Users,
+  User,
   MapPin,
   Heart,
   Star,
-  Crown,
-  Menu,
-  X,
-  Plus,
-  Shield,
-  Users,
   Info,
-  Settings,
-  Map,
-  MessageSquare,
-  Sparkles
+  Calendar
 } from 'lucide-react';
-import TestimonyGallery from './TestimonyGallery';
-import PrayerWall from './PrayerWall';
 
 interface HeaderProps {
   placesCount: number;
@@ -40,16 +36,6 @@ const Header: React.FC<HeaderProps> = ({
   isMobile = false
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Fermer le menu quand on clique en dehors
   useEffect(() => {
@@ -59,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
 
     if (isMenuOpen) {
       document.addEventListener('click', handleClickOutside);
-      document.body.style.overflow = 'hidden'; // Empêche le scroll de la page
+      document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
@@ -72,129 +58,122 @@ const Header: React.FC<HeaderProps> = ({
 
   const menuItems = [
     {
+      icon: Home,
+      title: 'Accueil',
+      description: 'Retour à l\'accueil',
+      action: () => onViewChange?.('home'),
+    },
+    {
       icon: Map,
-      title: 'Carte interactive',
+      title: 'Carte',
       description: 'Explorez les lieux de culte',
       action: () => onViewChange?.('map'),
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
-    },
-    {
-      icon: Heart,
-      title: 'Témoignages',
-      description: 'Histoires inspirantes de foi',
-      action: onTestimonyClick,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50'
-    },
-    {
-      icon: Star,
-      title: 'Mur de prières',
-      description: 'Partagez vos intentions',
-      action: onPrayerWallClick,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50'
     },
     {
       icon: Plus,
-      title: 'Contribuer',
+      title: 'Ajouter',
       description: 'Enrichissez la communauté',
       action: onContributeClick,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
     },
     {
       icon: Users,
       title: 'Communauté',
       description: 'Connectez-vous avec d\'autres',
       action: () => console.log('Communauté'),
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50'
+    },
+    {
+      icon: User,
+      title: 'Profil',
+      description: 'Votre espace personnel',
+      action: () => console.log('Profil'),
+    },
+    {
+      icon: Heart,
+      title: 'Témoignages',
+      description: 'Histoires inspirantes de foi',
+      action: onTestimonyClick,
+    },
+    {
+      icon: Star,
+      title: 'Mur de prières',
+      description: 'Partagez vos intentions',
+      action: onPrayerWallClick,
     },
     {
       icon: Info,
       title: 'À propos',
       description: 'Notre mission et équipe',
       action: () => console.log('À propos'),
-      color: 'text-gray-600',
-      bgColor: 'bg-gray-50'
     }
   ];
 
   return (
     <>
-      {/* Header principal */}
-      <header className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
-          : 'bg-white/90 backdrop-blur-sm'
-        }
-      `}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header principal selon specs Culteo */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-culteo-blanc-coquille">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             
-            {/* Logo et titre */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Crown className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">GOD × CONNECT</h1>
-                <p className="text-xs text-gray-500">{placesCount} lieux de culte</p>
-              </div>
+            {/* Logo Culteo à gauche */}
+            <div className="flex items-center">
+              <img 
+                src="/Logo Culteo.png" 
+                alt="Culteo" 
+                className="h-8 w-auto"
+              />
             </div>
 
-            {/* Menu burger */}
+            {/* Menu hamburger à droite */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMenuOpen(!isMenuOpen);
               }}
-              className={`
-                p-3 rounded-xl transition-all duration-200 hover:scale-105
-                ${isMenuOpen 
-                  ? 'bg-amber-500 text-white shadow-lg' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }
-              `}
+              className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200"
             >
-              {isMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              <Menu 
+                className="w-6 h-6 text-culteo-vert-esperance" 
+                strokeWidth={1.5}
+                style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+              />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Menu overlay moderne */}
+      {/* Menu overlay selon style Culteo */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40">
-          {/* Backdrop avec blur */}
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          {/* Backdrop subtil */}
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
           
-          {/* Menu panel */}
+          {/* Menu panel épuré */}
           <div 
-            className="absolute top-20 right-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+            className="absolute top-20 right-6 w-80 bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header du menu */}
-            <div className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-gray-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
-                  <Crown className="w-7 h-7 text-white" />
-                </div>
+            <div className="p-6 bg-culteo-blanc-coquille border-b border-gray-100">
+              <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Navigation</h2>
-                  <p className="text-sm text-gray-600">Explorez GOD × CONNECT</p>
+                  <h2 className="text-lg font-poppins font-semibold text-culteo-gris-basalte">Navigation</h2>
+                  <p className="text-sm font-lato text-culteo-gris-basalte/70">Explorez Culteo</p>
                 </div>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200"
+                >
+                  <X 
+                    className="w-5 h-5 text-culteo-gris-basalte" 
+                    strokeWidth={1.5}
+                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                  />
+                </button>
               </div>
             </div>
 
             {/* Items du menu */}
-            <div className="p-2 max-h-96 overflow-y-auto">
+            <div className="p-2 max-h-96 overflow-y-auto scrollbar-culteo">
               {menuItems.map((item, index) => (
                 <button
                   key={index}
@@ -202,17 +181,21 @@ const Header: React.FC<HeaderProps> = ({
                     item.action();
                     setIsMenuOpen(false);
                   }}
-                  className="w-full p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200 text-left group"
+                  className="w-full p-4 rounded-culteo-sm hover:bg-culteo-blanc-coquille transition-colors duration-200 text-left group"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-xl ${item.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                      <item.icon className={`w-6 h-6 ${item.color}`} />
+                    <div className="w-10 h-10 rounded-culteo-sm bg-culteo-blanc-coquille flex items-center justify-center group-hover:bg-white transition-colors duration-200">
+                      <item.icon 
+                        className="w-5 h-5 text-culteo-vert-esperance" 
+                        strokeWidth={1.5}
+                        style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                      />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-amber-600 transition-colors">
+                      <h3 className="font-poppins font-semibold text-culteo-gris-basalte group-hover:text-culteo-vert-esperance transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm font-lato text-culteo-gris-basalte/70">
                         {item.description}
                       </p>
                     </div>
@@ -222,17 +205,14 @@ const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Footer du menu */}
-            <div className="p-4 bg-gray-50 border-t border-gray-100">
-              <div className="text-center">
-                <p className="text-xs text-gray-500">v1.0 • Made with ❤️ for God</p>
-              </div>
+            <div className="p-4 bg-culteo-blanc-coquille border-t border-gray-100 text-center">
+              <p className="text-xs font-lato text-culteo-gris-basalte/50">
+                {placesCount} lieux de culte • Culteo v1.0
+              </p>
             </div>
           </div>
         </div>
       )}
-
-      {/* Modales existantes */}
-      {/* TestimonyGallery and PrayerWall are now managed by App.tsx */}
     </>
   );
 };

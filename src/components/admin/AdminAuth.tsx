@@ -12,7 +12,7 @@ export const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Mot de passe temporaire simple - à remplacer par une vraie authentification
-  const ADMIN_PASSWORD = 'god-connect-admin-2024';
+  const ADMIN_PASSWORD = 'culteo-admin-2024';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

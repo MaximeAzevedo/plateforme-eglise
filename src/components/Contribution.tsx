@@ -48,7 +48,7 @@ const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
           {/* Paragraphe explicatif */}
           <div className="space-y-6">
             <p className="text-gray-700 font-body text-base leading-relaxed">
-              <strong>GOD × CONNECT</strong> est une plateforme collaborative. La richesse de l'information dépend de vous. 
+              <strong>Culteo</strong> est une plateforme collaborative. La richesse de l'information dépend de vous. 
               Aidez-nous à créer une communauté spirituelle vivante en partageant vos lieux de culte, témoignages et demandes de prière.
             </p>
           </div>
