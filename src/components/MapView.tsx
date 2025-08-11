@@ -98,27 +98,7 @@ const MapControlHandler = () => {
   return null;
 };
 
-const denominationLabels: Record<Denomination, string> = {
-  'Catholic': 'Confession : Catholique',
-  'Protestant': 'Confession : Protestante',
-  'Orthodox': 'Confession : Orthodoxe',
-  'Evangelical': 'Confession : Évangélique',
-  'Pentecostal': 'Confession : Pentecôtiste',
-  'Baptist': 'Confession : Baptiste',
-  'Neo-Apostolic': 'Confession : Néo-apostolique',
-  'Other': 'Confession : Autre'
-};
 
-// Configuration Dune pour les confessions
-const denominationConfig: Record<Denomination, { emoji: string; color: string }> = {
-  'Catholic': { emoji: '⛪', color: 'bg-accent' },      // Or doux = Catholique
-  'Protestant': { emoji: '✝️', color: 'bg-sand-medium' },   // Sable moyen = Protestante  
-  'Orthodox': { emoji: '☦️', color: 'bg-title' },     // Bleu ardoise = Orthodoxe
-  'Evangelical': { emoji: '🕊️', color: 'bg-warning' },  // Orange = Évangélique
-  'Pentecostal': { emoji: '🔥', color: 'bg-error' },     // Rouge = Pentecôtiste
-  'Baptist': { emoji: '💧', color: 'bg-info' },        // Bleu info = Baptiste
-  'Neo-Apostolic': { emoji: '🕊️', color: 'bg-text' }, // Gris anthracite = Néo-apostolique
-  'Other': { emoji: '🏛️', color: 'bg-success' }         // Vert = Autre / Indépendante
 };
 
 const getMarkerColor = (denomination: Denomination): string => {
@@ -373,54 +353,7 @@ const MapView: React.FC<MapViewProps> = ({
                 }
               }}
             >
-              {/* Popup seulement sur desktop */}
-              {!isFullScreen && (
-                <Popup 
-                  className="culteo-popup"
-                  maxWidth={300}
-                  minWidth={280}
-                >
-                  <div className="p-4 space-y-3">
-                    {/* En-tête avec nom et confession */}
-                    <div className="border-b border-gray-100 pb-3">
-                      <h3 className="font-poppins font-bold text-culteo-gris-basalte text-lg leading-tight">
-                        {place.name}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-poppins font-semibold bg-culteo-vert-esperance/15 text-culteo-vert-esperance">
-                          {denominationLabels[place.denomination]}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Adresse */}
-                    <div className="flex items-start space-x-2">
-                      <MapPin className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                      <span className="font-lato text-culteo-gris-basalte text-sm">
-                        {place.address}, {place.city}
-                      </span>
-                    </div>
-
-                    {/* Horaires */}
-                    <div className="flex items-start space-x-2">
-                      <Clock className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                      <span className="font-lato text-culteo-gris-basalte text-sm">
-                        {place.serviceTimes || 'Horaires non disponibles'}
-                      </span>
-                    </div>
-
-                    {/* Boutons d'action */}
-                    <div className="flex gap-2 pt-2">
-                      <button className="flex-1 bg-culteo-blanc-coquille text-culteo-gris-basalte px-3 py-2 rounded-culteo text-sm font-poppins font-medium hover:bg-gray-100 transition-colors">
-                        Itinéraire
-                      </button>
-                      <button className="flex-1 bg-culteo-vert-esperance text-white px-3 py-2 rounded-culteo text-sm font-poppins font-medium hover:bg-primary-600 transition-colors">
-                        Voir la fiche
-                      </button>
-                    </div>
-                  </div>
-                </Popup>
-              )}
+              {/* Pas de popup Leaflet - utilisation du PlaceBottomSheet */}
             </Marker>
           ))}
         </MarkerClusterGroup>

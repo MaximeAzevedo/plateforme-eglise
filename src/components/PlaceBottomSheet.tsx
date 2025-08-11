@@ -35,6 +35,7 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isSwipping, setIsSwipping] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Distance minimale pour déclencher un swipe (en pixels)
@@ -43,6 +44,7 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
+    setIsSwipping(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -50,17 +52,23 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
   };
 
   const handleTouchEnd = () => {
+    setIsSwipping(false);
+    
     if (!touchStart || !touchEnd) return;
     
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
+    console.log('🔄 Swipe détecté:', { distance, isLeftSwipe, isRightSwipe, currentIndex, totalPlaces });
+
     if (onNavigate) {
       if (isLeftSwipe && currentIndex < totalPlaces - 1) {
+        console.log('➡️ Navigation suivante');
         onNavigate('next');
       }
       if (isRightSwipe && currentIndex > 0) {
+        console.log('⬅️ Navigation précédente');
         onNavigate('prev');
       }
     }
@@ -89,65 +97,79 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
         className={`
           fixed bottom-0 left-0 right-0 z-50 lg:hidden
           bg-culteo-blanc-pur rounded-t-culteo-lg shadow-culteo-float
-          transform transition-transform duration-300 ease-out
+          transform transition-all duration-300 ease-out
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+          ${isSwipping ? 'scale-105 shadow-culteo-medium' : ''}
         `}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Handle pour drag */}
-        <div className="flex justify-center py-3">
-          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        {/* Handle pour drag + indicateur swipe */}
+        <div className="flex flex-col items-center py-3">
+          <div className="w-12 h-1 bg-gray-300 rounded-full mb-1"></div>
+          {totalPlaces > 1 && (
+            <div className="text-xs font-lato text-culteo-gris-basalte/50 animate-pulse">
+              ← Glissez pour naviguer →
+            </div>
+          )}
         </div>
 
         {/* Navigation horizontale et compteur */}
         {totalPlaces > 1 && (
-          <div className="flex items-center justify-between px-6 pb-2">
+          <div className="flex items-center justify-between px-4 pb-3 bg-culteo-blanc-coquille/30">
             {/* Flèche gauche */}
             <button
-              onClick={() => onNavigate?.('prev')}
+              onClick={() => {
+                console.log('🔄 Clic flèche gauche');
+                onNavigate?.('prev');
+              }}
               disabled={currentIndex === 0}
-              className={`p-2 rounded-full ${
+              className={`p-3 rounded-full border-2 transition-all ${
                 currentIndex === 0 
-                  ? 'text-gray-300 cursor-not-allowed' 
-                  : 'text-culteo-vert-esperance hover:bg-culteo-blanc-coquille'
-              } transition-colors`}
+                  ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
+                  : 'text-culteo-vert-esperance border-culteo-vert-esperance hover:bg-culteo-vert-esperance hover:text-white'
+              }`}
             >
-              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
+              <ChevronLeft className="w-6 h-6" strokeWidth={2} />
             </button>
 
-            {/* Compteur X/Y */}
-            <div className="flex items-center space-x-2">
+            {/* Compteur X/Y et points de navigation */}
+            <div className="flex flex-col items-center space-y-2">
+              {/* Points de navigation simplifiés */}
               <div className="flex space-x-1">
                 {Array.from({ length: Math.min(totalPlaces, 5) }, (_, i) => {
-                  const dotIndex = Math.floor(currentIndex / Math.ceil(totalPlaces / 5)) * Math.ceil(totalPlaces / 5) + i;
+                  const actualIndex = i < 5 ? i : currentIndex - 2 + i;
                   return (
                     <div
                       key={i}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        dotIndex === currentIndex ? 'bg-culteo-vert-esperance' : 'bg-gray-300'
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        actualIndex === currentIndex ? 'bg-culteo-vert-esperance scale-125' : 'bg-gray-300'
                       }`}
                     />
                   );
                 })}
               </div>
-              <span className="text-sm font-lato text-culteo-gris-basalte/70">
-                {currentIndex + 1}/{totalPlaces}
+              {/* Compteur numérique */}
+              <span className="text-sm font-poppins font-semibold text-culteo-gris-basalte">
+                {currentIndex + 1} / {totalPlaces}
               </span>
             </div>
 
             {/* Flèche droite */}
             <button
-              onClick={() => onNavigate?.('next')}
+              onClick={() => {
+                console.log('🔄 Clic flèche droite');
+                onNavigate?.('next');
+              }}
               disabled={currentIndex === totalPlaces - 1}
-              className={`p-2 rounded-full ${
+              className={`p-3 rounded-full border-2 transition-all ${
                 currentIndex === totalPlaces - 1 
-                  ? 'text-gray-300 cursor-not-allowed' 
-                  : 'text-culteo-vert-esperance hover:bg-culteo-blanc-coquille'
-              } transition-colors`}
+                  ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
+                  : 'text-culteo-vert-esperance border-culteo-vert-esperance hover:bg-culteo-vert-esperance hover:text-white'
+              }`}
             >
-              <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
+              <ChevronRight className="w-6 h-6" strokeWidth={2} />
             </button>
           </div>
         )}
