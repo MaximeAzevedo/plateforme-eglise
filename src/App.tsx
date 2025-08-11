@@ -121,7 +121,7 @@ function App() {
   // 🎯 NOUVEAUX ÉTATS POUR LA VUE MOBILE
   const [currentView, setCurrentView] = useState<'home' | 'map' | 'list' | 'celebrations'>('home');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
-  const [showPlacePopup, setShowPlacePopup] = useState(false);
+
   const [isMobile, setIsMobile] = useState(false);
   const [currentPlaceIndex, setCurrentPlaceIndex] = useState(0);
   const [showTestimonyGallery, setShowTestimonyGallery] = useState(false);
@@ -543,102 +543,13 @@ function App() {
               centerOnPosition={shouldCenterMap}
               onPlaceClick={(place) => {
                 setSelectedPlace(place);
-                setShowPlacePopup(true);
+                setShowPlaceBottomSheet(true);
               }}
               isFullScreen={true}
             />
           </div>
 
-          {/* Popup en bas quand un lieu est sélectionné */}
-          {showPlacePopup && selectedPlace && (
-            <div className="absolute bottom-0 left-0 right-0 z-50">
-              <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-200 p-4 transform transition-transform duration-300 ease-out">
-                {/* Poignée de drag */}
-                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3"></div>
-                
-                {/* Navigation entre églises */}
-                <div className="flex items-center justify-between mb-3">
-                  <button
-                    onClick={() => navigateToPlace('prev')}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    disabled={filteredPlaces.length <= 1}
-                  >
-                    ←
-                  </button>
-                  
-                  <div className="flex items-center space-x-2">
-                    {filteredPlaces.slice(0, Math.min(5, filteredPlaces.length)).map((_, index) => (
-                      <div
-                        key={index}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          index === filteredPlaces.findIndex(place => place.id === selectedPlace.id)
-                            ? 'bg-amber-500'
-                            : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
-                    {filteredPlaces.length > 5 && (
-                      <span className="text-xs text-gray-500 ml-2">
-                        {filteredPlaces.findIndex(place => place.id === selectedPlace.id) + 1}/{filteredPlaces.length}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <button
-                    onClick={() => navigateToPlace('next')}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    disabled={filteredPlaces.length <= 1}
-                  >
-                    →
-                  </button>
-                </div>
-                
-                {/* Contenu du popup */}
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 pr-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-lg font-bold text-gray-900 flex-1">
-                          {selectedPlace.name}
-                        </h3>
-                        <div className="ml-2 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
-                          {selectedPlace.denomination}
-                        </div>
-                      </div>
-                      <p className="text-gray-600 text-sm">
-                        {selectedPlace.address}, {selectedPlace.city}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setShowPlacePopup(false)}
-                      className="p-1.5 hover:bg-gray-100 rounded-full ml-2"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  
-                  <div className="text-xs text-gray-600">
-                    <p><strong>Horaires :</strong> {selectedPlace.serviceTimes}</p>
-                  </div>
-                  
-                  <div className="flex space-x-3 pt-1">
-                    <button 
-                      onClick={() => {
-                        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position[0]},${selectedPlace.position[1]}`;
-                        window.open(googleMapsUrl, '_blank');
-                      }}
-                      className="flex-1 bg-amber-500 text-white py-2.5 rounded-xl font-medium hover:bg-amber-600 transition-colors"
-                    >
-                      📍 Itinéraire
-                    </button>
-                    <button className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition-colors">
-                      📞 Contacter
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
       )}
 
