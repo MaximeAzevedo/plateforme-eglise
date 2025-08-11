@@ -6,7 +6,6 @@ import Header from './components/Header';
 import Search from './components/Search';
 import MapView from './components/MapView';
 import WhoWeAreFor from './components/WhoWeAreFor';
-import OurCommitment from './components/OurCommitment';
 import Contribution from './components/Contribution';
 import UpcomingCelebrations from './components/UpcomingCelebrations';
 import Footer from './components/Footer';
@@ -695,18 +694,6 @@ function App() {
                   isMapOverlay={false}
                 />
               </div>
-
-              {/* Bouton pour passer en vue carte sur mobile */}
-              {isMobile && (
-                <div className="text-center mt-8">
-                  <button
-                    onClick={() => setViewMode('map')}
-                    className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-                  >
-                    🗺️ Voir la carte interactive
-                  </button>
-                </div>
-              )}
             </section>
             
             {/* Section carte et résultats moderne - SEULEMENT SUR DESKTOP */}
@@ -763,8 +750,6 @@ function App() {
           </section>
           
           <WhoWeAreFor />
-          
-          <OurCommitment />
           
           <Contribution onAddPlace={() => setShowContributeForm(true)} />
         </main>
