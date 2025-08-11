@@ -141,22 +141,6 @@ const WhoWeAreFor: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Call to action central */}
-      <div className="mt-16 text-center">
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8">
-          <h3 className="text-gray-900 font-bold text-xl mb-4">
-            Prêt à commencer votre voyage spirituel ?
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Rejoignez des milliers de personnes qui ont trouvé leur communauté grâce à GOD × CONNECT
-          </p>
-          <button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto">
-            <Star className="h-5 w-5" />
-            <span>Commencer maintenant</span>
-          </button>
-        </div>
-      </div>
         </div>
       </div>
     </section>

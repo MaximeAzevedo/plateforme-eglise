@@ -667,34 +667,36 @@ function App() {
           
           <section className="py-16 bg-white">
             <div className="container mx-auto px-4">
-              {/* Section de recherche moderne avec ID pour le scroll */}
-              <section id="search-section" className="space-y-8">
-                {/* Titre de section moderne */}
-                <div className="text-center space-y-4">
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                    Découvrez votre communauté spirituelle
-                  </h2>
-                  <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
-                  <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-                    Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
-                  </p>
-                </div>
+              {/* Section de recherche moderne avec ID pour le scroll - DESKTOP SEULEMENT */}
+              {!isMobile && (
+                <section id="search-section" className="space-y-8">
+                  {/* Titre de section moderne */}
+                  <div className="text-center space-y-4">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                      Découvrez votre communauté spirituelle
+                    </h2>
+                    <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-orange-500 mx-auto rounded-full"></div>
+                    <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                      Trouvez facilement les lieux de culte près de chez vous et connectez-vous avec une communauté qui partage votre foi.
+                    </p>
+                  </div>
 
-              {/* Zone de recherche épurée */}
-              <div className="max-w-5xl mx-auto">
-                <Search 
-                  places={worshipPlaces}
-                  onSearch={handleSearch} 
-                  onDenominationFilter={handleDenominationFilter}
-                  onEventFilter={handleEventFilter}
-                  selectedDenominations={selectedDenomination}
-                  eventFilter={eventFilter}
-                  onLocationFound={handleLocationFound}
-                  currentLocation={null}
-                  isMapOverlay={false}
-                />
-              </div>
-            </section>
+                  {/* Zone de recherche épurée */}
+                  <div className="max-w-5xl mx-auto">
+                    <Search 
+                      places={worshipPlaces}
+                      onSearch={handleSearch} 
+                      onDenominationFilter={handleDenominationFilter}
+                      onEventFilter={handleEventFilter}
+                      selectedDenominations={selectedDenomination}
+                      eventFilter={eventFilter}
+                      onLocationFound={handleLocationFound}
+                      currentLocation={null}
+                      isMapOverlay={false}
+                    />
+                  </div>
+                </section>
+              )}
             
             {/* Section carte et résultats moderne - SEULEMENT SUR DESKTOP */}
             {!isMobile && (
@@ -753,51 +755,6 @@ function App() {
           
           <Contribution onAddPlace={() => setShowContributeForm(true)} />
         </main>
-      )}
-
-      {/* Navigation mobile en bas */}
-      {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30">
-          <div className="flex items-center justify-around py-2 px-4 safe-area-inset-bottom">
-            <button
-              onClick={() => setViewMode('home')}
-              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-                viewMode === 'home' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
-              }`}
-            >
-              <div className="text-xl mb-1">🏠</div>
-              <span className="text-xs font-medium">Accueil</span>
-            </button>
-            
-            <button
-              onClick={() => setViewMode('map')}
-              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-                viewMode === 'map' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
-              }`}
-            >
-              <div className="text-xl mb-1">🗺️</div>
-              <span className="text-xs font-medium">Carte</span>
-            </button>
-            
-            <button
-              onClick={() => setViewMode('celebrations')}
-              className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-                viewMode === 'celebrations' ? 'text-amber-600 bg-amber-50' : 'text-gray-500'
-              }`}
-            >
-              <div className="text-xl mb-1">🕊️</div>
-              <span className="text-xs font-medium">Prières</span>
-            </button>
-            
-            <button
-              onClick={() => setShowContributeForm(true)}
-              className="flex flex-col items-center py-2 px-3 rounded-lg text-gray-500"
-            >
-              <div className="text-xl mb-1">➕</div>
-              <span className="text-xs font-medium">Ajouter</span>
-            </button>
-          </div>
-        </div>
       )}
       
       {!isMobile && <Footer />}
