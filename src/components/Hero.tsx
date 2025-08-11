@@ -99,7 +99,7 @@ const Hero: React.FC<HeroProps> = ({
           </div>
 
           {/* Cards des fonctionnalités principales */}
-          <div className="hidden md:grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
             {features.map((feature, index) => (
               <div
                 key={index}
@@ -151,7 +151,7 @@ const Hero: React.FC<HeroProps> = ({
           </div>
 
           {/* Section statistiques */}
-          <div className="text-center hidden md:block">
+          <div className="text-center">
             <div className="inline-flex items-center justify-center space-x-8 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-2xl px-8 py-6 shadow-lg">
               <div className="text-center">
                 <div className="text-3xl font-bold text-amber-600">40+</div>
@@ -171,7 +171,7 @@ const Hero: React.FC<HeroProps> = ({
           </div>
 
           {/* Indicateur de scroll */}
-          <div className="hidden md:block absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
             <div className="flex flex-col items-center space-y-2 text-gray-400">
               <span className="text-sm font-medium">Découvrir</span>
               <div className="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
