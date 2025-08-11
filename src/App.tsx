@@ -751,9 +751,9 @@ function App() {
             </div>
           </section>
           
-          <WhoWeAreFor />
+          {!isMobile && <WhoWeAreFor />}
           
-          <Contribution onAddPlace={() => setShowContributeForm(true)} />
+          {!isMobile && <Contribution onAddPlace={() => setShowContributeForm(true)} />}
         </main>
       )}
       
