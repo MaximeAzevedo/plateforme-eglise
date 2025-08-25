@@ -41,46 +41,47 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* ===== VARIABLES GLOBALES GOD x CONNECT ===== */
+/* ===== VARIABLES GLOBALES CULTEO ===== */
 :root {
-  /* Palette principale */
-  --god-primary: #F59E0B; /* Or divin */
-  --god-secondary: #8B5CF6; /* Violet spirituel */
-  --god-accent: #3B82F6; /* Bleu espoir */
-  --god-success: #10B981; /* Vert paix */
-  --god-warning: #F97316; /* Orange lumière */
-  --god-danger: #EF4444; /* Rouge amour */
+  /* Palette principale Culteo */
+  --culteo-primary: #0A6847; /* Vert espérance */
+  --culteo-secondary: #FFC107; /* Jaune lumière */
+  --culteo-accent: #059669; /* Vert accent */
+  --culteo-success: #10B981; /* Vert succès */
+  --culteo-warning: #F59E0B; /* Orange alerte */
+  --culteo-danger: #EF4444; /* Rouge erreur */
   
-  /* Tons neutres premium */
-  --god-white: #FFFFFF;
-  --god-gray-50: #FAFBFC;
-  --god-gray-100: #F1F5F9;
-  --god-gray-200: #E2E8F0;
-  --god-gray-300: #CBD5E1;
-  --god-gray-400: #94A3B8;
-  --god-gray-500: #64748B;
-  --god-gray-600: #475569;
-  --god-gray-700: #334155;
-  --god-gray-800: #1E293B;
-  --god-gray-900: #0F172A;
+  /* Tons neutres Culteo */
+  --culteo-white: #FFFFFF;
+  --culteo-off-white: #F9F9F9;
+  --culteo-gray-50: #F9FAFB;
+  --culteo-gray-100: #F3F4F6;
+  --culteo-gray-200: #E5E7EB;
+  --culteo-gray-300: #D1D5DB;
+  --culteo-gray-400: #9CA3AF;
+  --culteo-gray-500: #6B7280;
+  --culteo-gray-600: #4B5563;
+  --culteo-gray-700: #374151;
+  --culteo-gray-800: #3D3D3D;
+  --culteo-gray-900: #1F2937;
   
-  /* Dégradés spirituels */
-  --god-gradient-divine: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-  --god-gradient-spiritual: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
-  --god-gradient-peaceful: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  --god-gradient-holy: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #F97316 100%);
+  /* Dégradés Culteo */
+  --culteo-gradient-primary: linear-gradient(135deg, #0A6847 0%, #059669 100%);
+  --culteo-gradient-secondary: linear-gradient(135deg, #FFC107 0%, #F59E0B 100%);
+  --culteo-gradient-peaceful: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --culteo-gradient-warm: linear-gradient(135deg, #FFC107 0%, #F59E0B 50%, #EF4444 100%);
   
-  /* Ombres divines */
-  --god-shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --god-shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --god-shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-  --god-shadow-divine: 0 25px 50px -12px rgba(245, 158, 11, 0.25);
-  --god-shadow-spiritual: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
+  /* Ombres Culteo */
+  --culteo-shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --culteo-shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --culteo-shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  --culteo-shadow-green: 0 25px 50px -12px rgba(10, 104, 71, 0.25);
+  --culteo-shadow-yellow: 0 25px 50px -12px rgba(255, 193, 7, 0.25);
   
   /* Animations */
-  --god-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --god-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --god-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --culteo-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --culteo-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --culteo-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ===== RESET & BASE ===== */
@@ -97,8 +98,8 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--god-gray-50);
-  color: var(--god-gray-900);
+  background: var(--culteo-off-white);
+  color: var(--culteo-gray-900);
   line-height: 1.6;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -106,7 +107,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ===== TYPOGRAPHIE DIVINE ===== */
+/* ===== TYPOGRAPHIE CULTEO ===== */
 .font-heading {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
@@ -117,33 +118,33 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.text-divine {
-  background: var(--god-gradient-divine);
+.text-culteo-primary {
+  background: var(--culteo-gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 800;
 }
 
-.text-spiritual {
-  background: var(--god-gradient-spiritual);
+.text-culteo-secondary {
+  background: var(--culteo-gradient-secondary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 800;
 }
 
-.text-peaceful {
-  background: var(--god-gradient-peaceful);
+.text-culteo-peaceful {
+  background: var(--culteo-gradient-peaceful);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 800;
 }
 
-/* ===== BOUTONS DIVINS ===== */
-.btn-divine {
-  background: var(--god-gradient-divine);
+/* ===== BOUTONS CULTEO ===== */
+.btn-culteo-primary {
+  background: var(--culteo-gradient-primary);
   color: white;
   padding: 0.875rem 2rem;
   border-radius: 1rem;
@@ -151,23 +152,23 @@ body {
   font-size: 0.95rem;
   border: none;
   cursor: pointer;
-  transition: var(--god-transition);
-  box-shadow: var(--god-shadow-divine);
+  transition: var(--culteo-transition);
+  box-shadow: var(--culteo-shadow-green);
   position: relative;
   overflow: hidden;
 }
 
-.btn-divine:hover {
+.btn-culteo-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 25px 50px -12px rgba(10, 104, 71, 0.4);
 }
 
-.btn-divine:active {
+.btn-culteo-primary:active {
   transform: translateY(0);
 }
 
-.btn-spiritual {
-  background: var(--god-gradient-spiritual);
+.btn-culteo-secondary {
+  background: var(--culteo-gradient-secondary);
   color: white;
   padding: 0.875rem 2rem;
   border-radius: 1rem;
@@ -175,105 +176,105 @@ body {
   font-size: 0.95rem;
   border: none;
   cursor: pointer;
-  transition: var(--god-transition);
-  box-shadow: var(--god-shadow-spiritual);
+  transition: var(--culteo-transition);
+  box-shadow: var(--culteo-shadow-yellow);
 }
 
-.btn-spiritual:hover {
+.btn-culteo-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 25px 50px -12px rgba(255, 193, 7, 0.4);
 }
 
 .btn-outline {
   background: transparent;
-  color: var(--god-gray-700);
+  color: var(--culteo-gray-700);
   padding: 0.875rem 2rem;
-  border: 2px solid var(--god-gray-200);
+  border: 2px solid var(--culteo-gray-200);
   border-radius: 1rem;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: var(--god-transition);
+  transition: var(--culteo-transition);
 }
 
 .btn-outline:hover {
-  border-color: var(--god-primary);
-  color: var(--god-primary);
-  background: rgba(245, 158, 11, 0.05);
+  border-color: var(--culteo-primary);
+  color: var(--culteo-primary);
+  background: rgba(10, 104, 71, 0.05);
   transform: translateY(-1px);
 }
 
-/* ===== CARTES SACRÉES ===== */
-.card-divine {
-  background: var(--god-white);
+/* ===== CARTES CULTEO ===== */
+.card-culteo-primary {
+  background: var(--culteo-white);
   border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: var(--god-shadow-medium);
-  border: 1px solid var(--god-gray-100);
-  transition: var(--god-transition);
+  box-shadow: var(--culteo-shadow-medium);
+  border: 1px solid var(--culteo-gray-100);
+  transition: var(--culteo-transition);
   position: relative;
   overflow: hidden;
 }
 
-.card-divine::before {
+.card-culteo-primary::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--god-gradient-divine);
+  background: var(--culteo-gradient-primary);
 }
 
-.card-divine:hover {
+.card-culteo-primary:hover {
   transform: translateY(-8px);
-  box-shadow: var(--god-shadow-large);
+  box-shadow: var(--culteo-shadow-large);
 }
 
-.card-spiritual {
-  background: var(--god-white);
+.card-culteo-secondary {
+  background: var(--culteo-white);
   border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: var(--god-shadow-medium);
-  border: 1px solid var(--god-gray-100);
-  transition: var(--god-transition);
+  box-shadow: var(--culteo-shadow-medium);
+  border: 1px solid var(--culteo-gray-100);
+  transition: var(--culteo-transition);
   position: relative;
   overflow: hidden;
 }
 
-.card-spiritual::before {
+.card-culteo-secondary::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--god-gradient-spiritual);
+  background: var(--culteo-gradient-secondary);
 }
 
-.card-spiritual:hover {
+.card-culteo-secondary:hover {
   transform: translateY(-8px);
-  box-shadow: var(--god-shadow-large);
+  box-shadow: var(--culteo-shadow-large);
 }
 
-/* ===== GLASSMORPHISM DIVIN ===== */
-.glass-divine {
+/* ===== GLASSMORPHISM CULTEO ===== */
+.glass-culteo {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: var(--god-shadow-medium);
+  box-shadow: var(--culteo-shadow-medium);
 }
 
 .glass-dark {
-  background: rgba(30, 41, 59, 0.85);
+  background: rgba(61, 61, 61, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-/* ===== ANIMATIONS SPIRITUELLES ===== */
+/* ===== ANIMATIONS CULTEO ===== */
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
 }
@@ -286,8 +287,8 @@ body {
   animation: scaleIn 0.5s ease-out forwards;
 }
 
-.animate-pulse-divine {
-  animation: pulseDivine 2s ease-in-out infinite;
+.animate-pulse-culteo {
+  animation: pulseCulteo 2s ease-in-out infinite;
 }
 
 .animate-float {
@@ -325,12 +326,12 @@ body {
   }
 }
 
-@keyframes pulseDivine {
+@keyframes pulseCulteo {
   0%, 100% { 
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); 
+    box-shadow: 0 0 0 0 rgba(10, 104, 71, 0.4); 
   }
   50% { 
-    box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); 
+    box-shadow: 0 0 0 20px rgba(10, 104, 71, 0); 
   }
 }
 
@@ -340,57 +341,57 @@ body {
 }
 
 @keyframes glow {
-  from { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-  to { box-shadow: 0 0 30px rgba(245, 158, 11, 0.6); }
+  from { box-shadow: 0 0 20px rgba(10, 104, 71, 0.3); }
+  to { box-shadow: 0 0 30px rgba(10, 104, 71, 0.6); }
 }
 
-/* ===== SCROLLBAR DIVINE ===== */
+/* ===== SCROLLBAR CULTEO ===== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--god-gray-100);
+  background: var(--culteo-gray-100);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--god-gradient-divine);
+  background: var(--culteo-gradient-primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--god-gradient-spiritual);
+  background: var(--culteo-gradient-secondary);
 }
 
 /* ===== UTILITAIRES ===== */
-.border-divine {
-  border-color: var(--god-primary) !important;
+.border-culteo-primary {
+  border-color: var(--culteo-primary) !important;
 }
 
-.border-spiritual {
-  border-color: var(--god-secondary) !important;
+.border-culteo-secondary {
+  border-color: var(--culteo-secondary) !important;
 }
 
-.bg-divine {
-  background: var(--god-gradient-divine) !important;
+.bg-culteo-primary {
+  background: var(--culteo-gradient-primary) !important;
 }
 
-.bg-spiritual {
-  background: var(--god-gradient-spiritual) !important;
+.bg-culteo-secondary {
+  background: var(--culteo-gradient-secondary) !important;
 }
 
-.bg-peaceful {
-  background: var(--god-gradient-peaceful) !important;
+.bg-culteo-peaceful {
+  background: var(--culteo-gradient-peaceful) !important;
 }
 
-.shadow-divine {
-  box-shadow: var(--god-shadow-divine) !important;
+.shadow-culteo-primary {
+  box-shadow: var(--culteo-shadow-green) !important;
 }
 
-.shadow-spiritual {
-  box-shadow: var(--god-shadow-spiritual) !important;
+.shadow-culteo-secondary {
+  box-shadow: var(--culteo-shadow-yellow) !important;
 }
 
 /* Masquer la scrollbar horizontale */
@@ -409,14 +410,14 @@ body {
     font-size: 14px;
   }
   
-  .card-divine,
-  .card-spiritual {
+  .card-culteo-primary,
+  .card-culteo-secondary {
     padding: 1.5rem;
     border-radius: 1rem;
   }
   
-  .btn-divine,
-  .btn-spiritual,
+  .btn-culteo-primary,
+  .btn-culteo-secondary,
   .btn-outline {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
@@ -425,16 +426,16 @@ body {
 
 /* ===== MOBILE OPTIMIZATIONS ===== */
 /* Animations mobiles fluides */
-.animate-pulse-divine {
-  animation: pulseDivine 3s ease-in-out infinite;
+.animate-pulse-culteo {
+  animation: pulseCulteo 3s ease-in-out infinite;
 }
 
-@keyframes pulseDivine {
+@keyframes pulseCulteo {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(10, 104, 71, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+    box-shadow: 0 0 0 8px rgba(10, 104, 71, 0);
   }
 }
 
@@ -507,7 +508,7 @@ body {
 /* Effet de focus mobile-friendly */
 @media (max-width: 768px) {
   *:focus {
-    outline: 3px solid var(--god-primary);
+    outline: 3px solid var(--culteo-primary);
     outline-offset: 3px;
   }
 }
@@ -593,7 +594,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-slide-in,
   .animate-scale-in,
-  .animate-pulse-divine {
+  .animate-pulse-culteo {
     animation: none !important;
   }
   
@@ -606,7 +607,7 @@ body {
 
 /* ===== FOCUS ACCESSIBILITY ===== */
 *:focus {
-  outline: 2px solid var(--god-primary);
+  outline: 2px solid var(--culteo-primary);
   outline-offset: 2px;
   border-radius: 0.375rem;
 }
@@ -618,8 +619,8 @@ body {
 /* ===== DARK MODE SUPPORT ===== */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
-    background: var(--god-gray-900);
-    color: var(--god-gray-100);
+    background: var(--culteo-gray-900);
+    color: var(--culteo-gray-100);
   }
 }
 

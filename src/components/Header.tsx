@@ -133,7 +133,7 @@ const Header: React.FC<HeaderProps> = ({
               {/* Logo + Texte Culteo */}
               <div className="flex items-center space-x-2">
                 <img 
-                  src="/Logo Culteo.png" 
+                  src="/logo-culteo.png" 
                   alt="Culteo" 
                   className="h-8 w-auto"
                 />

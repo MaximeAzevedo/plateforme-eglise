@@ -98,9 +98,6 @@ const MapControlHandler = () => {
   return null;
 };
 
-
-};
-
 const getMarkerColor = (denomination: Denomination): string => {
   const colors: Record<Denomination, string> = {
     'Catholic': '#D3A625',      // Or doux

@@ -678,4 +678,6 @@ export const ModerationDashboard: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};
+
+export default ModerationDashboard; 

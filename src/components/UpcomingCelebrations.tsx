@@ -219,7 +219,7 @@ export default function UpcomingCelebrations({
               {celebrations.map((celebration, index) => (
                 <div
                   key={`${celebration.id}-${celebration.type}-${index}`}
-                  className="group bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02] flex-shrink-0 w-72"
+                  className="group bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-culteo-vert-esperance/30 transition-all duration-300 cursor-pointer hover:scale-[1.02] flex-shrink-0 w-72"
                   onClick={() => {
                     if (celebration.position && onPlaceClick) {
                       onPlaceClick(celebration.position, celebration.placeName);
@@ -231,7 +231,7 @@ export default function UpcomingCelebrations({
                     {/* Heure et distance */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                        <div className="w-6 h-6 bg-gradient-to-br from-culteo-vert-esperance to-green-600 rounded-lg flex items-center justify-center">
                           <Clock className="h-3 w-3 text-white" />
                         </div>
                         <div className="text-sm font-bold text-gray-900">
@@ -239,7 +239,7 @@ export default function UpcomingCelebrations({
                         </div>
                       </div>
                       {celebration.distance && (
-                        <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+                        <div className="text-xs text-culteo-vert-esperance font-medium bg-green-50 px-2 py-1 rounded-full">
                           {formatDistance(celebration.distance)}
                         </div>
                       )}
@@ -255,7 +255,7 @@ export default function UpcomingCelebrations({
 
                     {/* Lieu */}
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
+                      <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-culteo-vert-esperance transition-colors">
                         {celebration.placeName}
                       </h4>
                       <div className="flex items-center space-x-1 text-xs text-gray-600 mt-1">
@@ -273,7 +273,7 @@ export default function UpcomingCelebrations({
               {celebrations.map((celebration, index) => (
                 <div
                   key={`${celebration.id}-${celebration.type}-${index}`}
-                  className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+                  className="group bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 hover:shadow-lg hover:border-culteo-vert-esperance/30 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
                   onClick={() => {
                     if (celebration.position && onPlaceClick) {
                       onPlaceClick(celebration.position, celebration.placeName);
@@ -283,7 +283,7 @@ export default function UpcomingCelebrations({
                   {/* En-tête avec heure */}
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                      <div className="w-8 h-8 bg-gradient-to-br from-culteo-vert-esperance to-green-600 rounded-xl flex items-center justify-center shadow-lg">
                         <Clock className="h-4 w-4 text-white" />
                       </div>
                       <div>
@@ -296,7 +296,7 @@ export default function UpcomingCelebrations({
                       </div>
                     </div>
                     {celebration.distance && (
-                      <div className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded-full">
+                      <div className="text-xs text-culteo-vert-esperance font-medium bg-green-50 px-2 py-1 rounded-full">
                         {formatDistance(celebration.distance)}
                       </div>
                     )}
@@ -314,7 +314,7 @@ export default function UpcomingCelebrations({
 
                   {/* Lieu */}
                   <div className="space-y-2">
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-amber-700 transition-colors">
+                    <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-culteo-vert-esperance transition-colors">
                       {celebration.placeName}
                     </h4>
                     <div className="flex items-center space-x-2 text-xs text-gray-600">
@@ -328,7 +328,7 @@ export default function UpcomingCelebrations({
                     <div className="text-xs text-gray-500 font-medium">
                       Cliquez pour localiser
                     </div>
-                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-culteo-vert-esperance group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               ))}
@@ -352,12 +352,12 @@ export default function UpcomingCelebrations({
       </div>
 
       {/* Note informative - plus compacte sur mobile */}
-      <div className="hidden lg:block mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl">
+      <div className="hidden lg:block mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl">
         <div className="flex items-start space-x-3">
-          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-6 h-6 bg-culteo-vert-esperance rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-white text-xs">💡</span>
           </div>
-          <p className="text-sm text-amber-800 font-medium">
+          <p className="text-sm text-green-800 font-medium">
             Cliquez sur une célébration pour localiser l'église sur la carte
           </p>
         </div>

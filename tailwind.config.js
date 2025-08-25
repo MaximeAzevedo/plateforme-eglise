@@ -53,7 +53,13 @@ export default {
           700: '#374151',
           800: '#3D3D3D',
           900: '#1F2937',
-        }
+        },
+        // Classes utiles pour les composants
+        'culteo-blanc-coquille': '#F9F9F9',
+        'culteo-blanc-pur': '#FFFFFF', 
+        'culteo-vert-esperance': '#0A6847',
+        'culteo-gris-basalte': '#3D3D3D',
+        'culteo-jaune-lumiere': '#FFC107',
       },
 
       // ===== POLICES CULTEO =====
