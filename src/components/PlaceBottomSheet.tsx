@@ -80,6 +80,33 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
     window.location.href = googleMapsUrl;
   };
 
+  // Parser les horaires de célébration pour créer une liste structurée
+  const parseCelebrations = (serviceTimes: string | undefined) => {
+    if (!serviceTimes) return [];
+    
+    // Séparer les différentes célébrations par ';' ou ','
+    const celebrations = serviceTimes.split(/[;,]/).map(s => s.trim()).filter(Boolean);
+    
+    return celebrations.map(celebration => {
+      // Extraire le type de célébration et les horaires
+      const parts = celebration.split(' - ');
+      if (parts.length >= 2) {
+        return {
+          type: parts[0].trim(),
+          schedule: parts[1].trim()
+        };
+      } else {
+        // Si pas de séparateur ' - ', considérer tout comme horaire
+        return {
+          type: 'Célébration',
+          schedule: celebration.trim()
+        };
+      }
+    });
+  };
+
+  const celebrations = parseCelebrations(place.serviceTimes);
+
   return (
     <>
       {/* Overlay */}
@@ -139,46 +166,73 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
 
         {/* Contenu principal */}
         <div className="px-6 pb-6 space-y-4">
-          {/* Nom église et confession côte à côte avec même taille */}
+          {/* Confession à gauche et nom église à droite */}
           <div className="flex items-center gap-3">
-            <h3 className="font-poppins font-semibold text-culteo-gris-basalte text-base leading-tight">
-              {place.name}
-            </h3>
             <span className="inline-flex items-center px-2 py-1 rounded-full bg-culteo-vert-esperance/15 text-culteo-vert-esperance font-poppins font-semibold text-base">
               {denominationLabels[place.denomination]}
             </span>
+            <h3 className="font-poppins font-semibold text-culteo-gris-basalte text-base leading-tight">
+              {place.name}
+            </h3>
           </div>
 
-          {/* Événements mieux structurés */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-culteo-vert-esperance flex-shrink-0" strokeWidth={1.5} />
-              <span className="font-poppins font-medium text-culteo-gris-basalte text-sm">Horaires des célébrations</span>
-            </div>
-            
-            <div className="bg-culteo-blanc-coquille rounded-culteo p-3">
-              <div className="font-lato text-culteo-gris-basalte text-sm leading-relaxed">
-                {place.serviceTimes || 'Horaires non disponibles'}
+          {/* Disposition en deux colonnes */}
+          <div className="flex gap-4">
+            {/* Colonne gauche : Horaires des célébrations */}
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-culteo-vert-esperance flex-shrink-0" strokeWidth={1.5} />
+                <span className="font-poppins font-medium text-culteo-gris-basalte text-sm">Horaires des célébrations</span>
+              </div>
+              
+              <div className="bg-culteo-blanc-coquille rounded-culteo p-3">
+                {celebrations.length > 0 ? (
+                  <div className="space-y-2">
+                    {celebrations.map((celebration, index) => (
+                      <div key={index} className="border-l-2 border-culteo-vert-esperance pl-3">
+                        <div className="font-poppins font-medium text-culteo-gris-basalte text-xs mb-1">
+                          {celebration.type}
+                        </div>
+                        <div className="font-lato text-culteo-gris-basalte text-sm">
+                          {celebration.schedule}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="font-lato text-culteo-gris-basalte text-sm leading-relaxed">
+                    Horaires non disponibles
+                  </div>
+                )}
               </div>
             </div>
-          </div>
 
-          {/* Adresse complète */}
-          <div className="flex items-start gap-2">
-            <MapPin className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-            <div className="font-lato text-culteo-gris-basalte text-sm">
-              {place.address ? `${place.address}, ${place.city}` : place.city}
+            {/* Colonne droite : Adresse et itinéraire */}
+            <div className="flex-1 space-y-3">
+              {/* Adresse */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-culteo-vert-esperance flex-shrink-0" strokeWidth={1.5} />
+                  <span className="font-poppins font-medium text-culteo-gris-basalte text-sm">Adresse</span>
+                </div>
+                
+                <div className="bg-culteo-blanc-coquille rounded-culteo p-3">
+                  <div className="font-lato text-culteo-gris-basalte text-sm leading-relaxed">
+                    {place.address ? `${place.address}, ${place.city}` : place.city}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bouton itinéraire encore plus petit (20% de réduction) */}
+              <button
+                onClick={handleItinerary}
+                className="inline-flex items-center justify-center gap-1.5 bg-culteo-vert-esperance text-white px-3 py-1.5 rounded-culteo font-poppins font-medium hover:bg-primary-600 transition-colors text-xs"
+              >
+                <Navigation className="w-3 h-3" strokeWidth={1.5} />
+                Itinéraire
+              </button>
             </div>
           </div>
-
-          {/* Bouton itinéraire compact */}
-          <button
-            onClick={handleItinerary}
-            className="inline-flex items-center justify-center gap-2 bg-culteo-vert-esperance text-white px-4 py-2 rounded-culteo font-poppins font-medium hover:bg-primary-600 transition-colors text-sm"
-          >
-            <Navigation className="w-4 h-4" strokeWidth={1.5} />
-            Itinéraire
-          </button>
         </div>
       </div>
     </>
