@@ -286,26 +286,28 @@ const MapView: React.FC<MapViewProps> = ({
   return (
     <div className="relative w-full h-full overflow-hidden rounded-xl">
       
-      {/* Bouton de géolocalisation Culteo - déplacé en bas à droite */}
+      {/* Bouton de géolocalisation moderne - flottant en bas à droite */}
       <button
         onClick={getUserLocation}
         disabled={isLocating}
         className={`
-          absolute bottom-4 right-4 z-[1000] p-3 bg-culteo-blanc-pur border border-gray-200 rounded-culteo
+          absolute bottom-4 right-4 z-[1000] p-3 bg-culteo-blanc-pur 
+          border border-culteo-vert-esperance/20 rounded-full
           shadow-culteo-medium hover:shadow-culteo-float transition-all duration-300
-          ${isLocating ? 'animate-pulse' : 'hover:scale-105'}
+          ${isLocating ? 'animate-pulse bg-culteo-vert-esperance/10' : 'hover:scale-110 hover:bg-culteo-vert-esperance/5'}
         `}
-        title="Me localiser"
+        title="Me localiser sur la carte"
       >
-        <Locate 
-          className={`w-5 h-5 text-culteo-vert-esperance ${isLocating ? 'animate-spin' : ''}`}
-          strokeWidth={1.5}
+        <Locate
+          className={`w-5 h-5 ${isLocating ? 'text-culteo-vert-esperance animate-spin' : 'text-culteo-vert-esperance'}`}
+          strokeWidth={2}
         />
       </button>
 
       <MapContainer
         center={[46.2276, 2.2137]}
         zoom={6}
+        zoomControl={false}
         scrollWheelZoom={true}
         className="w-full h-full"
         style={{ 

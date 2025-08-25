@@ -133,9 +133,17 @@ const Header: React.FC<HeaderProps> = ({
               {/* Logo + Texte Culteo */}
               <div className="flex items-center space-x-2">
                 <img 
-                  src="/logo-culteo.png" 
+                  src={`/logo-culteo.png?v=${Date.now()}`}
                   alt="Culteo" 
                   className="h-8 w-auto"
+                  onError={(e) => {
+                    console.warn('Logo Culteo non trouvé:', e);
+                    // Cacher l'image si elle ne charge pas
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                  onLoad={() => {
+                    console.log('✅ Logo Culteo chargé avec succès');
+                  }}
                 />
                 <span className="font-poppins font-bold text-culteo-gris-basalte text-lg">
                   Culteo

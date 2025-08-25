@@ -341,30 +341,23 @@ const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocationFound, 
       <button
         onClick={handleLocationRequest}
         disabled={isLoading}
-        className={`group flex items-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 font-body font-medium ${
+        className={`group inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium ${
           isLoading 
-            ? 'bg-sand-light border-2 border-accent text-accent cursor-not-allowed'
-            : 'bg-sand-light border-2 border-border text-text hover:border-accent hover:bg-sand'
+            ? 'bg-culteo-vert-esperance/10 text-culteo-vert-esperance cursor-not-allowed'
+            : 'bg-gray-50 text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
         }`}
-        title="Trouver les lieux de culte près de moi"
+        title="Me localiser"
       >
-        <div className={`p-1 rounded-lg transition-all duration-300 ${
-          isLoading 
-            ? 'bg-accent/20' 
-            : 'bg-accent/10 group-hover:bg-accent/20'
-        }`}>
-          {isLoading ? (
-            <Zap className="h-3 w-3 text-accent animate-pulse" />
-          ) : (
-            <MapPin className="h-3 w-3 text-accent group-hover:scale-110 transition-transform duration-300" />
-          )}
-        </div>
-        <span className="text-xs font-body font-medium">
-          {isLoading ? '🔍 Localisation...' : '📍 Près de moi'}
-        </span>
-        {!isLoading && (
-          <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {isLoading ? (
+          <div className="w-3 h-3 text-culteo-vert-esperance animate-spin">
+            <div className="w-full h-full border border-culteo-vert-esperance border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <MapPin className="h-3 w-3 transition-transform duration-200" />
         )}
+        <span>
+          {isLoading ? 'Localisation...' : 'Près de moi'}
+        </span>
       </button>
 
       <ConsentModal

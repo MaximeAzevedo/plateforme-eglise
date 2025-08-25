@@ -140,25 +140,30 @@ const Search: React.FC<SearchProps> = ({
             />
             
             {/* Actions à droite */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 space-x-1">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 space-x-2">
               {/* Bouton Géolocalisation */}
               <GeolocationButton 
                 onLocationFound={handleLocationFound}
-                className={`p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors ${
-                  isMapOverlay ? 'w-8 h-8' : 'w-10 h-10'
-                }`}
+                onError={handleLocationError}
               />
               
-              {/* Bouton Filtres */}
+              {/* Bouton Filtres avec texte */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`
-                  p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors
-                  ${showFilters ? 'text-amber-600 bg-amber-50' : ''}
-                  ${isMapOverlay ? 'w-8 h-8' : 'w-10 h-10'}
+                  group inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium
+                  ${showFilters 
+                    ? 'bg-culteo-vert-esperance/10 text-culteo-vert-esperance' 
+                    : 'bg-gray-50 text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
+                  }
                 `}
+                title="Filtrer les résultats"
               >
-                <SlidersHorizontal className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                <SlidersHorizontal className="h-3 w-3 transition-transform duration-200" />
+                <span>Filtres</span>
+                {getActiveFiltersCount() > 0 && (
+                  <div className="w-2 h-2 bg-culteo-vert-esperance rounded-full"></div>
+                )}
               </button>
             </div>
           </div>
