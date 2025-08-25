@@ -197,6 +197,10 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
               const config = eventTypeConfig[type];
               const isSelected = eventFilter.types?.includes(type) || false;
               
+              // Si pas de configuration, utiliser des valeurs par défaut
+              const IconComponent = config?.icon || MoreHorizontal;
+              const iconColor = config?.color || 'text-gray-500';
+              
               return (
                 <label
                   key={type}
@@ -236,13 +240,13 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                       }
                     `}
                   >
-                    <config.icon className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                    <IconComponent className={`${isMapOverlay ? 'w-4 h-4' : 'w-5 h-5'}`} />
                   </div>
                   
                   {/* Texte */}
                   <div className="flex-1">
                     <div className={`${isMapOverlay ? 'text-xs' : 'text-sm'} font-medium`}>
-                      {celebrationTypeLabels[type]}
+                      {celebrationTypeLabels[type] || type}
                     </div>
                   </div>
                   
