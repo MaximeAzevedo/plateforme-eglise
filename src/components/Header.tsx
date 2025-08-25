@@ -39,19 +39,28 @@ const Header: React.FC<HeaderProps> = ({
 
   // Fermer le menu quand on clique en dehors
   useEffect(() => {
-    const handleClickOutside = () => {
-      if (isMenuOpen) setIsMenuOpen(false);
+    if (!isMenuOpen) return;
+
+    const handleClickOutside = (event: Event) => {
+      // Ne pas fermer si le clic vient du bouton menu lui-même
+      const target = event.target as HTMLElement;
+      if (target?.closest('.menu-toggle-btn')) {
+        return;
+      }
+      setIsMenuOpen(false);
     };
 
-    if (isMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    // Ajouter l'event listener avec un petit délai pour éviter le conflit
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside, true);
+    }, 10);
+
+    // Empêcher le scroll du body
+    document.body.style.overflow = 'hidden';
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleClickOutside, true);
       document.body.style.overflow = '';
     };
   }, [isMenuOpen]);
@@ -121,7 +130,13 @@ const Header: React.FC<HeaderProps> = ({
                   e.stopPropagation();
                   setIsMenuOpen(!isMenuOpen);
                 }}
-                className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200"
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                }}
+                className="menu-toggle-btn p-2 rounded-lg hover:bg-white/50 active:bg-white/70 transition-colors duration-200 touch-manipulation"
+                aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={isMenuOpen}
+                type="button"
               >
                 <Menu 
                   className="w-6 h-6 text-culteo-vert-esperance" 
