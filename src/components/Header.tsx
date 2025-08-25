@@ -119,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Header principal selon specs Culteo */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-culteo-blanc-coquille">
+      <header className="fixed top-0 left-0 right-0 z-[60] bg-culteo-blanc-coquille">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             
@@ -189,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Menu overlay selon style Culteo */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-40">
+        <div className="fixed inset-0 z-[70]">
           {/* Backdrop subtil */}
           <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
           

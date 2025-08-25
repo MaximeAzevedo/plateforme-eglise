@@ -516,9 +516,9 @@ function App() {
       
       {/* EXPÉRIENCE MOBILE - CARTE PLEIN ÉCRAN */}
       {isMobile && currentView === 'map' && (
-        <div className="fixed inset-0 top-14 z-40 bg-white">
+        <div className="fixed inset-0 top-16 z-[30] bg-white">
           {/* Overlay de recherche en haut */}
-          <div className="absolute top-4 left-4 right-4 z-50">
+          <div className="absolute top-4 left-4 right-4 z-[40]">
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100">
               <Search 
                 places={worshipPlaces}
