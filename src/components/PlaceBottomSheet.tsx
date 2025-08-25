@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { MapPin, Clock, Navigation, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, Navigation, X } from 'lucide-react';
 import { Place, Denomination } from '../types';
 
 interface PlaceBottomSheetProps {
@@ -76,10 +76,9 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
 
   const handleItinerary = () => {
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.position[0]},${place.position[1]}`;
-    window.open(googleMapsUrl, '_blank');
+    // Fix: Utiliser location.href au lieu de window.open pour éviter la page blanche
+    window.location.href = googleMapsUrl;
   };
-
-
 
   return (
     <>
@@ -105,92 +104,30 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Handle pour drag + indicateur swipe */}
-        <div className="flex flex-col items-center py-3">
-          <div className="w-12 h-1 bg-gray-300 rounded-full mb-1"></div>
-          {totalPlaces > 1 && (
-            <div className="text-xs font-lato text-culteo-gris-basalte/50 animate-pulse">
-              ← Glissez pour naviguer →
-            </div>
-          )}
-        </div>
-
-        {/* Navigation horizontale et compteur */}
-        {totalPlaces > 1 && (
-          <div className="flex items-center justify-between px-4 pb-3 bg-culteo-blanc-coquille/30">
-            {/* Flèche gauche */}
-            <button
-              onClick={() => {
-                console.log('🔄 Clic flèche gauche');
-                onNavigate?.('prev');
-              }}
-              disabled={currentIndex === 0}
-              className={`p-3 rounded-full border-2 transition-all ${
-                currentIndex === 0 
-                  ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
-                  : 'text-culteo-vert-esperance border-culteo-vert-esperance hover:bg-culteo-vert-esperance hover:text-white'
-              }`}
-            >
-              <ChevronLeft className="w-6 h-6" strokeWidth={2} />
-            </button>
-
-            {/* Compteur X/Y et points de navigation */}
-            <div className="flex flex-col items-center space-y-2">
-              {/* Points de navigation simplifiés */}
-              <div className="flex space-x-1">
-                {Array.from({ length: Math.min(totalPlaces, 5) }, (_, i) => {
-                  const actualIndex = i < 5 ? i : currentIndex - 2 + i;
-                  return (
-                    <div
-                      key={i}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        actualIndex === currentIndex ? 'bg-culteo-vert-esperance scale-125' : 'bg-gray-300'
-                      }`}
-                    />
-                  );
-                })}
-              </div>
-              {/* Compteur numérique */}
-              <span className="text-sm font-poppins font-semibold text-culteo-gris-basalte">
+        {/* Handle pour drag + header avec compteur et fermer */}
+        <div className="relative px-4 py-3">
+          {/* Handle de drag centré */}
+          <div className="flex justify-center mb-2">
+            <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+          </div>
+          
+          {/* Header: Compteur à gauche, indication au centre, fermer à droite */}
+          <div className="flex items-center justify-between">
+            {/* Compteur petit en haut à gauche */}
+            {totalPlaces > 1 && (
+              <span className="text-xs font-poppins font-medium text-culteo-gris-basalte/60 bg-culteo-blanc-coquille px-2 py-1 rounded-full">
                 {currentIndex + 1} / {totalPlaces}
               </span>
-            </div>
+            )}
 
-            {/* Flèche droite */}
-            <button
-              onClick={() => {
-                console.log('🔄 Clic flèche droite');
-                onNavigate?.('next');
-              }}
-              disabled={currentIndex === totalPlaces - 1}
-              className={`p-3 rounded-full border-2 transition-all ${
-                currentIndex === totalPlaces - 1 
-                  ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
-                  : 'text-culteo-vert-esperance border-culteo-vert-esperance hover:bg-culteo-vert-esperance hover:text-white'
-              }`}
-            >
-              <ChevronRight className="w-6 h-6" strokeWidth={2} />
-            </button>
-          </div>
-        )}
+            {/* Indication swipe au centre */}
+            {totalPlaces > 1 && (
+              <div className="text-xs font-lato text-culteo-gris-basalte/50">
+                ← Glissez pour naviguer →
+              </div>
+            )}
 
-        {/* Contenu simplifié selon demandes */}
-        <div className="px-6 pb-6 space-y-3">
-          {/* Header compact avec titre et bouton fermer */}
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              {/* Dénomination en petit tag */}
-              <span className="inline-flex items-center px-2 py-1 rounded-full bg-culteo-vert-esperance/15 text-culteo-vert-esperance font-poppins font-semibold text-xs mb-1">
-                {denominationLabels[place.denomination]}
-              </span>
-              
-              {/* Nom de l'église */}
-              <h3 className="font-poppins font-bold text-culteo-gris-basalte text-lg leading-tight">
-                {place.name}
-              </h3>
-            </div>
-            
-            {/* Bouton fermer */}
+            {/* Bouton fermer en haut à droite */}
             <button
               onClick={onClose}
               className="p-1.5 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors"
@@ -198,19 +135,46 @@ const PlaceBottomSheet: React.FC<PlaceBottomSheetProps> = ({
               <X className="w-4 h-4 text-culteo-gris-basalte" strokeWidth={1.5} />
             </button>
           </div>
+        </div>
 
-          {/* Horaires de célébration simplifiés */}
-          <div className="flex items-start space-x-2">
-            <Clock className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-            <div className="font-lato text-culteo-gris-basalte text-sm">
-              {place.serviceTimes || 'Horaires non disponibles'}
+        {/* Contenu principal */}
+        <div className="px-6 pb-6 space-y-4">
+          {/* Nom église et confession côte à côte avec même taille */}
+          <div className="flex items-center gap-3">
+            <h3 className="font-poppins font-semibold text-culteo-gris-basalte text-base leading-tight">
+              {place.name}
+            </h3>
+            <span className="inline-flex items-center px-2 py-1 rounded-full bg-culteo-vert-esperance/15 text-culteo-vert-esperance font-poppins font-semibold text-base">
+              {denominationLabels[place.denomination]}
+            </span>
+          </div>
+
+          {/* Événements mieux structurés */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="w-4 h-4 text-culteo-vert-esperance flex-shrink-0" strokeWidth={1.5} />
+              <span className="font-poppins font-medium text-culteo-gris-basalte text-sm">Horaires des célébrations</span>
+            </div>
+            
+            <div className="bg-culteo-blanc-coquille rounded-culteo p-3">
+              <div className="font-lato text-culteo-gris-basalte text-sm leading-relaxed">
+                {place.serviceTimes || 'Horaires non disponibles'}
+              </div>
             </div>
           </div>
 
-          {/* Bouton itinéraire uniquement */}
+          {/* Adresse complète */}
+          <div className="flex items-start gap-2">
+            <MapPin className="w-4 h-4 text-culteo-vert-esperance mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+            <div className="font-lato text-culteo-gris-basalte text-sm">
+              {place.address ? `${place.address}, ${place.city}` : place.city}
+            </div>
+          </div>
+
+          {/* Bouton itinéraire compact */}
           <button
             onClick={handleItinerary}
-            className="w-full flex items-center justify-center gap-2 bg-culteo-vert-esperance text-white px-4 py-2.5 rounded-culteo font-poppins font-medium hover:bg-primary-600 transition-colors"
+            className="inline-flex items-center justify-center gap-2 bg-culteo-vert-esperance text-white px-4 py-2 rounded-culteo font-poppins font-medium hover:bg-primary-600 transition-colors text-sm"
           >
             <Navigation className="w-4 h-4" strokeWidth={1.5} />
             Itinéraire
