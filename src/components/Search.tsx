@@ -114,7 +114,7 @@ const Search: React.FC<SearchProps> = ({
 
       {/* Conteneur de recherche principal */}
       <div className={`relative ${isMapOverlay ? 'rounded-xl' : 'bg-white rounded-2xl shadow-lg border border-gray-100'} transition-all duration-300 ${
-        isSearchFocused ? 'ring-2 ring-amber-500/20 shadow-xl' : ''
+        isSearchFocused ? 'ring-2 ring-culteo-vert-esperance/20 shadow-xl' : ''
       }`}>
         
         {/* Barre de recherche */}
@@ -132,7 +132,7 @@ const Search: React.FC<SearchProps> = ({
               onBlur={() => setIsSearchFocused(false)}
               className={`
                 w-full pl-12 pr-20 py-3 text-gray-900 placeholder-gray-500 border border-gray-200 rounded-xl
-                focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500
+                focus:outline-none focus:ring-2 focus:ring-culteo-vert-esperance/20 focus:border-culteo-vert-esperance
                 transition-all duration-200 bg-gray-50 hover:bg-white
                 ${isMapOverlay ? 'text-sm' : 'text-base'}
               `}
@@ -140,7 +140,7 @@ const Search: React.FC<SearchProps> = ({
             />
             
             {/* Actions à droite */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 space-x-2">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-1">
               {/* Bouton Géolocalisation */}
               <GeolocationButton 
                 onLocationFound={handleLocationFound}
@@ -154,7 +154,7 @@ const Search: React.FC<SearchProps> = ({
                   group inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium
                   ${showFilters 
                     ? 'bg-culteo-vert-esperance/10 text-culteo-vert-esperance' 
-                    : 'bg-gray-50 text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
+                    : 'bg-transparent text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
                   }
                 `}
                 title="Filtrer les résultats"
@@ -184,9 +184,9 @@ const Search: React.FC<SearchProps> = ({
               {/* Header avec bouton fermer */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
                 <div className="flex items-center space-x-2">
-                  <Filter className="w-5 h-5 text-amber-600" />
+                  <Filter className="w-5 h-5 text-culteo-vert-esperance" />
                   <h3 className="text-lg font-bold text-gray-900">Filtres</h3>
-                  <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+                  <div className="px-3 py-1 bg-culteo-vert-esperance/10 text-culteo-vert-esperance rounded-full text-xs font-medium">
                     {places.length}
                   </div>
                 </div>
@@ -208,7 +208,7 @@ const Search: React.FC<SearchProps> = ({
                     onDenominationFilter(null);
                     onEventFilter({ enabled: false, types: [] });
                   }}
-                  className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors text-sm px-3 py-1.5 font-medium"
+                  className="text-culteo-vert-esperance hover:text-culteo-vert-esperance/80 hover:bg-culteo-vert-esperance/10 rounded-lg transition-colors text-sm px-3 py-1.5 font-medium"
                 >
                   ↻ Réinitialiser tous les filtres
                 </button>
@@ -220,7 +220,7 @@ const Search: React.FC<SearchProps> = ({
                 {/* Filtres par confession */}
                 <div className="space-y-3">
                   <h4 className="text-base font-semibold text-gray-900 flex items-center">
-                    <Sparkles className="w-5 h-5 text-amber-500 mr-2" />
+                    <Sparkles className="w-5 h-5 text-culteo-vert-esperance mr-2" />
                     Confessions religieuses
                   </h4>
                   
@@ -231,8 +231,8 @@ const Search: React.FC<SearchProps> = ({
                         className={`
                           relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
                           ${selectedDenominations?.includes(denomination)
-                            ? 'border-amber-400 bg-amber-50 text-amber-900 shadow-md scale-105'
-                            : 'border-gray-200 bg-white hover:border-amber-200 hover:bg-amber-50/50 hover:scale-102'
+                            ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105'
+                            : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5 hover:scale-102'
                           }
                         `}
                         style={{ minHeight: '50px' }}
@@ -255,7 +255,7 @@ const Search: React.FC<SearchProps> = ({
                           {denominationLabels[denomination]}
                         </div>
                         {selectedDenominations?.includes(denomination) && (
-                          <div className="absolute top-2 right-2 w-3 h-3 bg-amber-500 rounded-full flex items-center justify-center">
+                          <div className="absolute top-2 right-2 w-3 h-3 bg-culteo-vert-esperance rounded-full flex items-center justify-center">
                             <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                           </div>
                         )}

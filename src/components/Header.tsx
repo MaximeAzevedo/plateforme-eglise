@@ -132,14 +132,29 @@ const Header: React.FC<HeaderProps> = ({
               
               {/* Logo + Texte Culteo */}
               <div className="flex items-center space-x-2">
+                {/* Essayer plusieurs chemins pour le logo */}
                 <img 
-                  src={`/logo-culteo.png?v=${Date.now()}`}
+                  src="/logo-culteo.png"
                   alt="Culteo" 
                   className="h-8 w-auto"
                   onError={(e) => {
-                    console.warn('Logo Culteo non trouvé:', e);
-                    // Cacher l'image si elle ne charge pas
-                    (e.target as HTMLImageElement).style.display = 'none';
+                    console.warn('❌ Logo Culteo non trouvé via /logo-culteo.png');
+                    // Essayer un chemin alternatif
+                    const img = e.target as HTMLImageElement;
+                    if (img.src !== window.location.origin + '/public/logo-culteo.png') {
+                      img.src = '/public/logo-culteo.png';
+                    } else {
+                      // Si ça ne marche toujours pas, utiliser un icône de fallback
+                      img.style.display = 'none';
+                      // Ajouter un emoji/icône de fallback
+                      const parent = img.parentElement;
+                      if (parent && !parent.querySelector('.logo-fallback')) {
+                        const fallback = document.createElement('div');
+                        fallback.className = 'logo-fallback w-8 h-8 bg-culteo-vert-esperance rounded-lg flex items-center justify-center text-white font-bold';
+                        fallback.textContent = 'C';
+                        parent.insertBefore(fallback, img);
+                      }
+                    }
                   }}
                   onLoad={() => {
                     console.log('✅ Logo Culteo chargé avec succès');

@@ -344,7 +344,7 @@ const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocationFound, 
         className={`group inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium ${
           isLoading 
             ? 'bg-culteo-vert-esperance/10 text-culteo-vert-esperance cursor-not-allowed'
-            : 'bg-gray-50 text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
+            : 'bg-transparent text-gray-600 hover:bg-culteo-vert-esperance/10 hover:text-culteo-vert-esperance'
         }`}
         title="Me localiser"
       >
