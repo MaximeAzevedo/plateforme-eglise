@@ -86,7 +86,11 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
               }
             `}
             style={{ minHeight: '50px' }}
-            onClick={() => setShowDatePicker(!showDatePicker)}
+            onClick={() => {
+              // Activer automatiquement le filtre custom et ouvrir le date picker
+              handleDateFilterChange('custom');
+              setShowDatePicker(true);
+            }}
           >
             <span className="text-sm font-medium">🗓️ Choisir date</span>
             {eventFilter.dateTimeFilter?.dateFilter === 'custom' && (

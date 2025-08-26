@@ -133,17 +133,15 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
  */
 function matchesDateFilter(dateFilter: DateFilter, customDate?: string): boolean {
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = dimanche, 1 = lundi, etc.
+  const todayStr = today.toISOString().split('T')[0]; // Format YYYY-MM-DD
   
   switch (dateFilter) {
     case 'today':
-      return true; // Pour l'instant, on considère que "aujourd'hui" inclut tous les événements
-    case 'weekend':
-      return dayOfWeek === 0 || dayOfWeek === 6; // Dimanche ou samedi
-    case 'week':
-      return true; // Cette semaine inclut tous les jours
+      // Pour "aujourd'hui", on retourne true pour permettre le filtrage plus précis dans getUpcomingCelebrations
+      // Le vrai filtrage "aujourd'hui" se fait au niveau des horaires individuels
+      return true;
     case 'custom':
-      // Pour l'instant, on retourne true si une date custom est fournie
+      // Pour date personnalisée, on vérifie si elle est fournie
       return !!customDate;
     default:
       return true;

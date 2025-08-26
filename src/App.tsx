@@ -330,13 +330,47 @@ function App() {
       );
     }
     
-    // Filtrage par événements (types uniquement pour l'instant)
+    // Filtrage par événements (types et filtres temporels)
     if (eventFilter.types && eventFilter.types.length > 0) {
       result = result.filter(place => {
         const schedules = parseScheduleString(place.serviceTimes);
         return schedules.some(schedule => 
           eventFilter.types!.includes(schedule.type as CelebrationType)
         );
+      });
+    }
+    
+    // Filtrage temporel "aujourd'hui" - on filtre les lieux qui ont des événements aujourd'hui
+    if (eventFilter.dateTimeFilter?.dateFilter === 'today') {
+      const today = new Date();
+      const currentDay = today.getDay(); // 0 = dimanche, 1 = lundi, etc.
+      const currentTime = today.getHours() * 60 + today.getMinutes();
+      
+      result = result.filter(place => {
+        const schedules = parseScheduleString(place.serviceTimes);
+        return schedules.some(schedule => {
+          // Vérifier si l'événement a lieu aujourd'hui
+          if (schedule.dayIndex !== currentDay) {
+            return false;
+          }
+          
+          // Vérifier si l'événement n'est pas déjà passé
+          const [hours, minutes] = schedule.startTime.split(':').map(Number);
+          const scheduleTime = hours * 60 + minutes;
+          
+          return scheduleTime > currentTime; // Événement pas encore passé
+        });
+      });
+    }
+    
+    // Filtrage par date personnalisée
+    if (eventFilter.dateTimeFilter?.dateFilter === 'custom' && eventFilter.dateTimeFilter.customDate) {
+      const targetDate = new Date(eventFilter.dateTimeFilter.customDate);
+      const targetDay = targetDate.getDay();
+      
+      result = result.filter(place => {
+        const schedules = parseScheduleString(place.serviceTimes);
+        return schedules.some(schedule => schedule.dayIndex === targetDay);
       });
     }
     

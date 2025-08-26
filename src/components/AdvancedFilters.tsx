@@ -35,8 +35,7 @@ import {
   WorshipPlace 
 } from '../types';
 import { 
-  celebrationTypeLabels, 
-  getAvailableEventTypes
+  celebrationTypeLabels
 } from '../utils/filterUtils';
 
 interface AdvancedFiltersProps {
@@ -46,18 +45,6 @@ interface AdvancedFiltersProps {
   isVisible: boolean;
   isMapOverlay?: boolean;
 }
-
-const celebrationTypes: CelebrationType[] = [
-  'Célébration',
-  'Prière',
-  'Confession',
-  'Adoration',
-  'Catéchisme',
-  'Groupe de prière',
-  'Évangélisation',
-  'Service communautaire',
-  'Autre'
-];
 
 const eventTypes = [
   'Culte/Messe',
@@ -86,14 +73,9 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   isVisible,
   isMapOverlay = false
 }) => {
-  const [availableTypes, setAvailableTypes] = useState<CelebrationType[]>([]);
   const [showEventTypes, setShowEventTypes] = useState(true); // Ouvert par défaut
 
-  useEffect(() => {
-    setAvailableTypes(getAvailableEventTypes(places));
-  }, [places]);
-
-  const handleEventTypeToggle = (type: CelebrationType) => {
+  const handleEventTypeToggle = (type: string) => {
     const currentTypes = eventFilter.types || [];
     const newTypes = currentTypes.includes(type)
       ? currentTypes.filter(t => t !== type)
@@ -101,7 +83,8 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
     
     onEventFilterChange({
       ...eventFilter,
-      types: newTypes.length > 0 ? newTypes : undefined
+      enabled: true,
+      types: newTypes.length > 0 ? newTypes : []
     });
   };
 
@@ -155,7 +138,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
 
         {showEventTypes && (
           <div className={`grid gap-3 ${isMapOverlay ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2'}`}>
-            {availableTypes.map(type => {
+            {eventTypes.map(type => {
               const config = eventTypeConfig[type];
               const isSelected = eventFilter.types?.includes(type) || false;
               
