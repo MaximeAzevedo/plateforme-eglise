@@ -60,60 +60,22 @@ const celebrationTypes: CelebrationType[] = [
 ];
 
 const eventTypes = [
-  'Célébration principale',
-  'Célébration en semaine',
-  'Prière du matin',
-  'Prière du soir',
-  'Confession',
+  'Culte/Messe',
+  'Prière', 
+  'Étude biblique',
   'Adoration',
-  'Catéchisme',
-  'Groupe de prière',
-  'Bible study',
-  'Évangélisation',
-  'Service communautaire',
+  'Groupe',
   'Autre'
 ];
 
-// Icônes et couleurs pour les types d'événements - Configuration complète
+// Icônes et couleurs pour les types d'événements - Configuration simplifiée
 const eventTypeConfig: Record<string, { icon: any, color: string }> = {
-  // Types principaux de célébration
-  'Célébration': { icon: Church, color: 'text-blue-600' },
-  'Célébration en semaine': { icon: Church, color: 'text-blue-500' },
-  'Culte': { icon: Church, color: 'text-blue-600' },
-  'Culte principal': { icon: Church, color: 'text-blue-700' },
-  'Culte de louange': { icon: Music, color: 'text-purple-600' },
-  'Messe': { icon: Church, color: 'text-blue-600' },
-  'Messe/Culte principal': { icon: Church, color: 'text-blue-700' },
-  'Service divin': { icon: Church, color: 'text-blue-600' },
-  'Liturgie divine': { icon: Church, color: 'text-blue-700' },
-  
-  // Types de prière
-  'Prière': { icon: Heart, color: 'text-purple-600' },
-  'Groupe de prière': { icon: Users, color: 'text-purple-600' },
-  'Prière du matin': { icon: Sunrise, color: 'text-orange-500' },
-  'Prière du soir': { icon: Sunset, color: 'text-orange-600' },
-  'Prière de guérison': { icon: Heart, color: 'text-red-500' },
-  'Jeûne et prière': { icon: Zap, color: 'text-yellow-600' },
-  'Vêpres': { icon: Sunset, color: 'text-orange-600' },
-  
-  // Types spirituels
-  'Adoration': { icon: Star, color: 'text-yellow-500' },
-  'Confession': { icon: Shield, color: 'text-green-600' },
-  'Silence et méditation': { icon: Sparkles, color: 'text-indigo-500' },
-  'Partage spirituel': { icon: MessageCircle, color: 'text-teal-600' },
-  
-  // Éducation et formation
-  'Bible study': { icon: BookOpen, color: 'text-green-600' },
-  'Catéchisme': { icon: GraduationCap, color: 'text-blue-500' },
-  'École du dimanche': { icon: Baby, color: 'text-pink-500' },
-  
-  // Groupes spécifiques
-  'Jeunes adultes': { icon: Users, color: 'text-cyan-600' },
-  'Service pour les jeunes': { icon: UserCheck, color: 'text-cyan-500' },
-  
-  // Activités et services
-  'Évangélisation': { icon: Mic, color: 'text-red-600' },
-  'Service communautaire': { icon: Coffee, color: 'text-brown-600' },
+  // Types essentiels seulement
+  'Culte/Messe': { icon: Church, color: 'text-culteo-vert-esperance' },
+  'Prière': { icon: Heart, color: 'text-culteo-vert-esperance' },
+  'Étude biblique': { icon: BookOpen, color: 'text-culteo-vert-esperance' },
+  'Adoration': { icon: Star, color: 'text-culteo-vert-esperance' },
+  'Groupe': { icon: Users, color: 'text-culteo-vert-esperance' },
   'Autre': { icon: MoreHorizontal, color: 'text-gray-500' }
 };
 
