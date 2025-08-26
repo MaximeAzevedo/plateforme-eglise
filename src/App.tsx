@@ -559,6 +559,7 @@ function App() {
             <MapView 
               places={filteredPlaces} 
               selectedDenomination={selectedDenomination}
+              selectedPlace={selectedPlace}
               onMapMove={handleMapMove}
               centerOnPosition={shouldCenterMap ? mapCenter : null}
               onPlaceClick={(place) => {
@@ -657,6 +658,7 @@ function App() {
                                               <MapView
                       places={filteredPlaces}
                       selectedDenomination={selectedDenomination}
+                      selectedPlace={selectedPlace}
                       onMapMove={handleMapMove}
                       centerOnPosition={shouldCenterMap ? mapCenter : null}
                       onPlaceClick={(place) => {

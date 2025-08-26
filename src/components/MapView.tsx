@@ -8,6 +8,7 @@ import { divIcon } from 'leaflet';
 interface MapViewProps {
   places: WorshipPlace[];
   selectedDenomination: Denomination | null;
+  selectedPlace?: WorshipPlace | null;
   onMapMove?: (center: [number, number], bounds: [[number, number], [number, number]]) => void;
   centerOnPosition?: [number, number] | null;
   onPlaceClick?: (place: WorshipPlace) => void;
@@ -180,6 +181,7 @@ const createCulteoPinIcon = (denomination: Denomination, isSelected = false) => 
 const MapView: React.FC<MapViewProps> = ({ 
   places, 
   selectedDenomination, 
+  selectedPlace,
   onMapMove, 
   centerOnPosition,
   onPlaceClick,
@@ -187,6 +189,15 @@ const MapView: React.FC<MapViewProps> = ({
 }) => {
   const [isLocating, setIsLocating] = React.useState(false);
   const [selectedPlaceId, setSelectedPlaceId] = React.useState<string | null>(null);
+
+  // Synchroniser selectedPlaceId avec selectedPlace venant des props
+  React.useEffect(() => {
+    if (selectedPlace) {
+      setSelectedPlaceId(selectedPlace.id);
+    } else {
+      setSelectedPlaceId(null);
+    }
+  }, [selectedPlace]);
 
   // 🔍 DIAGNOSTIC CIBLÉ
   React.useEffect(() => {
