@@ -47,6 +47,10 @@ const Header: React.FC<HeaderProps> = ({
       if (target?.closest('.menu-toggle-btn')) {
         return;
       }
+      // Ne pas fermer si le clic vient de l'intérieur du panneau menu
+      if (target?.closest('.menu-panel')) {
+        return;
+      }
       setIsMenuOpen(false);
     };
 
@@ -88,13 +92,21 @@ const Header: React.FC<HeaderProps> = ({
       icon: Users,
       title: 'Communauté',
       description: 'Connectez-vous avec d\'autres',
-      action: () => console.log('Communauté'),
+      action: () => {
+        // Ouvrir le mur de prières comme action communautaire pour l'instant
+        console.log('Navigation vers Communauté');
+        onPrayerWallClick();
+      },
     },
     {
       icon: User,
       title: 'Profil',
       description: 'Votre espace personnel',
-      action: () => console.log('Profil'),
+      action: () => {
+        console.log('Fonctionnalité Profil - À venir');
+        // Retourner à l'accueil en attendant l'implémentation du profil
+        onViewChange?.('home');
+      },
     },
     {
       icon: Heart,
@@ -112,7 +124,11 @@ const Header: React.FC<HeaderProps> = ({
       icon: Info,
       title: 'À propos',
       description: 'Notre mission et équipe',
-      action: () => console.log('À propos'),
+      action: () => {
+        console.log('Navigation vers À propos');
+        // Naviguer vers l'accueil où se trouve l'information sur la mission
+        onViewChange?.('home');
+      },
     }
   ];
 
@@ -195,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({
           
           {/* Menu panel épuré */}
           <div 
-            className="absolute top-20 left-6 w-80 bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden"
+            className="menu-panel absolute top-20 left-6 w-80 bg-culteo-blanc-pur rounded-culteo shadow-culteo-float border border-gray-100 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header du menu */}
@@ -224,8 +240,11 @@ const Header: React.FC<HeaderProps> = ({
                 <button
                   key={index}
                   onClick={() => {
+                    console.log(`Clic sur ${item.title}`);
+                    // Exécuter l'action d'abord
                     item.action();
-                    setIsMenuOpen(false);
+                    // Fermer le menu après un petit délai pour laisser le temps à l'action
+                    setTimeout(() => setIsMenuOpen(false), 100);
                   }}
                   className="w-full p-4 rounded-culteo-sm hover:bg-culteo-blanc-coquille transition-colors duration-200 text-left group"
                 >
