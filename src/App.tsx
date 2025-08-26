@@ -183,9 +183,29 @@ function App() {
       newIndex = currentIndex - 1 < 0 ? filteredPlaces.length - 1 : currentIndex - 1;
     }
     
-    setSelectedPlace(filteredPlaces[newIndex]);
+    const newPlace = filteredPlaces[newIndex];
+    setSelectedPlace(newPlace);
     setCurrentPlaceIndex(newIndex);
+    
+    // 🎯 NOUVEAU: Centrer automatiquement la carte sur le nouveau lieu
+    if (newPlace && newPlace.position) {
+      setMapCenter(newPlace.position);
+      setShouldCenterMap(true);
+      console.log(`🗺️ Carte centrée sur: ${newPlace.name} (${newPlace.position[0]}, ${newPlace.position[1]})`);
+    }
   };
+
+  // Reset shouldCenterMap après le centrage pour éviter les centrages intempestifs
+  useEffect(() => {
+    if (shouldCenterMap) {
+      // Reset après un court délai pour laisser le temps à la carte de se centrer
+      const timer = setTimeout(() => {
+        setShouldCenterMap(false);
+      }, 1000); // 1 seconde devrait suffire pour l'animation
+      
+      return () => clearTimeout(timer);
+    }
+  }, [shouldCenterMap]);
 
   // Vérification de la configuration Supabase (non-bloquante)
   useEffect(() => {
@@ -540,7 +560,7 @@ function App() {
               places={filteredPlaces} 
               selectedDenomination={selectedDenomination}
               onMapMove={handleMapMove}
-              centerOnPosition={shouldCenterMap}
+              centerOnPosition={shouldCenterMap ? mapCenter : null}
               onPlaceClick={(place) => {
                 setSelectedPlace(place);
                 setShowPlaceBottomSheet(true);
@@ -638,7 +658,7 @@ function App() {
                       places={filteredPlaces}
                       selectedDenomination={selectedDenomination}
                       onMapMove={handleMapMove}
-                      centerOnPosition={shouldCenterMap}
+                      centerOnPosition={shouldCenterMap ? mapCenter : null}
                       onPlaceClick={(place) => {
                         setSelectedPlace(place);
                         if (isMobile) {
