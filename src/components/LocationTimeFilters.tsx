@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { 
   DateFilter, 
@@ -22,17 +22,33 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
   currentLocation
 }) => {
   const dateInputRef = useRef<HTMLInputElement>(null);
+  const [isSelectingDate, setIsSelectingDate] = useState(false);
 
-  const handleDateFilterChange = (dateFilter: DateFilter) => {
+  // Clic sur "Aujourd'hui" - nettoie tout et met en mode today
+  const handleTodayClick = () => {
     onEventFilterChange({
       ...eventFilter,
       dateTimeFilter: {
         ...eventFilter.dateTimeFilter,
-        dateFilter: dateFilter
+        dateFilter: 'today',
+        customDate: undefined // ✅ Nettoie l'ancienne date
       }
     });
+    setIsSelectingDate(false); // Sortir du mode sélection
   };
 
+  // Clic sur "Choisir date" - active le mode sélection
+  const handleChooseDateClick = () => {
+    setIsSelectingDate(true);
+    // Focus automatique sur l'input pour ouvrir le calendrier
+    setTimeout(() => {
+      if (dateInputRef.current) {
+        dateInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  // Sélection d'une date dans le calendrier
   const handleCustomDateChange = (customDate: string) => {
     onEventFilterChange({
       ...eventFilter,
@@ -42,6 +58,11 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
         dateFilter: customDate ? 'custom' : undefined
       }
     });
+    
+    // Sortir du mode sélection après avoir choisi une date
+    if (customDate) {
+      setIsSelectingDate(false);
+    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -56,8 +77,10 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
         </h4>
         
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-          {/* Aujourd'hui */}
-          <label
+          {/* Bouton Aujourd'hui */}
+          <button
+            type="button"
+            onClick={handleTodayClick}
             className={`
               relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
               ${eventFilter.dateTimeFilter?.dateFilter === 'today' 
@@ -66,7 +89,6 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
               }
             `}
             style={{ minHeight: '50px' }}
-            onClick={() => handleDateFilterChange('today')}
           >
             <span className="text-sm font-medium">📅 Aujourd'hui</span>
             {eventFilter.dateTimeFilter?.dateFilter === 'today' && (
@@ -74,50 +96,55 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
                 <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
               </div>
             )}
-          </label>
+          </button>
 
-          {/* Choisir date - Input stylisé directement */}
-          <div className="relative">
+          {/* Choisir date - Logique conditionnelle simple */}
+          {isSelectingDate ? (
+            /* Mode sélection : input date pur */
             <input
               ref={dateInputRef}
               type="date"
               value={eventFilter.dateTimeFilter?.customDate || ''}
               onChange={(e) => handleCustomDateChange(e.target.value)}
-              onFocus={() => handleDateFilterChange('custom')}
+              onBlur={() => {
+                // Si on sort de l'input sans choisir de date, revenir au mode bouton
+                if (!eventFilter.dateTimeFilter?.customDate) {
+                  setIsSelectingDate(false);
+                }
+              }}
               className={`
                 w-full p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center font-medium text-sm
-                ${eventFilter.dateTimeFilter?.dateFilter === 'custom' 
-                  ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105' 
-                  : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5 hover:scale-102 text-gray-700'
-                }
-                
-                /* Styles pour cacher le calendrier par défaut et afficher notre texte */
-                [&::-webkit-calendar-picker-indicator]:opacity-0
-                [&::-webkit-calendar-picker-indicator]:absolute
-                [&::-webkit-calendar-picker-indicator]:w-full
-                [&::-webkit-calendar-picker-indicator]:h-full
-                [&::-webkit-calendar-picker-indicator]:cursor-pointer
-                
-                /* Cacher la valeur de date par défaut pour montrer notre placeholder */
-                color-scheme-light
+                border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105
               `}
               style={{ minHeight: '50px' }}
             />
-            
-            {/* Overlay pour afficher "🗓️ Choisir date" quand pas de date sélectionnée */}
-            {!eventFilter.dateTimeFilter?.customDate && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className="text-sm font-medium">🗓️ Choisir date</span>
-              </div>
-            )}
-            
-            {/* Indicateur de filtre actif */}
-            {eventFilter.dateTimeFilter?.dateFilter === 'custom' && (
-              <div className="absolute top-2 right-2 w-3 h-3 bg-culteo-vert-esperance rounded-full flex items-center justify-center pointer-events-none">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-              </div>
-            )}
-          </div>
+          ) : (
+            /* Mode bouton : bouton "Choisir date" */
+            <button
+              type="button"
+              onClick={handleChooseDateClick}
+              className={`
+                relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
+                ${eventFilter.dateTimeFilter?.dateFilter === 'custom' 
+                  ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105' 
+                  : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5 hover:scale-102'
+                }
+              `}
+              style={{ minHeight: '50px' }}
+            >
+              <span className="text-sm font-medium">
+                {eventFilter.dateTimeFilter?.customDate 
+                  ? `📅 ${eventFilter.dateTimeFilter.customDate}` 
+                  : '🗓️ Choisir date'
+                }
+              </span>
+              {eventFilter.dateTimeFilter?.dateFilter === 'custom' && (
+                <div className="absolute top-2 right-2 w-3 h-3 bg-culteo-vert-esperance rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              )}
+            </button>
+          )}
         </div>
 
 
