@@ -61,7 +61,7 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
             <span className="text-sm font-medium">📅 Aujourd'hui</span>
           </button>
 
-          {/* Input Date - SIMPLE ET DIRECT */}
+          {/* Input Date avec placeholder "Choisir date" */}
           <div className="relative">
             <input
               type="date"
@@ -86,6 +86,13 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
               `}
               style={{ minHeight: '50px' }}
             />
+            
+            {/* Overlay "Choisir date" quand vide */}
+            {!eventFilter.dateTimeFilter?.customDate && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span className="text-sm font-medium text-gray-700">🗓️ Choisir date</span>
+              </div>
+            )}
           </div>
         </div>
 
