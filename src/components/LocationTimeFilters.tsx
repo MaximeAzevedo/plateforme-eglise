@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { 
   DateFilter, 
@@ -22,6 +22,20 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
   currentLocation
 }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  // Ouvrir automatiquement le calendrier quand showDatePicker devient true
+  useEffect(() => {
+    if (showDatePicker && dateInputRef.current) {
+      // Petit délai pour que l'input soit rendu
+      setTimeout(() => {
+        if (dateInputRef.current) {
+          dateInputRef.current.focus();
+          dateInputRef.current.click();
+        }
+      }, 100);
+    }
+  }, [showDatePicker]);
 
   const handleDateFilterChange = (dateFilter: DateFilter) => {
     onEventFilterChange({
@@ -42,6 +56,11 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
         dateFilter: customDate ? 'custom' : undefined
       }
     });
+    
+    // Fermer le date picker après sélection pour une UX plus propre
+    if (customDate) {
+      setShowDatePicker(false);
+    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -104,6 +123,7 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
         {/* Input de date personnalisée */}
         {showDatePicker && (
           <input
+            ref={dateInputRef}
             type="date"
             value={eventFilter.dateTimeFilter?.customDate || ''}
             onChange={(e) => handleCustomDateChange(e.target.value)}
