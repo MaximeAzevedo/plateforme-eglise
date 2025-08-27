@@ -84,7 +84,14 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
                   : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5'
                 }
               `}
-              style={{ minHeight: '50px' }}
+              style={{ 
+                minHeight: '50px',
+                width: '100%',
+                boxSizing: 'border-box',
+                WebkitAppearance: 'none',
+                MozAppearance: 'none',
+                appearance: 'none'
+              }}
             />
             
             {/* Overlay "Choisir date" quand vide */}
