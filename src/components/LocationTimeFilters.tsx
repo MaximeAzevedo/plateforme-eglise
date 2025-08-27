@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Calendar } from 'lucide-react';
 import { 
   DateFilter, 
@@ -21,21 +21,7 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
   onEventFilterChange,
   currentLocation
 }) => {
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const dateInputRef = useRef<HTMLInputElement>(null);
-
-  // Ouvrir automatiquement le calendrier quand showDatePicker devient true
-  useEffect(() => {
-    if (showDatePicker && dateInputRef.current) {
-      // Petit délai pour que l'input soit rendu
-      setTimeout(() => {
-        if (dateInputRef.current) {
-          dateInputRef.current.focus();
-          dateInputRef.current.click();
-        }
-      }, 100);
-    }
-  }, [showDatePicker]);
 
   const handleDateFilterChange = (dateFilter: DateFilter) => {
     onEventFilterChange({
@@ -56,11 +42,6 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
         dateFilter: customDate ? 'custom' : undefined
       }
     });
-    
-    // Fermer le date picker après sélection pour une UX plus propre
-    if (customDate) {
-      setShowDatePicker(false);
-    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -96,40 +77,39 @@ const LocationTimeFilters: React.FC<LocationTimeFiltersProps> = ({
           </label>
 
           {/* Choisir date */}
-          <label
-            className={`
-              relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
-              ${eventFilter.dateTimeFilter?.dateFilter === 'custom' 
-                ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105' 
-                : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5 hover:scale-102'
-              }
-            `}
-            style={{ minHeight: '50px' }}
-            onClick={() => {
-              // Activer automatiquement le filtre custom et ouvrir le date picker
-              handleDateFilterChange('custom');
-              setShowDatePicker(true);
-            }}
-          >
-            <span className="text-sm font-medium">🗓️ Choisir date</span>
-            {eventFilter.dateTimeFilter?.dateFilter === 'custom' && (
-              <div className="absolute top-2 right-2 w-3 h-3 bg-culteo-vert-esperance rounded-full flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-              </div>
-            )}
-          </label>
+          <div className="relative">
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={eventFilter.dateTimeFilter?.customDate || ''}
+              onChange={(e) => handleCustomDateChange(e.target.value)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              onClick={() => {
+                // Activer le filtre custom quand on clique
+                handleDateFilterChange('custom');
+              }}
+            />
+            <div
+              className={`
+                relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center
+                ${eventFilter.dateTimeFilter?.dateFilter === 'custom' 
+                  ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance shadow-md scale-105' 
+                  : 'border-gray-200 bg-white hover:border-culteo-vert-esperance/20 hover:bg-culteo-vert-esperance/5 hover:scale-102'
+                }
+              `}
+              style={{ minHeight: '50px' }}
+            >
+              <span className="text-sm font-medium">🗓️ Choisir date</span>
+              {eventFilter.dateTimeFilter?.dateFilter === 'custom' && (
+                <div className="absolute top-2 right-2 w-3 h-3 bg-culteo-vert-esperance rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Input de date personnalisée */}
-        {showDatePicker && (
-          <input
-            ref={dateInputRef}
-            type="date"
-            value={eventFilter.dateTimeFilter?.customDate || ''}
-            onChange={(e) => handleCustomDateChange(e.target.value)}
-            className="w-full p-3 rounded-xl border-2 border-culteo-vert-esperance bg-culteo-vert-esperance/5 text-culteo-vert-esperance focus:border-culteo-vert-esperance focus:ring-2 focus:ring-culteo-vert-esperance/10 transition-all duration-200"
-          />
-        )}
+
 
         {/* Affichage du filtre actif */}
         {eventFilter.dateTimeFilter?.dateFilter && (
