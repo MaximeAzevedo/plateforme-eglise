@@ -19,6 +19,7 @@ interface HeroProps {
   onViewModeChange?: (mode: 'list' | 'map') => void;
   onLocationFound?: (position: [number, number]) => void;
   onSearch?: (query: string) => void;
+  isMobile?: boolean; // Nouvelle prop
 }
 
 const Hero: React.FC<HeroProps> = ({ 
@@ -28,7 +29,8 @@ const Hero: React.FC<HeroProps> = ({
   viewMode = 'map',
   onViewModeChange,
   onLocationFound,
-  onSearch
+  onSearch,
+  isMobile = false // Valeur par défaut
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLocating, setIsLocating] = useState(false);
@@ -100,75 +102,90 @@ const Hero: React.FC<HeroProps> = ({
             Le guide de toutes les communautés chrétiennes.
           </p>
 
-          {/* Nouvelle barre de navigation selon specs */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <div className="flex items-center gap-3 bg-culteo-blanc-pur rounded-culteo-lg shadow-culteo-float border border-gray-100 p-3">
-              
-              {/* 1. Bouton Toggle Liste/Carte */}
-              <button
-                onClick={() => onViewModeChange?.(viewMode === 'map' ? 'list' : 'map')}
-                className="p-3 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
-                title={viewMode === 'map' ? 'Afficher en liste' : 'Afficher sur la carte'}
-              >
-                {viewMode === 'map' ? (
-                  <List 
-                    className="w-5 h-5 text-culteo-vert-esperance" 
-                    strokeWidth={1.5}
-                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-                  />
-                ) : (
-                  <Map 
-                    className="w-5 h-5 text-culteo-vert-esperance" 
-                    strokeWidth={1.5}
-                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-                  />
-                )}
-              </button>
+          {/* Barre de recherche simplifiée sur mobile, complète sur desktop */}
+          {!isMobile && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <div className="flex items-center gap-3 bg-culteo-blanc-pur rounded-culteo-lg shadow-culteo-float border border-gray-100 p-3">
+                
+                {/* 1. Bouton Toggle Liste/Carte */}
+                <button
+                  onClick={() => onViewModeChange?.(viewMode === 'map' ? 'list' : 'map')}
+                  className="p-3 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
+                  title={viewMode === 'map' ? 'Afficher en liste' : 'Afficher sur la carte'}
+                >
+                  {viewMode === 'map' ? (
+                    <List 
+                      className="w-5 h-5 text-culteo-vert-esperance" 
+                      strokeWidth={1.5}
+                      style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                    />
+                  ) : (
+                    <Map 
+                      className="w-5 h-5 text-culteo-vert-esperance" 
+                      strokeWidth={1.5}
+                      style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                    />
+                  )}
+                </button>
 
-              {/* 2. Barre de recherche */}
-              <div className="flex items-center flex-1">
-                <Search 
-                  className="w-5 h-5 text-culteo-vert-esperance mr-3" 
-                  strokeWidth={1.5}
-                  style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  placeholder="Rechercher une ville, une paroisse..."
-                  className="flex-1 bg-transparent border-none outline-none font-lato text-culteo-gris-basalte placeholder-gray-400"
-                  style={{ fontSize: '16px' }}
-                />
+                {/* 2. Barre de recherche */}
+                <div className="flex items-center flex-1">
+                  <Search 
+                    className="w-5 h-5 text-culteo-vert-esperance mr-3" 
+                    strokeWidth={1.5}
+                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                  />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Rechercher une ville, une paroisse..."
+                    className="flex-1 bg-transparent border-none outline-none font-lato text-culteo-gris-basalte placeholder-gray-400"
+                    style={{ fontSize: '16px' }}
+                  />
+                </div>
+
+                {/* 3. Bouton géolocalisation (plus petit) */}
+                <button
+                  onClick={handleGeolocation}
+                  disabled={isLocating}
+                  className="p-2 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
+                  title="Me localiser"
+                >
+                  <MapPin 
+                    className={`w-4 h-4 text-culteo-vert-esperance ${isLocating ? 'animate-pulse' : ''}`}
+                    strokeWidth={1.5}
+                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                  />
+                </button>
+
+                {/* 4. Bouton filtres */}
+                <button
+                  onClick={() => {
+                    // TODO: Implémenter l'ouverture des filtres
+                    console.log('Ouverture des filtres - à implémenter');
+                  }}
+                  className="p-3 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
+                  title="Filtres"
+                >
+                  <Filter 
+                    className="w-5 h-5 text-culteo-vert-esperance" 
+                    strokeWidth={1.5}
+                    style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                  />
+                </button>
               </div>
-
-              {/* 3. Bouton géolocalisation (plus petit) */}
-              <button
-                onClick={handleGeolocation}
-                disabled={isLocating}
-                className="p-2 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
-                title="Me localiser"
-              >
-                <MapPin 
-                  className={`w-4 h-4 text-culteo-vert-esperance ${isLocating ? 'animate-pulse' : ''}`}
-                  strokeWidth={1.5}
-                  style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-                />
-              </button>
-
-              {/* 4. Bouton filtres */}
-              <button
-                className="p-3 rounded-culteo hover:bg-culteo-blanc-coquille transition-colors duration-200 flex-shrink-0"
-                title="Filtres"
-              >
-                <Filter 
-                  className="w-5 h-5 text-culteo-vert-esperance" 
-                  strokeWidth={1.5}
-                  style={{ strokeLinecap: 'round', strokeLinejoin: 'round' }}
-                />
-              </button>
             </div>
-          </div>
+          )}
+
+          {/* Message simplifié pour mobile */}
+          {isMobile && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <p className="font-lato text-culteo-gris-basalte text-lg">
+                Utilisez le menu pour naviguer vers la carte ou la recherche
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Raccourcis catégories 2x2 selon specs */}

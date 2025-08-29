@@ -635,12 +635,14 @@ function App() {
             onViewModeChange={setViewMode}
             onLocationFound={handleLocationFound}
             onSearch={handleSearch}
+            isMobile={isMobile}
           />
           
-          <section className="py-16 bg-white">
-            <div className="container mx-auto px-4">
-              {/* Section de recherche moderne avec ID pour le scroll - DESKTOP SEULEMENT */}
-              {!isMobile && (
+{/* Section de recherche et carte - DESKTOP SEULEMENT */}
+          {!isMobile && (
+            <section className="py-16 bg-white">
+              <div className="container mx-auto px-4">
+                {/* Section de recherche moderne avec ID pour le scroll */}
                 <section id="search-section" className="space-y-8">
                   {/* Titre de section moderne */}
                   <div className="text-center space-y-4">
@@ -668,10 +670,8 @@ function App() {
                     />
                   </div>
                 </section>
-              )}
-            
-            {/* Section carte/liste moderne avec toggle - SEULEMENT SUR DESKTOP */}
-            {!isMobile && (
+              
+              {/* Section carte/liste moderne avec toggle */}
               <section className="space-y-8">
                 <div className="text-center">
                   <h3 className="text-2xl font-poppins font-bold text-culteo-gris-basalte mb-2">
@@ -731,11 +731,38 @@ function App() {
                   </div>
                 )}
               </section>
-            )}
-            </div>
-          </section>
+              </div>
+            </section>
+          )}
           
-          <WhoWeAreFor />
+          <WhoWeAreFor 
+            onExploreClick={() => {
+              // Scroll vers la section de recherche ou ouvrir la recherche mobile
+              if (isMobile) {
+                setCurrentView('map');
+              } else {
+                const searchSection = document.getElementById('search-section');
+                if (searchSection) {
+                  searchSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            }}
+            onMapClick={() => {
+              // Naviguer vers la carte
+              if (isMobile) {
+                setCurrentView('map');
+              } else {
+                const searchSection = document.getElementById('search-section');
+                if (searchSection) {
+                  searchSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            }}
+            onContributeClick={() => {
+              // Ouvrir le formulaire de contribution
+              setShowContributeForm(true);
+            }}
+          />
           
           <Contribution onAddPlace={() => setShowContributeForm(true)} />
         </main>
