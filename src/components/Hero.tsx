@@ -8,7 +8,9 @@ import {
   Plus,
   List,
   Map,
-  MapPin
+  MapPin,
+  Star,
+  Info
 } from 'lucide-react';
 
 interface HeroProps {
@@ -19,7 +21,8 @@ interface HeroProps {
   onViewModeChange?: (mode: 'list' | 'map') => void;
   onLocationFound?: (position: [number, number]) => void;
   onSearch?: (query: string) => void;
-  isMobile?: boolean; // Nouvelle prop
+  isMobile?: boolean;
+  onPrayerWallClick?: () => void; // Nouvelle prop pour le mur de prière
 }
 
 const Hero: React.FC<HeroProps> = ({ 
@@ -30,7 +33,8 @@ const Hero: React.FC<HeroProps> = ({
   onViewModeChange,
   onLocationFound,
   onSearch,
-  isMobile = false // Valeur par défaut
+  isMobile = false,
+  onPrayerWallClick // Nouvelle prop
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLocating, setIsLocating] = useState(false);
@@ -65,24 +69,32 @@ const Hero: React.FC<HeroProps> = ({
 
   const categories = [
     {
-      icon: Church,
-      title: 'Lieux de Culte',
-      action: onMapClick
-    },
-    {
-      icon: Calendar,
-      title: 'Événements',
-      action: () => console.log('Événements')
-    },
-    {
-      icon: Users,
-      title: 'Groupes & Communautés',
-      action: () => console.log('Groupes')
-    },
-    {
       icon: Plus,
       title: 'Contribuer',
       action: onExploreClick
+    },
+    {
+      icon: Church,
+      title: 'Lieu de culte',
+      action: onMapClick
+    },
+    {
+      icon: Star,
+      title: 'Mur de prière',
+      action: onPrayerWallClick
+    },
+    {
+      icon: Info,
+      title: 'À propos',
+      action: () => {
+        // Scroll vers la section À propos ou afficher info
+        console.log('Navigation vers À propos');
+        // On peut scroller vers le footer ou une section dédiée
+        const footer = document.querySelector('footer');
+        if (footer) {
+          footer.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     }
   ];
 

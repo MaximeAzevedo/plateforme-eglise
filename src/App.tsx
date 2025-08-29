@@ -613,10 +613,7 @@ function App() {
         <main className="flex-grow">
           <Hero 
             onExploreClick={() => {
-              const searchSection = document.getElementById('search-section');
-              if (searchSection) {
-                searchSection.scrollIntoView({ behavior: 'smooth' });
-              }
+              setShowContributeForm(true);
             }}
             onMapClick={() => {
               if (isMobile) {
@@ -630,6 +627,9 @@ function App() {
             }}
             onTestimonyClick={() => {
               setShowTestimonyGallery(true);
+            }}
+            onPrayerWallClick={() => {
+              setShowPrayerWall(true);
             }}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
