@@ -33,10 +33,10 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
       title: 'Référencer une Église',
       description: 'Ajoutez un nouveau lieu de culte à notre carte communautaire',
       icon: Church,
-      color: 'from-amber-500 to-orange-500',
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200',
-      hoverColor: 'hover:border-amber-400 hover:bg-amber-100',
+      color: 'from-culteo-vert-esperance to-culteo-jaune-lumiere',
+      bgColor: 'bg-culteo-blanc-coquille',
+      borderColor: 'border-culteo-vert-esperance/20',
+      hoverColor: 'hover:border-culteo-vert-esperance hover:bg-culteo-blanc-pur',
       stats: '1500+ lieux référencés'
     },
     {
@@ -44,10 +44,10 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
       title: 'Partager un Témoignage',
       description: 'Racontez comment Dieu a transformé votre vie et inspirez la communauté',
       icon: Star,
-      color: 'from-purple-500 to-pink-500',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-      hoverColor: 'hover:border-purple-400 hover:bg-purple-100',
+      color: 'from-culteo-jaune-lumiere to-culteo-vert-esperance',
+      bgColor: 'bg-culteo-blanc-coquille',
+      borderColor: 'border-culteo-jaune-lumiere/20',
+      hoverColor: 'hover:border-culteo-jaune-lumiere hover:bg-culteo-blanc-pur',
       stats: 'Encouragez des milliers'
     },
     {
@@ -55,10 +55,10 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
       title: 'Demande de Prière',
       description: 'Partagez vos besoins de prière avec notre communauté bienveillante',
       icon: Heart,
-      color: 'from-red-500 to-pink-500',
-      bgColor: 'bg-red-50',
-      borderColor: 'border-red-200',
-      hoverColor: 'hover:border-red-400 hover:bg-red-100',
+      color: 'from-culteo-vert-esperance via-culteo-jaune-lumiere to-culteo-vert-esperance',
+      bgColor: 'bg-culteo-blanc-coquille',
+      borderColor: 'border-culteo-vert-esperance/20',
+      hoverColor: 'hover:border-culteo-vert-esperance hover:bg-culteo-blanc-pur',
       stats: 'Prières en communion'
     },
     {
@@ -66,10 +66,10 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
       title: 'Signaler une Modification',
       description: 'Aidez-nous à maintenir nos informations à jour',
       icon: AlertTriangle,
-      color: 'from-blue-500 to-indigo-500',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      hoverColor: 'hover:border-blue-400 hover:bg-blue-100',
+      color: 'from-culteo-gris-basalte to-culteo-vert-esperance',
+      bgColor: 'bg-culteo-blanc-coquille',
+      borderColor: 'border-culteo-gris-basalte/20',
+      hoverColor: 'hover:border-culteo-gris-basalte hover:bg-culteo-blanc-pur',
       stats: 'Qualité garantie'
     }
   ];
@@ -112,51 +112,49 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
 
   // Affichage du hub principal
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2 md:p-4">
+      <div className="bg-culteo-blanc-pur rounded-culteo md:rounded-culteo-xl shadow-culteo-float w-full max-w-4xl max-h-[95vh] overflow-y-auto scrollbar-culteo">
         {/* Header */}
-        <div className="relative p-8 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-b border-amber-200/50">
+        <div className="relative p-6 md:p-8 bg-gradient-to-br from-culteo-blanc-coquille via-culteo-blanc-pur to-culteo-blanc-coquille border-b border-culteo-vert-esperance/10">
           <button 
             onClick={onClose} 
-            className="absolute right-6 top-6 p-2 hover:bg-white/50 rounded-full transition-all duration-300 hover:scale-110"
+            className="absolute right-4 md:right-6 top-4 md:top-6 p-2 hover:bg-culteo-blanc-coquille rounded-culteo transition-all duration-300 hover:scale-110"
           >
-            <X className="h-5 w-5 text-gray-600" />
+            <X className="h-5 w-5 text-culteo-gris-basalte" />
           </button>
           
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Plus className="h-8 w-8 text-white" />
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-culteo-vert-esperance to-culteo-jaune-lumiere rounded-culteo-lg flex items-center justify-center shadow-culteo-medium">
+                  <Plus className="h-6 w-6 md:h-8 md:w-8 text-white" />
                 </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center animate-pulse">
-                  <Heart className="h-3 w-3 text-white" />
+                <div className="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 bg-gradient-to-br from-culteo-jaune-lumiere to-culteo-vert-esperance rounded-full flex items-center justify-center animate-pulse">
+                  <Heart className="h-2 w-2 md:h-3 md:w-3 text-white" />
                 </div>
               </div>
             </div>
             
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              <span className="text-culteo-gris-basalte">
-                Contribuer à Culteo
-              </span>
+            <h2 className="text-2xl md:text-3xl font-poppins font-bold text-culteo-gris-basalte mb-3">
+              Contribuer à Culteo
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="font-lato text-culteo-gris-basalte text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Choisissez comment vous souhaitez enrichir notre communauté spirituelle. 
               Chaque contribution compte pour bâtir ensemble un réseau de foi vivant.
             </p>
             
             {/* Statistiques rapides */}
-            <div className="flex justify-center items-center gap-8 mt-6 text-sm">
-              <div className="flex items-center gap-2 text-gray-500">
-                <MapPin className="h-4 w-4" />
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mt-6 text-sm">
+              <div className="flex items-center gap-2 text-culteo-gris-basalte/70">
+                <MapPin className="h-4 w-4 text-culteo-vert-esperance" />
                 <span>1500+ lieux</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <Users className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-culteo-gris-basalte/70">
+                <Users className="h-4 w-4 text-culteo-vert-esperance" />
                 <span>Communauté active</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <Globe className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-culteo-gris-basalte/70">
+                <Globe className="h-4 w-4 text-culteo-vert-esperance" />
                 <span>Toute la France</span>
               </div>
             </div>
@@ -164,65 +162,66 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
         </div>
 
         {/* Grille des options */}
-        <div className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="p-4 md:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            {/* Sur mobile, affichage en accordéon plus compact */}
             {contributionOptions.map((option) => {
               const IconComponent = option.icon;
               return (
                 <button
                   key={option.id}
                   onClick={() => setSelectedType(option.id)}
-                  className={`group relative p-8 border-2 rounded-2xl transition-all duration-500 text-left hover:scale-[1.02] hover:shadow-2xl transform-gpu ${option.bgColor} ${option.borderColor} ${option.hoverColor}`}
+                  className={`group relative p-6 md:p-8 border-2 rounded-culteo-lg transition-all duration-500 text-left hover:scale-[1.02] hover:shadow-culteo-strong transform-gpu ${option.bgColor} ${option.borderColor} ${option.hoverColor}`}
                   style={{
                     backfaceVisibility: 'hidden',
                     perspective: '1000px'
                   }}
                 >
                   {/* Icône et badge */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className={`w-14 h-14 bg-gradient-to-br ${option.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-                      <IconComponent className="h-7 w-7 text-white" />
+                  <div className="flex items-start justify-between mb-4 md:mb-6">
+                    <div className={`w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br ${option.color} rounded-culteo flex items-center justify-center shadow-culteo-medium group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                      <IconComponent className="h-5 w-5 md:h-7 md:w-7 text-white" />
                     </div>
-                    <div className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-xs font-medium text-gray-600 shadow-sm group-hover:bg-white/90 transition-all duration-300">
+                    <div className="px-3 py-1 md:px-4 md:py-2 bg-culteo-blanc-pur/90 backdrop-blur-sm rounded-culteo text-xs font-lato font-medium text-culteo-gris-basalte shadow-culteo-soft group-hover:bg-culteo-blanc-pur transition-all duration-300">
                       {option.stats}
                     </div>
                   </div>
 
                   {/* Contenu */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gray-800 transition-colors duration-300">
+                  <h3 className="text-lg md:text-xl font-poppins font-bold text-culteo-gris-basalte mb-2 md:mb-3 group-hover:text-culteo-vert-esperance transition-colors duration-300">
                     {option.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm mb-6 group-hover:text-gray-700 transition-colors duration-300">
+                  <p className="font-lato text-culteo-gris-basalte/80 leading-relaxed text-sm mb-4 md:mb-6 group-hover:text-culteo-gris-basalte transition-colors duration-300">
                     {option.description}
                   </p>
 
                   {/* Flèche */}
-                  <div className="flex items-center text-gray-400 group-hover:text-gray-600 transition-all duration-300">
-                    <span className="text-sm font-medium mr-3">Commencer</span>
-                    <div className="w-6 h-6 rounded-full bg-gray-200 group-hover:bg-gray-300 flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
-                      <span className="text-xs font-medium">→</span>
+                  <div className="flex items-center text-culteo-gris-basalte/60 group-hover:text-culteo-vert-esperance transition-all duration-300">
+                    <span className="text-sm font-lato font-medium mr-3">Commencer</span>
+                    <div className="w-6 h-6 rounded-full bg-culteo-blanc-coquille group-hover:bg-culteo-vert-esperance flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
+                      <span className="text-xs font-medium group-hover:text-white">→</span>
                     </div>
                   </div>
 
                   {/* Effet de brillance au hover - plus subtil */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-out pointer-events-none"></div>
+                  <div className="absolute inset-0 rounded-culteo-lg bg-gradient-to-r from-transparent via-culteo-blanc-pur/10 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-out pointer-events-none"></div>
                   
                   {/* Bordure animée invisible pour stabiliser le hover */}
-                  <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-white/20 transition-all duration-300 pointer-events-none"></div>
+                  <div className="absolute inset-0 rounded-culteo-lg border-2 border-transparent group-hover:border-culteo-blanc-pur/30 transition-all duration-300 pointer-events-none"></div>
                 </button>
               );
             })}
           </div>
 
           {/* Message d'encouragement */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl text-center">
+          <div className="mt-6 md:mt-8 p-4 md:p-6 bg-gradient-to-r from-culteo-blanc-coquille to-culteo-blanc-pur border border-culteo-vert-esperance/20 rounded-culteo-lg text-center">
             <div className="flex justify-center mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-culteo-vert-esperance to-culteo-jaune-lumiere rounded-full flex items-center justify-center">
                 <Heart className="h-4 w-4 text-white" />
               </div>
             </div>
-            <h4 className="text-gray-900 font-bold mb-2">Merci pour votre cœur généreux !</h4>
-            <p className="text-gray-600 text-sm">
+            <h4 className="font-poppins text-culteo-gris-basalte font-bold mb-2 text-sm md:text-base">Merci pour votre cœur généreux !</h4>
+            <p className="font-lato text-culteo-gris-basalte/80 text-xs md:text-sm leading-relaxed">
               Chaque contribution, qu'elle soit grande ou petite, participe à édifier une communauté 
               spirituelle plus forte et plus connectée. Ensemble, nous semons des graines d'espoir.
             </p>
