@@ -215,92 +215,106 @@ export default function ContributeForm({ isOpen, onClose, onBack, supabase }: {
           </div>
         )}
 
-            {/* ===== SECTION OBLIGATOIRE (ROUGE) ===== */}
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 space-y-4">
-              <h3 className="text-lg font-body font-semibold text-red-800 flex items-center gap-2">
-                🔴 CHAMPS OBLIGATOIRES
+        {/* ===== INFORMATIONS ESSENTIELLES ===== */}
+        <div className="bg-culteo-blanc-pur border border-culteo-vert-esperance/20 rounded-culteo-xl p-6 md:p-8 shadow-culteo-soft space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-culteo-vert-esperance/10">
+            <div className="w-10 h-10 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere rounded-culteo flex items-center justify-center">
+              <span className="text-white font-bold text-lg">✨</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-poppins font-bold text-culteo-gris-basalte">
+                Informations essentielles
               </h3>
-              <p className="text-sm text-red-700 font-body">
-                Ces informations sont indispensables pour référencer le lieu de culte
+              <p className="text-sm font-lato text-culteo-gris-basalte/70">
+                Ces informations nous permettront de créer une fiche complète
               </p>
-              
-              <div className="grid grid-cols-1 gap-3">
-                <div>
-                  <label className="block text-sm font-body font-medium text-red-700 mb-1">
-                    📝 Nom du lieu de culte *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
-                    placeholder="Ex: Église Saint-Pierre, Temple Protestant..."
-                    value={formData.name}
-                    onChange={e => setFormData(f => ({ ...f, name: e.target.value }))}
-                  />
-                </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                📝 Nom du lieu de culte *
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-coquille/50 focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance focus:bg-culteo-blanc-pur transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="Ex: Église Saint-Pierre, Temple Protestant..."
+                value={formData.name}
+                onChange={e => setFormData(f => ({ ...f, name: e.target.value }))}
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-body font-medium text-red-700 mb-1">
-                    🏷️ Dénomination *
-                  </label>
-                  <select
-                    required
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
-                    value={formData.denomination}
-                    onChange={e => setFormData(f => ({ ...f, denomination: e.target.value as Denomination }))}
-                  >
-                    {denominations.map(d => (
-                      <option key={d} value={d}>{denominationLabels[d]}</option>
-                    ))}
-                  </select>
-                </div>
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                🏷️ Dénomination *
+              </label>
+              <select
+                required
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-coquille/50 focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance focus:bg-culteo-blanc-pur transition-all duration-200 font-lato"
+                value={formData.denomination}
+                onChange={e => setFormData(f => ({ ...f, denomination: e.target.value as Denomination }))}
+              >
+                {denominations.map(d => (
+                  <option key={d} value={d}>{denominationLabels[d]}</option>
+                ))}
+              </select>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-body font-medium text-red-700 mb-1">
-                    📍 Adresse complète *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
-                    placeholder="Ex: 14 rue Mozart"
-                    value={formData.address}
-                    onChange={e => setFormData(f => ({ ...f, address: e.target.value }))}
-                  />
-                </div>
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                📍 Adresse complète *
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-coquille/50 focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance focus:bg-culteo-blanc-pur transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="Ex: 14 rue Mozart"
+                value={formData.address}
+                onChange={e => setFormData(f => ({ ...f, address: e.target.value }))}
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-body font-medium text-red-700 mb-1">
-                    🏙️ Ville *
-                  </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors font-body"
-                      placeholder="Metz"
-                      value={formData.city}
-                      onChange={e => setFormData(f => ({ ...f, city: e.target.value }))}
-                    />
-                </div>
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                🏙️ Ville *
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-coquille/50 focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance focus:bg-culteo-blanc-pur transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="Metz"
+                value={formData.city}
+                onChange={e => setFormData(f => ({ ...f, city: e.target.value }))}
+              />
+            </div>
 
-                {/* Horaires des événements - dans la section obligatoire */}
-                <div className="space-y-3 pt-4 border-t border-red-200">
-                  <h4 className="text-base font-body font-medium text-red-800 flex items-center gap-2">
-                    📅 Horaires des événements *
+            {/* Horaires des événements - dans la section obligatoire */}
+            <div className="space-y-4 pt-6 border-t border-culteo-vert-esperance/10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-culteo-vert-esperance/10 rounded-culteo flex items-center justify-center">
+                  <span className="text-culteo-vert-esperance text-sm">📅</span>
+                </div>
+                <div>
+                  <h4 className="text-base font-poppins font-semibold text-culteo-gris-basalte">
+                    Horaires des événements *
                   </h4>
-                  <p className="text-sm text-red-700 font-body">
-                    Ajoutez les horaires des célébrations, prières, confessions, groupes de prière, etc.
+                  <p className="text-sm font-lato text-culteo-gris-basalte/70">
+                    Célébrations, prières, confessions, groupes de prière, etc.
                   </p>
-              
+                </div>
+              </div>
+          
               {/* Formulaire d'ajout d'horaire */}
-              <div className="bg-gray-50 p-3 rounded-lg space-y-3">
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-culteo-blanc-coquille/30 border border-culteo-vert-esperance/10 p-4 rounded-culteo space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-body font-medium text-red-700 mb-1">
+                    <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
                       ⛪ Type de célébration *
                     </label>
                     <select
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
+                      className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance transition-all duration-200 font-lato"
                       value={formData.celebrationType}
                       onChange={e => setFormData(prev => ({ ...prev, celebrationType: e.target.value }))}
                     >
@@ -312,11 +326,11 @@ export default function ContributeForm({ isOpen, onClose, onBack, supabase }: {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-body font-medium text-red-700 mb-1">
+                    <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
                       📅 Jour *
                     </label>
                     <select
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
+                      className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance transition-all duration-200 font-lato"
                       value={formData.day}
                       onChange={e => setFormData(prev => ({ ...prev, day: e.target.value }))}
                     >
@@ -327,138 +341,158 @@ export default function ContributeForm({ isOpen, onClose, onBack, supabase }: {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-body font-medium text-red-700 mb-1">
+                    <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
                       🕐 Heure de début *
                     </label>
                     <input
                       type="time"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
+                      className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance transition-all duration-200 font-lato"
                       value={formData.startTime}
                       onChange={e => setFormData(prev => ({ ...prev, startTime: e.target.value }))}
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-body font-medium text-red-700 mb-1">
+                    <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
                       🕕 Heure de fin *
                     </label>
                     <input
                       type="time"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 font-body"
+                      className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-vert-esperance/30 focus:border-culteo-vert-esperance transition-all duration-200 font-lato"
                       value={formData.endTime}
                       onChange={e => setFormData(prev => ({ ...prev, endTime: e.target.value }))}
                     />
                   </div>
                 </div>
+              </div>
 
-                {/* Accessibilité - dans la section obligatoire */}
-                <div className="space-y-3 pt-4 border-t border-red-200">
-                  <h4 className="text-base font-body font-medium text-red-800 flex items-center gap-2">
-                    ♿ Accessibilité *
-                  </h4>
-                  
-                  <div className="space-y-2">
-                    {[
-                      { value: 'yes', label: '♿ Totalement accessible' },
-                      { value: 'partial', label: '⚠️ Partiellement accessible' },
-                      { value: 'no', label: '❌ Non accessible' }
-                    ].map(option => (
-                      <label key={option.value} className="flex items-center gap-3 p-3 border border-red-200 rounded-lg hover:bg-red-50 cursor-pointer transition-colors">
-                        <input
-                          type="radio"
-                          name="accessibility"
-                          value={option.value}
-                          checked={formData.accessibility === option.value}
-                          onChange={e => setFormData(f => ({ ...f, accessibility: e.target.value as 'yes' | 'partial' | 'no' }))}
-                          className="w-4 h-4 text-red-600 border-red-300 focus:ring-red-500"
-                        />
-                        <span className="text-sm font-body font-medium text-red-700">
-                          {option.label}
-                        </span>
-                      </label>
-                    ))}
+              {/* Accessibilité - dans la section obligatoire */}
+              <div className="space-y-4 pt-6 border-t border-culteo-vert-esperance/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-culteo-vert-esperance/10 rounded-culteo flex items-center justify-center">
+                    <span className="text-culteo-vert-esperance text-sm">♿</span>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-poppins font-semibold text-culteo-gris-basalte">
+                      Accessibilité *
+                    </h4>
+                    <p className="text-sm font-lato text-culteo-gris-basalte/70">
+                      Informez-nous sur l'accessibilité du lieu
+                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          </div>
-
-            {/* ===== SECTION OPTIONNELLE (BLEUE) ===== */}
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 space-y-4">
-              <h3 className="text-lg font-body font-semibold text-blue-800 flex items-center gap-2">
-                ℹ️ CHAMPS OPTIONNELS
-              </h3>
-              <p className="text-sm text-blue-700 font-body">
-                Ces informations permettent d'enrichir la fiche du lieu de culte
-              </p>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-body font-medium text-blue-700 mb-1">
-                    🌐 Site web
-                  </label>
-                  <input
-                    type="url"
-                    className="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-body"
-                    placeholder="https://exemple.fr"
-                    value={formData.website}
-                    onChange={e => setFormData(f => ({ ...f, website: e.target.value }))}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-body font-medium text-blue-700 mb-1">
-                    📱 Instagram
-                  </label>
-                  <input
-                    type="url"
-                    className="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-body"
-                    placeholder="https://instagram.com/exemple"
-                    value={formData.instagram}
-                    onChange={e => setFormData(f => ({ ...f, instagram: e.target.value }))}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-body font-medium text-blue-700 mb-1">
-                    📺 YouTube
-                  </label>
-                  <input
-                    type="url"
-                    className="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-body"
-                    placeholder="https://youtube.com/exemple"
-                    value={formData.youtube}
-                    onChange={e => setFormData(f => ({ ...f, youtube: e.target.value }))}
-                  />
+                
+                <div className="grid gap-3">
+                  {[
+                    { value: 'yes', label: '♿ Totalement accessible', color: 'emerald' },
+                    { value: 'partial', label: '⚠️ Partiellement accessible', color: 'amber' },
+                    { value: 'no', label: '❌ Non accessible', color: 'gray' }
+                  ].map(option => (
+                    <label key={option.value} className={`flex items-center gap-4 p-4 border-2 rounded-culteo cursor-pointer transition-all duration-200 ${
+                      formData.accessibility === option.value 
+                        ? 'border-culteo-vert-esperance bg-culteo-vert-esperance/5' 
+                        : 'border-gray-200 hover:border-culteo-vert-esperance/30 hover:bg-culteo-blanc-coquille/30'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="accessibility"
+                        value={option.value}
+                        checked={formData.accessibility === option.value}
+                        onChange={e => setFormData(f => ({ ...f, accessibility: e.target.value as 'yes' | 'partial' | 'no' }))}
+                        className="w-5 h-5 text-culteo-vert-esperance border-gray-300 focus:ring-culteo-vert-esperance/30"
+                      />
+                      <span className="text-sm font-lato font-medium text-culteo-gris-basalte">
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
-
-            {/* Actions - Style Culteo */}
-            <div className="flex gap-4 pt-6 border-t border-gray-200 mt-8">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white px-6 py-3 rounded-culteo font-poppins font-semibold shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Validation en cours...</span>
-                  </>
-                ) : (
-                  <>
-                    <Church className="h-5 w-5" />
-                    <span>Valider ce lieu</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
+
+        {/* ===== INFORMATIONS COMPLÉMENTAIRES ===== */}
+        <div className="bg-culteo-blanc-coquille/50 border border-culteo-jaune-lumiere/30 rounded-culteo-xl p-6 md:p-8 shadow-culteo-soft space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-culteo-jaune-lumiere/20">
+            <div className="w-10 h-10 bg-gradient-to-r from-culteo-jaune-lumiere to-culteo-vert-esperance rounded-culteo flex items-center justify-center">
+              <span className="text-white font-bold text-lg">✨</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-poppins font-bold text-culteo-gris-basalte">
+                Informations complémentaires
+              </h3>
+              <p className="text-sm font-lato text-culteo-gris-basalte/70">
+                Ces détails enrichiront la fiche de votre lieu de culte
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                🌐 Site web
+              </label>
+              <input
+                type="url"
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-jaune-lumiere/30 focus:border-culteo-jaune-lumiere transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="https://exemple.fr"
+                value={formData.website}
+                onChange={e => setFormData(f => ({ ...f, website: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                📱 Instagram
+              </label>
+              <input
+                type="url"
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-jaune-lumiere/30 focus:border-culteo-jaune-lumiere transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="https://instagram.com/exemple"
+                value={formData.instagram}
+                onChange={e => setFormData(f => ({ ...f, instagram: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-poppins font-semibold text-culteo-gris-basalte mb-2">
+                📺 YouTube
+              </label>
+              <input
+                type="url"
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-culteo bg-culteo-blanc-pur focus:ring-2 focus:ring-culteo-jaune-lumiere/30 focus:border-culteo-jaune-lumiere transition-all duration-200 font-lato placeholder:text-gray-400"
+                placeholder="https://youtube.com/exemple"
+                value={formData.youtube}
+                onChange={e => setFormData(f => ({ ...f, youtube: e.target.value }))}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Actions - Style Culteo */}
+        <div className="flex gap-4 pt-6 border-t border-gray-200 mt-8">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white px-6 py-3 rounded-culteo font-poppins font-semibold shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Validation en cours...</span>
+              </>
+            ) : (
+              <>
+                <Church className="h-5 w-5" />
+                <span>Valider ce lieu</span>
+              </>
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

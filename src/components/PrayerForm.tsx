@@ -250,6 +250,7 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
       )}
 
       {/* Contenu du formulaire - plus de modal wrapper car déjà dans FullscreenModal */}
+      <div>
           
           {/* Étape 1: Type de prière */}
           {currentStep === 1 && (
@@ -461,15 +462,13 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
               </div>
             </div>
           )}
-
-
         </div>
 
-      {/* Footer avec boutons d'action - Style Culteo */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
-        <div className="flex gap-4">
-          {/* Bouton Précédent */}
-          {currentStep > 1 && (
+        {/* Footer avec boutons d'action - Style Culteo */}
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex gap-4">
+            {/* Bouton Précédent */}
+            {currentStep > 1 && (
             <button
               onClick={prevStep}
               className="px-6 py-3 bg-culteo-blanc-coquille border-2 border-culteo-vert-esperance/30 text-culteo-vert-esperance rounded-culteo font-poppins font-medium hover:border-culteo-vert-esperance hover:bg-culteo-blanc-pur transition-all duration-300"
