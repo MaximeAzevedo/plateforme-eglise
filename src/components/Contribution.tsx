@@ -14,7 +14,7 @@ const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
           {/* Titre de la section */}
           <div className="text-center mb-8 md:mb-16">
             <h2 className="font-poppins font-bold text-culteo-gris-basalte text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-6">
-              Ensemble, faisons vivre la carte
+              Ensemble, faisons vivre la carte Culteo
             </h2>
             <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-culteo-jaune-lumiere to-culteo-vert-esperance mx-auto rounded-full mb-4 md:mb-6"></div>
             <p className="font-lato text-culteo-gris-basalte text-base md:text-lg max-w-3xl mx-auto leading-relaxed px-4">

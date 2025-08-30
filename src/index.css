@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Lato:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -48,6 +48,13 @@
   --culteo-secondary: #FFC107; /* Jaune lumière */
   --culteo-accent: #059669; /* Vert accent */
   --culteo-success: #10B981; /* Vert succès */
+  
+  /* Couleurs spécifiques Culteo */
+  --culteo-blanc-coquille: #F9F9F9;
+  --culteo-blanc-pur: #FFFFFF;
+  --culteo-vert-esperance: #0A6847;
+  --culteo-gris-basalte: #3D3D3D;
+  --culteo-jaune-lumiere: #FFC107;
   --culteo-warning: #F59E0B; /* Orange alerte */
   --culteo-danger: #EF4444; /* Rouge erreur */
   
@@ -783,6 +790,59 @@ header {
 .map-container button:hover {
   transform: translateY(-2px) scale(1.05) !important;
   box-shadow: 0 12px 35px rgba(0,0,0,0.15) !important;
+}
+
+/* ===== CLASSES CULTEO MANQUANTES ===== */
+.bg-culteo-blanc-coquille {
+  background-color: var(--culteo-blanc-coquille) !important;
+}
+
+.bg-culteo-blanc-pur {
+  background-color: var(--culteo-blanc-pur) !important;
+}
+
+.bg-culteo-vert-esperance {
+  background-color: var(--culteo-vert-esperance) !important;
+}
+
+.bg-culteo-gris-basalte {
+  background-color: var(--culteo-gris-basalte) !important;
+}
+
+.bg-culteo-jaune-lumiere {
+  background-color: var(--culteo-jaune-lumiere) !important;
+}
+
+.text-culteo-blanc-coquille {
+  color: var(--culteo-blanc-coquille) !important;
+}
+
+.text-culteo-blanc-pur {
+  color: var(--culteo-blanc-pur) !important;
+}
+
+.text-culteo-vert-esperance {
+  color: var(--culteo-vert-esperance) !important;
+}
+
+.text-culteo-gris-basalte {
+  color: var(--culteo-gris-basalte) !important;
+}
+
+.text-culteo-jaune-lumiere {
+  color: var(--culteo-jaune-lumiere) !important;
+}
+
+.border-culteo-vert-esperance {
+  border-color: var(--culteo-vert-esperance) !important;
+}
+
+.border-culteo-jaune-lumiere {
+  border-color: var(--culteo-jaune-lumiere) !important;
+}
+
+.border-culteo-gris-basalte {
+  border-color: var(--culteo-gris-basalte) !important;
 }
 
 .map-container button:active {
