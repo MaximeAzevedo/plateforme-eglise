@@ -17,9 +17,6 @@ type ContributionType = 'church' | 'testimony' | 'prayer' | 'modification' | nul
 const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supabase, defaultType = null }) => {
   const [selectedType, setSelectedType] = useState<ContributionType>(defaultType);
 
-  // Debug logs
-  console.log('🎯 ContributionHub - isOpen:', isOpen, 'selectedType:', selectedType, 'defaultType:', defaultType);
-
   // Réinitialiser le type sélectionné quand le modal s'ouvre/ferme
   useEffect(() => {
     if (isOpen) {
@@ -231,10 +228,7 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
           return (
             <button
               key={option.id}
-              onClick={() => {
-                console.log('🔥 ContributionHub button clicked:', option.id, option.title);
-                setSelectedType(option.id);
-              }}
+              onClick={() => setSelectedType(option.id)}
               className="w-full p-4 bg-culteo-blanc-pur border-2 border-culteo-vert-esperance/10 rounded-culteo-lg transition-all duration-300 hover:border-culteo-vert-esperance/30 hover:shadow-culteo-medium active:scale-[0.98]"
               style={{
                 backgroundColor: '#FFFFFF',

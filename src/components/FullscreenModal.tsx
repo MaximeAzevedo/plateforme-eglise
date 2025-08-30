@@ -24,14 +24,10 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
 }) => {
   // Bloquer le scroll du body quand le modal est ouvert
   useEffect(() => {
-    console.log('🔍 FullscreenModal - isOpen:', isOpen, 'title:', title);
-    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      console.log('✅ Modal ouvert, scroll bloqué');
     } else {
       document.body.style.overflow = 'unset';
-      console.log('✅ Modal fermé, scroll restauré');
     }
 
     return () => {
@@ -40,19 +36,11 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
   }, [isOpen, title]);
 
   if (!isOpen) {
-    console.log('❌ Modal not open, returning null');
     return null;
   }
 
-  console.log('🚀 Rendering FullscreenModal with title:', title);
-
   return (
     <div className="fixed inset-0 z-[9999]" style={{ zIndex: 9999 }}>
-      {/* Debug visible */}
-      <div className="fixed top-4 left-4 bg-red-500 text-white px-2 py-1 text-xs rounded z-[10000] pointer-events-none">
-        Modal: {title}
-      </div>
-      
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -88,7 +76,6 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
             {/* Bouton retour ou fermer */}
             <button
               onClick={() => {
-                console.log('🔄 Modal close/back button clicked');
                 showBackButton && onBack ? onBack() : onClose();
               }}
               className="p-2 hover:bg-culteo-blanc-coquille rounded-culteo transition-all duration-200 hover:scale-105"
