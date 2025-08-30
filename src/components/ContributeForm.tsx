@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Church, X, Calendar, Globe, Accessibility, ArrowLeft } from 'lucide-react';
+import { Church, X, Calendar, Globe, Accessibility, ArrowLeft, AlertCircle } from 'lucide-react';
 
 // Types cohérents avec votre BDD
 type Denomination = 'Catholic' | 'Protestant' | 'Orthodox' | 'Evangelical' | 'Neo-Apostolic' | 'Pentecostal' | 'Baptist' | 'Other';
@@ -198,58 +198,23 @@ export default function ContributeForm({ isOpen, onClose, onBack, supabase }: {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto">
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div className="text-center relative">
-            {onBack && (
-              <button 
-                onClick={onBack}
-                className="absolute left-0 top-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 text-gray-500" />
-              </button>
-            )}
-            <button 
-              onClick={onClose} 
-              type="button" 
-              className="absolute right-0 top-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X className="h-4 w-4 text-gray-500" />
-            </button>
-            <div className="flex justify-center mb-3">
-              <div className="p-2 bg-yellow-500 rounded-lg">
-                <Church className="h-6 w-6 text-white" />
+    <div className="max-w-2xl mx-auto">
+      {/* Formulaire d'ajout de lieu - Style Culteo */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Messages d'erreur */}
+        {errors.length > 0 && (
+          <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+            <div className="flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
+              <div className="text-sm text-red-700">
+                {errors.map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
               </div>
             </div>
-            <h2 className="text-xl font-body font-semibold text-gray-800 mb-2">
-              Référencer une Église
-            </h2>
-            <p className="text-sm text-gray-600 font-body">
-              Aidez la communauté en partageant les informations d'un lieu de culte
-            </p>
           </div>
+        )}
 
-          {/* Erreurs */}
-          {errors.length > 0 && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-lg">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800 font-body">
-                    Veuillez corriger les erreurs suivantes :
-                  </h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      {errors.map((error, i) => <li key={i} className="font-body">{error}</li>)}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
             {/* ===== SECTION OBLIGATOIRE (ROUGE) ===== */}
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 space-y-4">
               <h3 className="text-lg font-body font-semibold text-red-800 flex items-center gap-2">
@@ -472,63 +437,28 @@ export default function ContributeForm({ isOpen, onClose, onBack, supabase }: {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
-              {onBack ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={onBack}
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
-                  >
-                    Retour
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Validation en cours...</span>
-                      </div>
-                    ) : (
-                      '✅ Valider ce lieu'
-                    )}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors font-body"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 px-4 text-sm rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 font-body font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Validation en cours...</span>
-                      </div>
-                    ) : (
-                      '✅ Valider ce lieu'
-                    )}
-                  </button>
-                </>
-              )}
+            {/* Actions - Style Culteo */}
+            <div className="flex gap-4 pt-6 border-t border-gray-200 mt-8">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white px-6 py-3 rounded-culteo font-poppins font-semibold shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Validation en cours...</span>
+                  </>
+                ) : (
+                  <>
+                    <Church className="h-5 w-5" />
+                    <span>Valider ce lieu</span>
+                  </>
+                )}
+              </button>
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 }

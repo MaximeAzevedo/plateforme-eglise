@@ -97,7 +97,7 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
         }
       >
         <ContributeForm 
-          isOpen={false} // Géré par FullscreenModal
+          isOpen={true} // Doit être true pour s'afficher
           onClose={onClose}
           onBack={handleBackToHub}
           supabase={supabase}
@@ -125,7 +125,7 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
         }
       >
         <TestimonyForm 
-          isOpen={false} // Géré par FullscreenModal
+          isOpen={true} // Doit être true pour s'afficher
           onClose={onClose}
           onBack={handleBackToHub}
           supabase={supabase}
@@ -153,7 +153,7 @@ const ContributionHub: React.FC<ContributionHubProps> = ({ isOpen, onClose, supa
         }
       >
         <PrayerForm 
-          isOpen={false} // Géré par FullscreenModal
+          isOpen={true} // Doit être true pour s'afficher
           onClose={onClose}
           onBack={handleBackToHub}
           supabase={supabase}

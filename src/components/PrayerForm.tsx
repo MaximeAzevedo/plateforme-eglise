@@ -193,79 +193,63 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
   // Écran de succès
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 text-center animate-scale-in">
-          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mx-auto mb-6 flex items-center justify-center">
-            <Check className="h-8 w-8 text-white" />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Prière envoyée ! 🙏</h3>
-          <p className="text-gray-600 leading-relaxed mb-6">
-            Votre demande de prière a été transmise avec succès. Notre communauté intercèdera pour vous.
-          </p>
-          <div className="text-sm text-gray-500">
-            Cette fenêtre se fermera automatiquement...
-          </div>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-auto p-8 text-center">
+        <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+          <Check className="h-8 w-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">Prière envoyée ! 🙏</h3>
+        <p className="text-gray-600 leading-relaxed mb-6">
+          Votre demande de prière a été transmise avec succès. Notre communauté intercèdera pour vous.
+        </p>
+        <div className="text-sm text-gray-500">
+          Cette fenêtre se fermera automatiquement...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50">
-      {/* Modal responsive : bottom sheet sur mobile, modal centré sur desktop */}
-      <div className={`bg-white w-full sm:max-w-2xl sm:rounded-3xl shadow-2xl transition-all duration-500 transform ${
-        isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-      }`}>
-        
-        {/* Header fixe mobile */}
-        <div className="sticky top-0 bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-4 sm:px-6 py-4 rounded-t-3xl">
-          <div className="flex items-center justify-between">
-            {/* Bouton retour/fermer */}
-            <button
-              onClick={currentStep === 1 ? onBack : prevStep}
-              className="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-gray-100 transition-colors"
-              style={{ minWidth: '44px', minHeight: '44px' }}
-            >
-              <ArrowLeft className="h-5 w-5 text-gray-600" />
-            </button>
-
-            {/* Titre et étape */}
-            <div className="flex-1 text-center">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                Demande de Prière
-              </h2>
-              <div className="text-sm text-gray-500">
-                Étape {currentStep} sur 4
-              </div>
-            </div>
-
-            {/* Bouton fermer */}
-            <button
-              onClick={onClose}
-              className="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-gray-100 transition-colors"
-              style={{ minWidth: '44px', minHeight: '44px' }}
-            >
-              <X className="h-5 w-5 text-gray-600" />
-            </button>
-          </div>
-
-          {/* Barre de progression */}
-          <div className="mt-4 flex space-x-2">
-            {[1, 2, 3, 4].map((step) => (
-              <div
-                key={step}
-                className={`flex-1 h-2 rounded-full transition-colors duration-300 ${
-                  step <= currentStep
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500'
-                    : 'bg-gray-200'
-                }`}
-              />
-            ))}
+    <div className="max-w-2xl mx-auto">
+      {/* Barre de progression */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-culteo-gris-basalte">Étape {currentStep} sur 4</h3>
+          <div className="text-sm text-culteo-gris-basalte/70">
+            {currentStep === 1 && "Type de prière"}
+            {currentStep === 2 && "Titre de votre prière"}
+            {currentStep === 3 && "Description détaillée"}
+            {currentStep === 4 && "Informations personnelles"}
           </div>
         </div>
+        <div className="flex space-x-2">
+          {[1, 2, 3, 4].map((step) => (
+            <div
+              key={step}
+              className={`flex-1 h-2 rounded-full transition-colors duration-300 ${
+                step <= currentStep
+                  ? 'bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere'
+                  : 'bg-gray-200'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
 
-        {/* Contenu du formulaire */}
-        <div className="px-4 sm:px-6 py-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+      {/* Affichage des erreurs */}
+      {errors.length > 0 && (
+        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
+            <div className="text-sm text-red-700">
+              {errors.map((error, index) => (
+                <p key={index}>{error}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contenu du formulaire - plus de modal wrapper car déjà dans FullscreenModal */}
           
           {/* Étape 1: Type de prière */}
           {currentStep === 1 && (
@@ -478,57 +462,50 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
             </div>
           )}
 
-          {/* Messages d'erreur */}
-          {errors.length > 0 && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-              <div className="flex items-start space-x-3">
-                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1">
-                  <h4 className="font-semibold text-red-800 mb-2">Veuillez corriger :</h4>
-                  <ul className="text-sm text-red-700 space-y-1">
-                    {errors.map((error, index) => (
-                      <li key={index}>• {error}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
 
-        {/* Footer avec boutons d'action */}
-        <div className="sticky bottom-0 bg-white/95 backdrop-blur-lg border-t border-gray-200/50 px-4 sm:px-6 py-4">
-          <div className="flex gap-3">
-            {currentStep < 4 ? (
-              <button
-                onClick={nextStep}
-                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 hover:scale-105 active:scale-95"
-                style={{ minHeight: '56px' }}
-              >
-                <span>Continuer</span>
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                style={{ minHeight: '56px' }}
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Envoi en cours...</span>
-                  </>
-                ) : (
-                  <>
-                    <Heart className="h-5 w-5" />
-                    <span>Envoyer ma prière</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+      {/* Footer avec boutons d'action - Style Culteo */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="flex gap-4">
+          {/* Bouton Précédent */}
+          {currentStep > 1 && (
+            <button
+              onClick={prevStep}
+              className="px-6 py-3 bg-culteo-blanc-coquille border-2 border-culteo-vert-esperance/30 text-culteo-vert-esperance rounded-culteo font-poppins font-medium hover:border-culteo-vert-esperance hover:bg-culteo-blanc-pur transition-all duration-300"
+            >
+              Précédent
+            </button>
+          )}
+          
+          {/* Bouton principal */}
+          {currentStep < 4 ? (
+            <button
+              onClick={nextStep}
+              className="flex-1 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white px-6 py-3 rounded-culteo font-poppins font-semibold shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 flex items-center justify-center gap-3"
+            >
+              <span>Continuer</span>
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="flex-1 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white px-6 py-3 rounded-culteo font-poppins font-semibold shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Envoi en cours...</span>
+                </>
+              ) : (
+                <>
+                  <Heart className="h-5 w-5" />
+                  <span>Envoyer ma prière</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
