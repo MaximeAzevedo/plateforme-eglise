@@ -54,7 +54,7 @@ export default {
           800: '#3D3D3D',
           900: '#1F2937',
         },
-        // Classes utiles pour les composants
+        // Classes utiles pour les composants (raccourcis directs)
         'culteo-blanc-coquille': '#F9F9F9',
         'culteo-blanc-pur': '#FFFFFF', 
         'culteo-vert-esperance': '#0A6847',

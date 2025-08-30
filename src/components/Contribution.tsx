@@ -7,18 +7,18 @@ interface ContributionProps {
 
 const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
   return (
-    <section className="bg-culteo-blanc-coquille py-12 md:py-20">
+    <section className="bg-culteo-blanc-coquille py-12 md:py-20" style={{backgroundColor: '#F9F9F9'}}>
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="bg-culteo-blanc-pur rounded-culteo-xl shadow-culteo-float border border-culteo-vert-esperance/10 p-6 md:p-8 lg:p-12">
+        <div className="bg-culteo-blanc-pur rounded-culteo-xl shadow-culteo-float border border-culteo-vert-esperance/10 p-6 md:p-8 lg:p-12" style={{backgroundColor: '#FFFFFF', borderColor: 'rgba(10, 104, 71, 0.1)'}}>
           
           {/* Titre de la section */}
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="font-poppins font-bold text-culteo-gris-basalte text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-6">
+            <h2 className="font-poppins font-bold text-culteo-gris-basalte text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-6" style={{color: '#3D3D3D', fontFamily: 'Poppins, sans-serif'}}>
               Ensemble, faisons vivre la carte Culteo
             </h2>
-            <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-culteo-jaune-lumiere to-culteo-vert-esperance mx-auto rounded-full mb-4 md:mb-6"></div>
-            <p className="font-lato text-culteo-gris-basalte text-base md:text-lg max-w-3xl mx-auto leading-relaxed px-4">
-              <strong className="text-culteo-vert-esperance">Culteo</strong> est une plateforme collaborative. 
+            <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-culteo-jaune-lumiere to-culteo-vert-esperance mx-auto rounded-full mb-4 md:mb-6" style={{background: 'linear-gradient(to right, #FFC107, #0A6847)'}}></div>
+            <p className="font-lato text-culteo-gris-basalte text-base md:text-lg max-w-3xl mx-auto leading-relaxed px-4" style={{color: '#3D3D3D', fontFamily: 'Lato, sans-serif'}}>
+              <strong className="text-culteo-vert-esperance" style={{color: '#0A6847'}}>Culteo</strong> est une plateforme collaborative. 
               La richesse de l'information dépend de vous. Aidez-nous à créer une communauté spirituelle vivante.
             </p>
           </div>
@@ -96,6 +96,11 @@ const Contribution: React.FC<ContributionProps> = ({ onAddPlace }) => {
               <button
                 onClick={onAddPlace}
                 className="w-full group relative overflow-hidden bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white rounded-culteo-lg p-6 md:p-8 shadow-culteo-medium hover:shadow-culteo-strong transition-all duration-300 transform hover:scale-105"
+                style={{
+                  background: 'linear-gradient(to right, #0A6847, #FFC107)',
+                  borderRadius: '30px',
+                  fontFamily: 'Poppins, sans-serif'
+                }}
               >
                 <div className="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 md:space-x-4">
                   <div className="p-2 md:p-3 bg-white/20 rounded-culteo group-hover:scale-110 transition-transform duration-300">
