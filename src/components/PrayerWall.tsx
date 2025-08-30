@@ -15,16 +15,17 @@ import {
   CheckCircle,
   AlertCircle,
   Send,
-  X,
   Calendar,
   Eye,
   EyeOff,
   Globe,
   Lock,
-  User
+  User,
+  Search,
+  MoreHorizontal
 } from 'lucide-react';
 import { PrayerRequest, PrayerRequestCategory, PrayerSupport, TestimonyType } from '../types/community';
-import ContributionHub from './ContributionHub';
+import FullscreenModal from './FullscreenModal';
 
 interface PrayerWallProps {
   isOpen: boolean;
@@ -162,98 +163,98 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose, supabase }) =>
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] overflow-hidden flex flex-col">
-        {/* Header avec dégradé */}
-        <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 p-6 text-white relative overflow-hidden flex-shrink-0">
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
-                <Heart className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold font-heading">Mur de Prière</h2>
-                <p className="text-white/90 font-body">Partageons nos fardeaux, célébrons ensemble</p>
-              </div>
-            </div>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <X className="h-6 w-6" />
-            </button>
+    <FullscreenModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Mur de Prières"
+      subtitle="Partageons nos fardeaux, célébrons ensemble"
+      headerIcon={
+        <div 
+          className="w-10 h-10 rounded-culteo flex items-center justify-center"
+          style={{background: 'linear-gradient(135deg, #0A6847, #FFC107)', borderRadius: '12px'}}
+        >
+          <Heart className="h-5 w-5 text-white" />
+        </div>
+      }
+    >
+      {/* Stats en haut */}
+      <div 
+        className="bg-culteo-blanc-coquille rounded-culteo p-4 mb-6"
+        style={{backgroundColor: '#F9F9F9', borderRadius: '16px'}}
+      >
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div className="font-poppins font-bold text-culteo-gris-basalte text-lg" style={{color: '#3D3D3D', fontFamily: 'Poppins, sans-serif'}}>{prayers.length}</div>
+            <div className="font-lato text-xs" style={{color: 'rgba(61, 61, 61, 0.7)', fontFamily: 'Lato, sans-serif'}}>Demandes</div>
           </div>
-
-          {/* Stats dynamiques */}
-          <div className="mt-6 grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{prayers.length}</div>
-              <div className="text-sm text-white/80">Demandes actives</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{prayers.reduce((sum, p) => sum + p.prayerCount, 0)}</div>
-              <div className="text-sm text-white/80">Prières offertes</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">24</div>
-              <div className="text-sm text-white/80">Prières exaucées ce mois</div>
-            </div>
+          <div>
+            <div className="font-poppins font-bold text-culteo-gris-basalte text-lg" style={{color: '#3D3D3D', fontFamily: 'Poppins, sans-serif'}}>{prayers.reduce((sum, p) => sum + p.prayerCount, 0)}</div>
+            <div className="font-lato text-xs" style={{color: 'rgba(61, 61, 61, 0.7)', fontFamily: 'Lato, sans-serif'}}>Prières</div>
+          </div>
+          <div>
+            <div className="font-poppins font-bold text-culteo-gris-basalte text-lg" style={{color: '#3D3D3D', fontFamily: 'Poppins, sans-serif'}}>24</div>
+            <div className="font-lato text-xs" style={{color: 'rgba(61, 61, 61, 0.7)', fontFamily: 'Lato, sans-serif'}}>Exaucées</div>
           </div>
         </div>
+      </div>
 
-        {/* Toolbar */}
-        <div className="p-4 border-b border-gray-100 bg-gray-50 flex-shrink-0">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            {/* Filtres par catégorie */}
-            <div className="flex items-center space-x-2 overflow-x-auto">
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedCategory === 'all' 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Toutes
-              </button>
-              {PRAYER_CATEGORIES.map(category => (
-                <button
-                  key={category.value}
-                  onClick={() => setSelectedCategory(category.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center space-x-2 ${
-                    selectedCategory === category.value 
-                      ? `${category.color} ring-2 ring-current ring-opacity-20` 
-                      : 'bg-white text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  <category.icon className="h-4 w-4" />
-                  <span>{category.label}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center space-x-3">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="recent">Plus récentes</option>
-                <option value="urgent">Urgentes</option>
-                <option value="most-prayed">Plus priées</option>
-              </select>
-              
-              <button
-                onClick={() => setShowContributionHub(true)}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-medium flex items-center space-x-2 hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Nouvelle demande</span>
-              </button>
-            </div>
+      {/* Barre de recherche et filtre mobile */}
+      <div className="mb-4">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{color: 'rgba(61, 61, 61, 0.4)'}} />
+            <input
+              type="text"
+              placeholder="Rechercher une prière..."
+              className="w-full pl-10 pr-4 py-3 bg-culteo-blanc-coquille border border-culteo-vert-esperance/10 rounded-culteo-lg text-sm"
+              style={{
+                backgroundColor: '#F9F9F9',
+                borderColor: 'rgba(10, 104, 71, 0.1)',
+                borderRadius: '20px',
+                fontFamily: 'Lato, sans-serif'
+              }}
+            />
           </div>
+          <button
+            onClick={() => setShowContributionHub(true)}
+            className="p-3 bg-gradient-to-r from-culteo-vert-esperance to-culteo-jaune-lumiere text-white rounded-culteo-lg"
+            style={{
+              background: 'linear-gradient(135deg, #0A6847, #FFC107)',
+              borderRadius: '20px'
+            }}
+          >
+            <Plus className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Filtres par catégorie - Mobile horizontal scroll */}
+        <div className="flex space-x-2 overflow-x-auto pb-2">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className="px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors"
+            style={{
+              backgroundColor: selectedCategory === 'all' ? '#0A6847' : '#F9F9F9',
+              color: selectedCategory === 'all' ? 'white' : '#3D3D3D',
+              fontFamily: 'Lato, sans-serif'
+            }}
+          >
+            Toutes
+          </button>
+          {PRAYER_CATEGORIES.slice(0, 6).map(category => (
+            <button
+              key={category.value}
+              onClick={() => setSelectedCategory(category.value)}
+              className="px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors"
+              style={{
+                backgroundColor: selectedCategory === category.value ? '#0A6847' : '#F9F9F9',
+                color: selectedCategory === category.value ? 'white' : '#3D3D3D',
+                fontFamily: 'Lato, sans-serif'
+              }}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
         </div>
 
         {/* Liste des prières - ZONE SCROLLABLE */}
@@ -398,7 +399,6 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose, supabase }) =>
           )}
         </div>
 
-      </div>
       
       {/* ContributionHub pour les nouvelles demandes */}
       {showContributionHub && (
@@ -413,7 +413,7 @@ const PrayerWall: React.FC<PrayerWallProps> = ({ isOpen, onClose, supabase }) =>
           defaultType="prayer"
         />
       )}
-    </div>
+    </FullscreenModal>
   );
 };
 
