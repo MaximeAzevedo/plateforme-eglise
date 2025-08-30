@@ -23,18 +23,8 @@ const PrayerForm: React.FC<PrayerFormProps> = ({ isOpen, onClose, onBack, supaba
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Désactiver le scroll du body quand le modal est ouvert
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  // La gestion du scroll est maintenant effectuée par FullscreenModal
+  // Ce useEffect a été supprimé pour éviter les conflits
 
   const prayerTypes = [
     { 

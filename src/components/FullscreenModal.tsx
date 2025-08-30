@@ -51,7 +51,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
       {/* Modal Content */}
       <div 
         className={`
-          absolute inset-0 bg-culteo-blanc-pur
+          absolute inset-0 bg-culteo-blanc-pur flex flex-col
           transform transition-transform duration-300 ease-out
           translate-y-0
           md:inset-4 md:rounded-culteo-xl md:shadow-culteo-float
@@ -61,12 +61,14 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
           backgroundColor: '#FFFFFF',
           borderRadius: window.innerWidth >= 768 ? '24px' : '0',
           transform: 'translateY(0)',
-          zIndex: 10000
+          zIndex: 10000,
+          height: '100%',
+          maxHeight: '100vh'
         }}
       >
         {/* Header fixe */}
         <div 
-          className="sticky top-0 z-10 bg-culteo-blanc-pur border-b border-culteo-vert-esperance/10 px-4 py-4 md:px-6 md:py-6"
+          className="flex-shrink-0 sticky top-0 z-10 bg-culteo-blanc-pur border-b border-culteo-vert-esperance/10 px-4 py-4 md:px-6 md:py-6"
           style={{
             backgroundColor: '#FFFFFF',
             borderBottomColor: 'rgba(10, 104, 71, 0.1)'
@@ -119,8 +121,17 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
         </div>
 
         {/* Contenu scrollable */}
-        <div className="flex-1 overflow-y-auto scrollbar-culteo">
-          <div className="p-4 md:p-6 pb-safe">
+        <div 
+          className="flex-1 overflow-y-auto overscroll-y-contain" 
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(10, 104, 71, 0.3) transparent',
+            minHeight: 0, // Important pour le flexbox
+            height: 'auto'
+          }}
+        >
+          <div className="p-4 md:p-6 pb-safe min-h-full">
             {children}
           </div>
         </div>

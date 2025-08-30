@@ -68,7 +68,7 @@ const PrayerHub: React.FC<PrayerHubProps> = ({ isOpen, onClose, supabase, defaul
         }
       >
         <PrayerForm 
-          isOpen={false} // Géré par FullscreenModal
+          isOpen={true} // Doit être true pour s'afficher
           onClose={onClose}
           onBack={handleBackToHub}
           supabase={supabase}
