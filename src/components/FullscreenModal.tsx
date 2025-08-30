@@ -24,25 +24,40 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
 }) => {
   // Bloquer le scroll du body quand le modal est ouvert
   useEffect(() => {
+    console.log('🔍 FullscreenModal - isOpen:', isOpen, 'title:', title);
+    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      console.log('✅ Modal ouvert, scroll bloqué');
     } else {
       document.body.style.overflow = 'unset';
+      console.log('✅ Modal fermé, scroll restauré');
     }
 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]);
+  }, [isOpen, title]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    console.log('❌ Modal not open, returning null');
+    return null;
+  }
+
+  console.log('🚀 Rendering FullscreenModal with title:', title);
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[9999]" style={{ zIndex: 9999 }}>
+      {/* Debug visible */}
+      <div className="fixed top-4 left-4 bg-red-500 text-white px-2 py-1 text-xs rounded z-[10000] pointer-events-none">
+        Modal: {title}
+      </div>
+      
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       />
       
       {/* Modal Content */}
@@ -50,13 +65,15 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
         className={`
           absolute inset-0 bg-culteo-blanc-pur
           transform transition-transform duration-300 ease-out
-          ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+          translate-y-0
           md:inset-4 md:rounded-culteo-xl md:shadow-culteo-float
           overflow-hidden
         `}
         style={{
           backgroundColor: '#FFFFFF',
-          borderRadius: window.innerWidth >= 768 ? '24px' : '0'
+          borderRadius: window.innerWidth >= 768 ? '24px' : '0',
+          transform: 'translateY(0)',
+          zIndex: 10000
         }}
       >
         {/* Header fixe */}
@@ -70,7 +87,10 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
           <div className="flex items-center justify-between">
             {/* Bouton retour ou fermer */}
             <button
-              onClick={showBackButton && onBack ? onBack : onClose}
+              onClick={() => {
+                console.log('🔄 Modal close/back button clicked');
+                showBackButton && onBack ? onBack() : onClose();
+              }}
               className="p-2 hover:bg-culteo-blanc-coquille rounded-culteo transition-all duration-200 hover:scale-105"
               style={{ backgroundColor: 'transparent' }}
             >
